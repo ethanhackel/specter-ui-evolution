@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { Ghost, Zap, SkipForward, X, AlertTriangle, Send, Star } from "lucide-react";
+import { Ghost, Zap, SkipForward, X, TriangleAlert as AlertTriangle, Send, Star } from "lucide-react";
 
 type ChatState = "idle" | "searching" | "connected" | "rating";
 
