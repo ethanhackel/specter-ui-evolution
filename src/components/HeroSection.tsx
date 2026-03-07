@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, Zap, Smile, Star } from "lucide-react";
+import { Shield, Zap, Smile, Star, Ghost } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
 import { Link } from "react-router-dom";
 
@@ -19,9 +19,53 @@ const floatingDots = Array.from({ length: 14 }, (_, i) => ({
   duration: Math.random() * 4 + 4,
 }));
 
+const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 90 + 5,
+  y: Math.random() * 80 + 10,
+  size: Math.random() * 20 + 30,
+  delay: Math.random() * 3,
+  duration: Math.random() * 8 + 10,
+  opacity: Math.random() * 0.08 + 0.03,
+}));
+
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      {/* Floating ghosts */}
+      {floatingGhosts.map((ghost) => (
+        <motion.div
+          key={ghost.id}
+          className="absolute pointer-events-none"
+          style={{
+            left: `${ghost.x}%`,
+            top: `${ghost.y}%`,
+            opacity: ghost.opacity,
+          }}
+          animate={{
+            y: [-30, 30, -30],
+            x: [-20, 20, -20],
+            rotate: [-5, 5, -5],
+            opacity: [ghost.opacity * 0.5, ghost.opacity, ghost.opacity * 0.5],
+          }}
+          transition={{
+            duration: ghost.duration,
+            delay: ghost.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <Ghost
+            className="text-primary"
+            style={{
+              width: ghost.size,
+              height: ghost.size,
+              filter: `blur(${Math.random() * 2 + 1}px)`,
+            }}
+          />
+        </motion.div>
+      ))}
+
       {/* Floating dots */}
       {floatingDots.map((dot) => (
         <motion.div

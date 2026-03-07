@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { Check } from "lucide-react";
+import { Check, ArrowLeft, RefreshCw } from "lucide-react";
 
 const perks = [
   "Persistent persona across sessions",
@@ -11,24 +11,72 @@ const perks = [
 ];
 
 const Register = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [captcha, setCaptcha] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const generateCaptcha = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setCaptcha(result);
+    setCaptchaInput("");
+  };
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
 
   const handleRegister = () => {
     setError("");
     setSuccess("");
-    if (!username || !password) { setError("Username and password required"); return; }
-    if (password !== confirm) { setError("Passwords do not match"); return; }
-    // TODO: API call
-    setSuccess("✓ Account created! Redirecting...");
+
+    if (!username || !password) {
+      setError("Username and password required");
+      return;
+    }
+
+    if (username.length < 3 || username.length > 30) {
+      setError("Username must be 3-30 characters");
+      return;
+    }
+
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!agreed) {
+      setError("Please agree to be a decent human being");
+      return;
+    }
+
+    if (captchaInput.toUpperCase() !== captcha) {
+      setError("Incorrect verification code");
+      generateCaptcha();
+      return;
+    }
+
+    setSuccess("Account created! Redirecting...");
+    setTimeout(() => navigate("/chat"), 1500);
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 relative">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-10 relative">
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -38,24 +86,18 @@ const Register = () => {
       />
 
       <div className="glass-card w-full max-w-md p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
-        <Link to="/" className="block text-center mb-2">
+        <Link to="/" className="absolute top-6 left-6 flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors group">
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span className="font-mono tracking-wider">Back to Home</span>
+        </Link>
+
+        <Link to="/" className="block text-center mb-2 mt-8">
           <img src={specterMascot} alt="SPECTER" className="w-12 h-12 mx-auto mb-3" />
           <span className="font-heading font-black text-2xl tracking-widest text-gradient">SPECTER</span>
         </Link>
-        <p className="text-center text-xs font-mono tracking-[0.2em] text-muted-foreground mb-8">
-          // JOIN THE VOID
+        <p className="text-center text-base font-semibold text-foreground mb-10">
+          Create your anonymous identity
         </p>
-
-        {/* Perks */}
-        <div className="glass-card p-4 mb-6 border-primary/10">
-          <p className="text-xs font-mono tracking-[0.2em] text-primary mb-3">// ACCOUNT PERKS</p>
-          {perks.map((perk) => (
-            <div key={perk} className="flex items-center gap-2 text-sm text-muted-foreground mb-1.5 last:mb-0">
-              <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-              {perk}
-            </div>
-          ))}
-        </div>
 
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 rounded px-4 py-3 text-sm text-destructive mb-5">{error}</div>
@@ -73,21 +115,20 @@ const Register = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="choose_your_handle"
-              maxLength={20}
+              placeholder="3-30 chars (letters, digits, _)"
+              maxLength={30}
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
             />
-            <p className="text-xs text-muted-foreground mt-1.5 font-mono">3–20 characters, letters/numbers/underscore</p>
           </div>
           <div>
             <label className="block text-xs font-mono tracking-[0.2em] text-muted-foreground mb-2">
-              EMAIL <span className="opacity-50">(optional)</span>
+              EMAIL
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ghost@nowhere.void"
+              placeholder="your@email.com"
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
             />
           </div>
@@ -97,7 +138,7 @@ const Register = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="min 6 characters"
+              placeholder="At least 6 characters"
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
             />
           </div>
@@ -107,9 +148,50 @@ const Register = () => {
               type="password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleRegister()}
-              placeholder="repeat password"
+              placeholder="Repeat password"
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="agree"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="w-4 h-4 rounded border-border bg-secondary text-primary focus:ring-2 focus:ring-primary/20"
+            />
+            <label htmlFor="agree" className="text-sm text-muted-foreground cursor-pointer">
+              I agree to be a decent human being
+            </label>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono tracking-[0.2em] text-muted-foreground mb-2">VERIFICATION</label>
+            <div className="flex gap-3 mb-3">
+              <div className="flex-1 bg-secondary border-2 border-primary/30 rounded px-4 py-3 flex items-center justify-center gap-2 select-none" style={{ letterSpacing: "0.4em", fontFamily: "monospace" }}>
+                {captcha.split("").map((char, i) => (
+                  <span key={i} className="text-foreground text-xl font-bold" style={{ transform: `rotate(${(Math.random() - 0.5) * 10}deg)` }}>
+                    {char}
+                  </span>
+                ))}
+              </div>
+              <button
+                onClick={generateCaptcha}
+                type="button"
+                className="w-12 h-12 shrink-0 rounded glass-card flex items-center justify-center text-primary hover:bg-primary/10 transition-all"
+              >
+                <RefreshCw className="w-5 h-5" />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleRegister()}
+              placeholder="Enter the code shown above"
+              className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+              maxLength={6}
             />
           </div>
 
@@ -122,9 +204,9 @@ const Register = () => {
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-8">
-          Already a ghost?{" "}
+          Already have an account?{" "}
           <Link to="/login" className="text-primary hover:underline">
-            Sign in
+            Sign In
           </Link>
         </p>
       </div>

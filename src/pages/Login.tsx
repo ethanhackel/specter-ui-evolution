@@ -1,25 +1,46 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { Ghost } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [captcha, setCaptcha] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
   const [error, setError] = useState("");
+
+  const generateCaptcha = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setCaptcha(result);
+    setCaptchaInput("");
+  };
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
 
   const handleLogin = () => {
     if (!username || !password) {
       setError("Please enter username and password");
       return;
     }
-    // TODO: API call
+    if (captchaInput.toUpperCase() !== captcha) {
+      setError("Incorrect verification code");
+      generateCaptcha();
+      return;
+    }
     setError("");
+    navigate("/chat");
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6 relative">
-      {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -29,12 +50,20 @@ const Login = () => {
       />
 
       <div className="glass-card w-full max-w-md p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
-        <Link to="/" className="block text-center mb-2">
+        <Link to="/" className="absolute top-6 left-6 flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors group">
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span className="font-mono tracking-wider">Back to Home</span>
+        </Link>
+
+        <Link to="/" className="block text-center mb-2 mt-8">
           <img src={specterMascot} alt="SPECTER" className="w-12 h-12 mx-auto mb-3" />
           <span className="font-heading font-black text-2xl tracking-widest text-gradient">SPECTER</span>
         </Link>
-        <p className="text-center text-xs font-mono tracking-[0.2em] text-muted-foreground mb-10">
-          // WELCOME BACK, GHOST
+        <p className="text-center text-base font-semibold text-foreground mb-2">
+          Welcome Back
+        </p>
+        <p className="text-center text-sm text-muted-foreground mb-10">
+          Sign in to your haunted account
         </p>
 
         {error && (
@@ -50,8 +79,7 @@ const Login = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              placeholder="your_username"
+              placeholder="Your username"
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
             />
           </div>
@@ -61,9 +89,37 @@ const Login = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              placeholder="••••••••"
+              placeholder="Your password"
               className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono tracking-[0.2em] text-muted-foreground mb-2">VERIFICATION</label>
+            <div className="flex gap-3 mb-3">
+              <div className="flex-1 bg-secondary border-2 border-primary/30 rounded px-4 py-3 flex items-center justify-center gap-2 select-none" style={{ letterSpacing: "0.4em", fontFamily: "monospace" }}>
+                {captcha.split("").map((char, i) => (
+                  <span key={i} className="text-foreground text-xl font-bold" style={{ transform: `rotate(${(Math.random() - 0.5) * 10}deg)` }}>
+                    {char}
+                  </span>
+                ))}
+              </div>
+              <button
+                onClick={generateCaptcha}
+                type="button"
+                className="w-12 h-12 shrink-0 rounded glass-card flex items-center justify-center text-primary hover:bg-primary/10 transition-all"
+              >
+                <RefreshCw className="w-5 h-5" />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              placeholder="Enter the code shown above"
+              className="w-full bg-secondary border border-border rounded px-4 py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+              maxLength={6}
             />
           </div>
 
@@ -73,27 +129,12 @@ const Login = () => {
           >
             SIGN IN
           </button>
-
-          <div className="relative text-center my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <span className="relative bg-card px-4 text-xs font-mono text-muted-foreground">OR</span>
-          </div>
-
-          <Link
-            to="/chat"
-            className="w-full py-3.5 rounded glass-card flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground font-heading font-bold text-sm tracking-widest uppercase transition-all hover:scale-[1.02]"
-          >
-            <Ghost className="w-4 h-4" />
-            Continue as Ghost
-          </Link>
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-8">
-          No account?{" "}
+          New to JinnChat?{" "}
           <Link to="/register" className="text-primary hover:underline">
-            Register here
+            Create account
           </Link>
         </p>
       </div>

@@ -189,41 +189,50 @@ const Chat = () => {
       {/* Main */}
       <div className="flex flex-1 overflow-hidden relative z-10">
         {/* Sidebar */}
-        <div className="hidden sm:flex w-56 shrink-0 border-r border-border flex-col py-5 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
+        <div className="hidden sm:flex w-64 shrink-0 border-r border-border flex-col py-6 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
+          {/* Logo Header */}
+          <div className="px-5 mb-6 flex items-center gap-2">
+            <img src={specterMascot} alt="" className="w-6 h-6" />
+            <span className="font-heading font-black text-sm tracking-widest text-gradient">SPECTER</span>
+          </div>
+
           {/* Session Timer */}
-          <div className="px-5 mb-5">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-2 border-b border-border pb-2">// SESSION</p>
-            <p className="font-heading text-2xl font-bold text-primary text-center tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
-              {formatTime(timer)}
-            </p>
+          <div className="px-5 mb-6">
+            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Session</p>
+            <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
+              <p className="font-heading text-3xl font-bold text-primary tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
+                {formatTime(timer)}
+              </p>
+            </div>
           </div>
 
           {/* Partner Info */}
           {state === "connected" && (
-            <div className="px-5 mb-5">
-              <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-2 border-b border-border pb-2">// STRANGER</p>
-              <div className="glass-card p-3">
-                <p className="font-heading text-sm font-bold text-primary">{partnerName}</p>
+            <div className="px-5 mb-6">
+              <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Stranger</p>
+              <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
+                <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
                 <p className="text-xs font-mono text-muted-foreground">Connected</p>
               </div>
             </div>
           )}
 
           {/* Interests */}
-          <div className="px-5">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 border-b border-border pb-2">// INTERESTS</p>
-            <div className="flex flex-wrap gap-1.5">
+          <div className="px-5 flex-1 overflow-y-auto">
+            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Interests</p>
+            <div className="flex flex-wrap gap-2">
               {interests.map((i) => (
                 <button
                   key={i.key}
                   onClick={() => toggleInterest(i.key)}
-                  className={`px-2.5 py-1 rounded text-xs transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     selectedInterests.has(i.key)
-                      ? "bg-primary/20 border border-primary/40 text-primary"
-                      : "glass-card text-muted-foreground hover:text-foreground"
+                      ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
+                      : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
                   }`}
                 >
-                  {i.emoji} {i.label}
+                  <span className="mr-1.5">{i.emoji}</span>
+                  {i.label}
                 </button>
               ))}
             </div>
