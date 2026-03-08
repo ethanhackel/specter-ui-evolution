@@ -548,7 +548,7 @@ const Chat = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-52 overflow-y-auto p-4">
+                  <div className="h-52 overflow-y-auto p-4 picker-scroll">
                     <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                       {stickers.map((sticker) => (
                         <button
