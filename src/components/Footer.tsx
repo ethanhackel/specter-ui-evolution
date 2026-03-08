@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
         <div>
           <span className="font-heading font-black text-lg tracking-widest text-muted-foreground">
-            SPEC<span className="text-primary">TER</span>
+            SPECTER<span className="text-primary">CHAT</span>
           </span>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-muted-foreground">
