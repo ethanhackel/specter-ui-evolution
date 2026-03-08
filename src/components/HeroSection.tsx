@@ -2,6 +2,8 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect } from "react";
 import { Shield, Zap, Smile, Star, Ghost, Users, Activity, Globe } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
+
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 import { Link } from "react-router-dom";
 import { useRealtimeStats } from "@/hooks/useRealtimeStats";
 
@@ -12,7 +14,7 @@ const features = [
   { icon: Star, label: "Rate & Rank" },
 ];
 
-const floatingDots = Array.from({ length: 8 }, (_, i) => ({
+const floatingDots = Array.from({ length: isMobile ? 4 : 8 }, (_, i) => ({
   id: i,
   size: Math.random() * 4 + 2,
   x: Math.random() * 100,
@@ -21,7 +23,7 @@ const floatingDots = Array.from({ length: 8 }, (_, i) => ({
   duration: Math.random() * 4 + 4,
 }));
 
-const floatingGhosts = Array.from({ length: 4 }, (_, i) => ({
+const floatingGhosts = Array.from({ length: isMobile ? 2 : 4 }, (_, i) => ({
   id: i,
   x: Math.random() * 90 + 5,
   y: Math.random() * 80 + 10,
@@ -137,9 +139,12 @@ const HeroSection = () => {
           <motion.img
             src={specterMascot}
             alt="SPECTERCHAT Ghost Mascot"
+            width={96}
+            height={96}
             className="w-24 h-24 sm:w-24 sm:h-24 relative z-10"
             loading="eager"
             decoding="async"
+            fetchPriority="high"
             style={{
               filter: "drop-shadow(0 8px 24px hsl(var(--primary) / 0.3)) drop-shadow(0 2px 8px rgba(0,0,0,0.5))",
             }}
