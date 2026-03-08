@@ -14,7 +14,7 @@ const features = [
   { icon: Star, label: "Rate & Rank" },
 ];
 
-const floatingDots = Array.from({ length: 8 }, (_, i) => ({
+const floatingDots = Array.from({ length: isMobile ? 4 : 8 }, (_, i) => ({
   id: i,
   size: Math.random() * 4 + 2,
   x: Math.random() * 100,
@@ -23,7 +23,7 @@ const floatingDots = Array.from({ length: 8 }, (_, i) => ({
   duration: Math.random() * 4 + 4,
 }));
 
-const floatingGhosts = Array.from({ length: 4 }, (_, i) => ({
+const floatingGhosts = Array.from({ length: isMobile ? 2 : 4 }, (_, i) => ({
   id: i,
   x: Math.random() * 90 + 5,
   y: Math.random() * 80 + 10,
