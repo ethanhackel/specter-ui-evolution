@@ -1,6 +1,5 @@
 import { memo, useRef, useCallback, useEffect } from "react";
-import { Send, Smile, X } from "lucide-react";
-import specterMascot from "@/assets/specter-mascot.png";
+import { Send, Smile, X, Sticker } from "lucide-react";
 import type { ChatState } from "@/hooks/useChat";
 
 import stickerHello from "@/assets/stickers/hello.png";
@@ -85,7 +84,7 @@ const ChatInputArea = memo(({ state, input, setInput, pickerOpen, setPickerOpen,
               <Smile className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> EMOJI
             </button>
             <button onClick={() => setPickerTab("sticker")} className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 text-[0.65rem] sm:text-xs font-heading font-bold tracking-wider transition-all ${pickerTab === "sticker" ? "text-primary border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}>
-              <img src={specterMascot} alt="" className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
+              <Sticker className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
             </button>
           </div>
 
@@ -140,8 +139,8 @@ const ChatInputArea = memo(({ state, input, setInput, pickerOpen, setPickerOpen,
           <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("emoji"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "emoji" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`} aria-label="Open emoji picker">
             <Smile className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
-          <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20" : "hover:bg-secondary/50"}`} aria-label="Open sticker picker">
-            <img src={specterMascot} alt="Stickers" className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${pickerOpen && pickerTab === "sticker" ? "opacity-100 scale-110" : "opacity-70 hover:opacity-100"}`} />
+          <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`} aria-label="Open sticker picker">
+            <Sticker className="w-[1.15rem] h-[1.15rem] sm:w-5 sm:h-5" />
           </button>
 
           <textarea
