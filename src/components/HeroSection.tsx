@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { Shield, Zap, Smile, Star, Ghost } from "lucide-react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect } from "react";
+import { Shield, Zap, Smile, Star, Ghost, Users, Activity, Globe } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
 import { Link } from "react-router-dom";
 
@@ -28,6 +29,27 @@ const floatingGhosts = Array.from({ length: 4 }, (_, i) => ({
   duration: Math.random() * 8 + 10,
   opacity: Math.random() * 0.08 + 0.03,
 }));
+
+const AnimatedCounter = ({ target, duration = 2 }: { target: number; duration?: number }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (v) => {
+    if (v >= 1000) return Math.round(v).toLocaleString();
+    return Math.round(v).toString();
+  });
+
+  useEffect(() => {
+    const controls = animate(count, target, { duration, ease: "easeOut" });
+    return controls.stop;
+  }, [target, duration, count]);
+
+  return <motion.span>{rounded}</motion.span>;
+};
+
+const stats = [
+  { value: 48, label: "ONLINE", icon: Users, pulse: true },
+  { value: 1247, label: "TODAY", icon: Activity, pulse: false },
+  { value: 5237, label: "TOTAL", icon: Globe, pulse: false },
+];
 
 const HeroSection = () => {
   return (
@@ -169,31 +191,58 @@ const HeroSection = () => {
 
         {/* Stats */}
         <motion.div
-          className="flex items-center justify-center gap-6 sm:gap-10 mb-8 sm:mb-10"
+          className="flex items-center justify-center gap-3 sm:gap-5 mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.55 }}
         >
-          <div className="text-center">
-            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
-              48
-            </span>
-            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// ONLINE</span>
-          </div>
-          <div className="w-px h-6 sm:h-8 bg-border" />
-          <div className="text-center">
-            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
-              1,247
-            </span>
-            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// TODAY</span>
-          </div>
-          <div className="w-px h-6 sm:h-8 bg-border" />
-          <div className="text-center">
-            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
-              5,237
-            </span>
-            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// TOTAL</span>
-          </div>
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="relative group flex-1 max-w-[140px]"
+              whileHover={{ scale: 1.05, y: -4 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            >
+              {/* Glow background */}
+              <div
+                className="absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"
+                style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.1))" }}
+              />
+              <div
+                className="relative glass-card rounded-xl px-3 sm:px-5 py-3 sm:py-4 text-center overflow-hidden"
+                style={{ borderColor: "hsl(var(--primary) / 0.15)" }}
+              >
+                {/* Subtle scan line effect */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: "linear-gradient(180deg, transparent 0%, hsl(var(--primary) / 0.03) 50%, transparent 100%)",
+                    backgroundSize: "100% 200%",
+                  }}
+                  animate={{ backgroundPosition: ["0% 0%", "0% 100%", "0% 0%"] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: i * 0.5 }}
+                />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-center gap-1.5 mb-1">
+                    <stat.icon className="w-3 h-3 text-primary opacity-60" />
+                    {stat.pulse && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    )}
+                  </div>
+                  <span
+                    className="font-heading text-2xl sm:text-3xl font-black text-primary block leading-none"
+                    style={{ textShadow: "0 0 20px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.2)" }}
+                  >
+                    <AnimatedCounter target={stat.value} duration={2 + i * 0.5} />
+                  </span>
+                  <span className="text-[0.55rem] sm:text-[0.65rem] font-mono tracking-[0.2em] text-muted-foreground mt-1 block">
+                    // {stat.label}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* CTAs */}
