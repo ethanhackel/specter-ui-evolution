@@ -83,7 +83,7 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
               <button onClick={() => setReportOpen(true)} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Report">
                 <Flag className="w-3.5 h-3.5 sm:w-3 sm:h-3" /> <span className="hidden sm:inline">REPORT</span>
               </button>
-              <button onClick={onLeave} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Leave">
+              <button onClick={() => setLeaveConfirmOpen(true)} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Leave">
                 <X className="w-3.5 h-3.5 sm:w-3 sm:h-3" /> <span className="hidden sm:inline">LEAVE</span>
               </button>
             </>
