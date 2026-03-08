@@ -2,6 +2,8 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect } from "react";
 import { Shield, Zap, Smile, Star, Ghost, Users, Activity, Globe } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
+
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 import { Link } from "react-router-dom";
 import { useRealtimeStats } from "@/hooks/useRealtimeStats";
 
