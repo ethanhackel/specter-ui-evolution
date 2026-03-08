@@ -256,6 +256,12 @@ const Chat = () => {
     setHoverRating(0);
   };
 
+  const findNext = () => {
+    setRating(0);
+    setHoverRating(0);
+    findMatch();
+  };
+
   const copyText = (text: string) => {
     navigator.clipboard.writeText(text);
     setMenuOpenId(null);
@@ -515,6 +521,13 @@ const Chat = () => {
                   className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105"
                 >
                   Submit & Find New
+                </button>
+                <button
+                  onClick={findNext}
+                  className="px-6 py-3 rounded-sm bg-emerald-600 text-white font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 hover:bg-emerald-500"
+                  style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}
+                >
+                  ⚡ Find Next
                 </button>
                 <button
                   onClick={submitRating}
