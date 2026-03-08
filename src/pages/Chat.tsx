@@ -496,7 +496,7 @@ const Chat = () => {
           )}
 
           <div className="px-5 flex-1 overflow-y-auto">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Interests</p>
+            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
             <div className="flex flex-wrap gap-2">
               {interests.map((i) => (
                 <button

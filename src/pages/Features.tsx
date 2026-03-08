@@ -214,7 +214,7 @@ const Features = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 font-mono uppercase">// The Protocol</p>
+            <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 font-mono uppercase">The Protocol</p>
             <h2 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
               How <span className="text-gradient">SPECTERCHAT</span> Works
             </h2>
