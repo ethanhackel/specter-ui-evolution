@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star } from "lucide-react";
+import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star, Mail } from "lucide-react";
 import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -151,7 +151,10 @@ const Profile = () => {
         {/* Username section */}
         <div className="space-y-4">
           <div>
-            <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5">USERNAME</label>
+            <div className="flex items-center gap-2 mb-1.5">
+              <User className="w-4 h-4 text-primary" />
+              <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">USERNAME</span>
+            </div>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <input
@@ -184,7 +187,10 @@ const Profile = () => {
           {/* Email display */}
           {!isGhostEmail && (
             <div>
-              <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5">EMAIL</label>
+              <div className="flex items-center gap-2 mb-1.5">
+                <Mail className="w-4 h-4 text-primary" />
+                <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">EMAIL</span>
+              </div>
               <input
                 type="text"
                 value={email}
