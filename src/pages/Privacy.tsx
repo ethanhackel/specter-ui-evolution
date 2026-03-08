@@ -20,7 +20,7 @@ const sections = [
     content: [
       "All chat messages are encrypted in transit using industry-standard TLS encryption. Messages are processed in real-time and are never written to persistent storage.",
       "We employ end-to-end encryption for all active chat sessions. Once a session ends, all message data is permanently and irrecoverably destroyed.",
-      "Our infrastructure is designed with a zero-knowledge architecture — even SPECTER's own team cannot read your messages or identify you.",
+      "Our infrastructure is designed with a zero-knowledge architecture — even SPECTERCHAT's own team cannot read your messages or identify you.",
       "Regular security audits and penetration testing ensure our systems remain hardened against threats.",
     ],
   },
