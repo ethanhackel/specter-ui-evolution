@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { Shield, Zap, Smile, Star, Ghost } from "lucide-react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect } from "react";
+import { Shield, Zap, Smile, Star, Ghost, Users, Activity, Globe } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
 import { Link } from "react-router-dom";
 
