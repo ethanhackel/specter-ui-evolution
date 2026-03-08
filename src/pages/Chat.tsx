@@ -251,15 +251,22 @@ const Chat = () => {
   };
 
   const submitRating = () => {
-    setState("idle");
+    // Submit rating only, go back to idle
     setRating(0);
     setHoverRating(0);
+    setState("idle");
   };
 
   const findNext = () => {
     setRating(0);
     setHoverRating(0);
     findMatch();
+  };
+
+  const skipRating = () => {
+    setRating(0);
+    setHoverRating(0);
+    setState("idle");
   };
 
   const copyText = (text: string) => {
