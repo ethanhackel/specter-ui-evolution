@@ -446,25 +446,6 @@ const Chat = () => {
                   </div>
                 )}
 
-                <div className="px-5 flex-1 overflow-y-auto">
-                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
-                  <div className="flex flex-wrap gap-2">
-                    {interests.map((i) => (
-                      <button
-                        key={i.key}
-                        onClick={() => toggleInterest(i.key)}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium transition-all active:scale-95 ${
-                          selectedInterests.has(i.key)
-                            ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
-                            : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                        }`}
-                      >
-                        <span className="mr-1.5">{i.emoji}</span>
-                        {i.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </motion.div>
             </>
           )}
@@ -496,25 +477,6 @@ const Chat = () => {
             </div>
           )}
 
-          <div className="px-5 flex-1 overflow-y-auto">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
-            <div className="flex flex-wrap gap-2">
-              {interests.map((i) => (
-                <button
-                  key={i.key}
-                  onClick={() => toggleInterest(i.key)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    selectedInterests.has(i.key)
-                      ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
-                      : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                  }`}
-                >
-                  <span className="mr-1.5">{i.emoji}</span>
-                  {i.label}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Chat Area */}
@@ -568,6 +530,28 @@ const Chat = () => {
               <p className="text-muted-foreground max-w-sm leading-relaxed relative z-10 text-sm sm:text-base">
                 Click below to be matched with a random stranger. Completely anonymous. No account needed.
               </p>
+
+              {/* Interests selection */}
+              <div className="relative z-10 max-w-sm w-full">
+                <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase text-center">Pick Interests (optional)</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {interests.map((i) => (
+                    <button
+                      key={i.key}
+                      onClick={() => toggleInterest(i.key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                        selectedInterests.has(i.key)
+                          ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
+                          : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                      }`}
+                    >
+                      <span className="mr-1.5">{i.emoji}</span>
+                      {i.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <button
                 onClick={findMatch}
                 className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95"
@@ -603,6 +587,18 @@ const Chat = () => {
               </div>
               <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Searching the void...</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">Looking for a stranger to connect with.</p>
+              {selectedInterests.size > 0 && (
+                <div className="flex flex-wrap gap-1.5 justify-center max-w-xs">
+                  {Array.from(selectedInterests).map((key) => {
+                    const interest = interests.find((i) => i.key === key);
+                    return interest ? (
+                      <span key={key} className="px-2 py-1 rounded-md text-[10px] bg-primary/15 border border-primary/30 text-primary">
+                        {interest.emoji} {interest.label}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              )}
               <button
                 onClick={cancelSearch}
                 className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95"
