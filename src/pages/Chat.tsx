@@ -535,22 +535,20 @@ const Chat = () => {
                       {menuOpenId === msg.id && !msg.unsent && (
                         <div
                           ref={menuRef}
-                          className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 min-w-[160px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
+                          className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 w-[200px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
                           style={{ background: "hsl(var(--card))" }}
                         >
                           {/* Quick react row - scrollable */}
-                          <div className="relative border-b border-border">
-                            <div className="flex items-center gap-1 px-3 py-2 overflow-x-auto picker-scroll" style={{ scrollbarWidth: 'thin' }}>
-                              {["❤️","😂","😮","😢","😡","👍","🔥","😍","🤣","👏","🙏","💯","😭","🤔","😊","🥺","😎","🤩","😤","💀","👀","🫡","🤝","✨","🎉","💪","😈","🥰","😏","🤗"].map((emoji) => (
-                                <button
-                                  key={emoji}
-                                  onClick={() => reactToMsg(msg.id, emoji)}
-                                  className="w-8 h-8 shrink-0 flex items-center justify-center text-lg rounded-full hover:bg-primary/10 transition-all hover:scale-125 active:scale-95"
-                                >
-                                  {emoji}
-                                </button>
-                              ))}
-                            </div>
+                          <div className="flex items-center gap-1 px-2 py-2 border-b border-border overflow-x-auto picker-scroll" style={{ scrollbarWidth: 'none' }}>
+                            {["❤️","😂","😮","😢","😡","👍","🔥","😍","🤣","👏","🙏","💯","😭","🤔","😊","🥺","😎","🤩","😤","💀","👀","🫡","🤝","✨","🎉","💪","😈","🥰","😏","🤗"].map((emoji) => (
+                              <button
+                                key={emoji}
+                                onClick={() => reactToMsg(msg.id, emoji)}
+                                className="w-7 h-7 shrink-0 flex items-center justify-center text-base rounded-full hover:bg-primary/10 transition-all hover:scale-110 active:scale-95"
+                              >
+                                {emoji}
+                              </button>
+                            ))}
                           </div>
 
                           {!msg.isSticker && (
