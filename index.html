@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -12,20 +12,44 @@
     <title>SPECTERCHAT — Anonymous Stranger Chat</title>
     <meta name="description" content="Connect with random strangers anonymously. No account needed. Instant matching, emoji, stickers, and complete privacy. Vanish without a trace." />
     <meta name="author" content="SPECTERCHAT" />
+    <link rel="canonical" href="https://specterchat.lovable.app/" />
 
     <meta property="og:title" content="SPECTERCHAT — Anonymous Stranger Chat" />
     <meta property="og:description" content="Instant anonymous conversations with strangers. No identity. No history. Just raw human connection." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://specterchat.lovable.app/" />
     <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:site_name" content="SPECTERCHAT" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="SPECTERCHAT — Anonymous Chat" />
     <meta name="twitter:description" content="Connect. Converse. Vanish. Anonymous stranger chat." />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
+    <!-- Preconnect to font origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="image" href="/src/assets/specter-mascot.png" />
+
+    <!-- Load fonts with display=swap for non-blocking render -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SPECTERCHAT",
+      "description": "Anonymous stranger chat platform. Connect with random people instantly. No account needed.",
+      "url": "https://specterchat.lovable.app",
+      "applicationCategory": "CommunicationApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
 
   <body>
