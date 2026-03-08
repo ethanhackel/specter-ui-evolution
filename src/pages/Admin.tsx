@@ -361,23 +361,57 @@ const Admin = () => {
                       <tr className="border-b border-border text-muted-foreground text-left">
                         <th className="pb-3 pr-4">Username</th>
                         <th className="pb-3 pr-4">Type</th>
+                        <th className="pb-3 pr-4">Status</th>
                         <th className="pb-3 pr-4">Karma</th>
                         <th className="pb-3 pr-4">Chats</th>
-                        <th className="pb-3">Joined</th>
+                        <th className="pb-3 pr-4">Joined</th>
+                        <th className="pb-3">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {users.map(u => (
-                        <tr key={u.id} className="border-b border-border/50 last:border-0">
+                        <tr key={u.id} className={`border-b border-border/50 last:border-0 ${u.is_banned ? "opacity-60" : ""}`}>
                           <td className="py-3 pr-4 text-foreground font-medium">{u.username}</td>
                           <td className="py-3 pr-4">
                             <Badge variant={u.is_guest ? "secondary" : "default"} className="text-xs">
                               {u.is_guest ? "Guest" : "Registered"}
                             </Badge>
                           </td>
+                          <td className="py-3 pr-4">
+                            {u.is_banned ? (
+                              <Badge variant="outline" className="text-xs bg-destructive/15 text-destructive border-destructive/30">
+                                Banned
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-xs bg-green-500/15 text-green-400 border-green-500/30">
+                                Active
+                              </Badge>
+                            )}
+                          </td>
                           <td className="py-3 pr-4 text-muted-foreground font-mono">{u.karma}</td>
                           <td className="py-3 pr-4 text-muted-foreground font-mono">{u.total_chats}</td>
-                          <td className="py-3 text-muted-foreground">{timeAgo(u.created_at)}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{timeAgo(u.created_at)}</td>
+                          <td className="py-3">
+                            {u.is_banned ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs border-green-500/30 text-green-400 hover:bg-green-500/10"
+                                onClick={() => handleBanUser(u, false)}
+                              >
+                                Unban
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                                onClick={() => handleBanUser(u, true)}
+                              >
+                                <Ban className="w-3.5 h-3.5 mr-1" /> Ban
+                              </Button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
