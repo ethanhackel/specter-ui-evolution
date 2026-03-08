@@ -154,6 +154,27 @@ const Admin = () => {
     }
   };
 
+  const handleBanUser = async (userProfile: UserProfile, ban: boolean, reason?: string) => {
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        is_banned: ban,
+        banned_at: ban ? new Date().toISOString() : null,
+        ban_reason: ban ? (reason || "Violated community guidelines") : null,
+      } as any)
+      .eq("user_id", userProfile.user_id);
+
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: ban ? "User Banned" : "User Unbanned",
+        description: `${userProfile.username} has been ${ban ? "banned" : "unbanned"}.`,
+      });
+      fetchUsers();
+    }
+  };
+
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
