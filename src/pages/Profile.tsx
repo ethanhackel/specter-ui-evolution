@@ -23,6 +23,8 @@ const Profile = () => {
     if (profile) setUsername(profile.username);
   }, [profile]);
 
+  const { checkUsernameAvailable } = useAuth();
+
   // Debounced username check
   useEffect(() => {
     if (!profile || username === profile.username || username.length < 3) {
@@ -31,11 +33,8 @@ const Profile = () => {
     }
     setUsernameStatus("checking");
     const timer = setTimeout(async () => {
-      const { checkUsernameAvailable } = await import("@/contexts/AuthContext").then(() => ({}));
-      // Use the context function through a workaround - re-query directly
-      const { supabase } = await import("@/integrations/supabase/client");
-      const { data } = await supabase.from("profiles").select("id").ilike("username", username).limit(1);
-      setUsernameStatus(!data || data.length === 0 ? "available" : "taken");
+      const available = await checkUsernameAvailable(username);
+      setUsernameStatus(available ? "available" : "taken");
     }, 500);
     return () => clearTimeout(timer);
   }, [username, profile]);
