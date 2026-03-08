@@ -49,7 +49,7 @@ const additionalFeatures = [
   {
     icon: Lock,
     title: "End-to-End Encryption",
-    description: "Every message is encrypted in transit. No one — not even SPECTER — can read your conversations.",
+    description: "Every message is encrypted in transit. No one — not even SPECTERCHAT — can read your conversations.",
   },
   {
     icon: Eye,
@@ -108,8 +108,8 @@ const Features = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg border-b" style={{ borderColor: 'hsl(0 0% 100% / 0.06)', background: 'hsl(0 0% 5% / 0.8)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={specterMascot} alt="SPECTER" className="w-7 h-7 sm:w-8 sm:h-8" />
-            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight text-gradient">SPECTER</span>
+            <img src={specterMascot} alt="SPECTERCHAT" className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </Link>
           <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back
@@ -127,10 +127,10 @@ const Features = () => {
         >
           <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-3 font-mono uppercase">// Full Feature Set</p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Everything <span className="text-gradient">SPECTER</span> Offers
+            Everything <span className="text-gradient">SPECTERCHAT</span> Offers
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Built for real connection, engineered for absolute privacy. Explore every feature that makes SPECTER the most private chat platform on the internet.
+            Built for real connection, engineered for absolute privacy. Explore every feature that makes SPECTERCHAT the most private chat platform on the internet.
           </p>
         </motion.div>
 
@@ -216,7 +216,7 @@ const Features = () => {
           >
             <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 font-mono uppercase">// The Protocol</p>
             <h2 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-              How <span className="text-gradient">SPECTER</span> Works
+              How <span className="text-gradient">SPECTERCHAT</span> Works
             </h2>
           </motion.div>
 

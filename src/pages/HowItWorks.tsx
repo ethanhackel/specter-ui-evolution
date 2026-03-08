@@ -22,7 +22,7 @@ const chatFlow = [
   { delay: 1800, typingBefore: { who: "you" as const, duration: 1400 }, messages: [{ type: "you" as const, text: "Hey! Where are you from? 👋" }] },
   { delay: 2000, typingBefore: { who: "stranger" as const, duration: 2200 }, messages: [{ type: "stranger" as const, text: "Somewhere between nowhere and everywhere 😄" }] },
   { delay: 1500, typingBefore: { who: "you" as const, duration: 1000 }, messages: [{ type: "you" as const, text: "haha that's mysterious, I like it" }] },
-  { delay: 1800, typingBefore: { who: "stranger" as const, duration: 1800 }, messages: [{ type: "stranger" as const, text: "That's the whole point of Specter right? 👻" }] },
+  { delay: 1800, typingBefore: { who: "stranger" as const, duration: 1800 }, messages: [{ type: "stranger" as const, text: "That's the whole point of Specterchat right? 👻" }] },
   { delay: 2000, typingBefore: { who: "you" as const, duration: 1200 }, messages: [{ type: "you" as const, text: "True. No names, no history, just vibes" }] },
   { delay: 2200, typingBefore: { who: "stranger" as const, duration: 1600 }, messages: [{ type: "stranger" as const, text: "Exactly. Pure connection ✨" }] },
   { delay: 3000, messages: [{ type: "status" as const, text: "Ghost#8a2f disconnected" }] },
@@ -193,8 +193,8 @@ const HowItWorksPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg border-b" style={{ borderColor: 'hsl(0 0% 100% / 0.06)', background: 'hsl(0 0% 5% / 0.8)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={specterMascot} alt="SPECTER" className="w-7 h-7 sm:w-8 sm:h-8" />
-            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight text-gradient">SPECTER</span>
+            <img src={specterMascot} alt="SPECTERCHAT" className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </Link>
           <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back
@@ -207,10 +207,10 @@ const HowItWorksPage = () => {
         <motion.div className="text-center px-4 sm:px-6 mb-16 sm:mb-20" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-3 font-mono uppercase">// The Protocol</p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-            How <span className="text-gradient">SPECTER</span> Works
+            How <span className="text-gradient">SPECTERCHAT</span> Works
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            From entering the void to vanishing without a trace — here's the complete SPECTER experience, explained step by step.
+            From entering the void to vanishing without a trace — here's the complete SPECTERCHAT experience, explained step by step.
           </p>
         </motion.div>
 
@@ -249,7 +249,7 @@ const HowItWorksPage = () => {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-heading mb-3">
               See It In <span className="text-gradient">Action</span>
             </h2>
-            <p className="text-muted-foreground text-sm">A real-time preview of a SPECTER conversation</p>
+            <p className="text-muted-foreground text-sm">A real-time preview of a SPECTERCHAT conversation</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <LiveDemo />

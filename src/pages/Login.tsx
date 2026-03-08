@@ -56,8 +56,8 @@ const Login = () => {
         </Link>
 
         <Link to="/" className="block text-center mb-2 mt-8">
-          <img src={specterMascot} alt="SPECTER" className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3" />
-          <span className="font-heading font-black text-xl sm:text-2xl tracking-widest text-gradient">SPECTER</span>
+          <img src={specterMascot} alt="SPECTERCHAT" className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3" />
+          <span className="font-heading font-black text-xl sm:text-2xl tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
         </Link>
         <p className="text-center text-sm sm:text-base font-semibold text-foreground mb-1.5 sm:mb-2">
           Welcome Back
@@ -132,7 +132,7 @@ const Login = () => {
         </div>
 
         <p className="text-center text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
-          New to SPECTER?{" "}
+          New to SPECTERCHAT?{" "}
           <Link to="/register" className="text-primary hover:underline">
             Create account
           </Link>

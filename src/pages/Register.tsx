@@ -92,8 +92,8 @@ const Register = () => {
         </Link>
 
         <Link to="/" className="block text-center mb-2 mt-8">
-          <img src={specterMascot} alt="SPECTER" className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3" />
-          <span className="font-heading font-black text-xl sm:text-2xl tracking-widest text-gradient">SPECTER</span>
+          <img src={specterMascot} alt="SPECTERCHAT" className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3" />
+          <span className="font-heading font-black text-xl sm:text-2xl tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
         </Link>
         <p className="text-center text-sm sm:text-base font-semibold text-foreground mb-6 sm:mb-10">
           Create your anonymous identity

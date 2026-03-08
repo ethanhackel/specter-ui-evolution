@@ -29,7 +29,7 @@ const chatFlow: (ChatSequence & { delay: number })[] = [
   { delay: 1800, typingBefore: { who: "you", duration: 1400 }, messages: [{ type: "you", text: "Hey! Where are you from? 👋" }] },
   { delay: 2000, typingBefore: { who: "stranger", duration: 2200 }, messages: [{ type: "stranger", text: "Somewhere between nowhere and everywhere 😄" }] },
   { delay: 1500, typingBefore: { who: "you", duration: 1000 }, messages: [{ type: "you", text: "haha that's mysterious, I like it" }] },
-  { delay: 1800, typingBefore: { who: "stranger", duration: 1800 }, messages: [{ type: "stranger", text: "That's the whole point of Specter right? 👻" }] },
+  { delay: 1800, typingBefore: { who: "stranger", duration: 1800 }, messages: [{ type: "stranger", text: "That's the whole point of Specterchat right? 👻" }] },
   { delay: 2000, typingBefore: { who: "you", duration: 1200 }, messages: [{ type: "you", text: "True. No names, no history, just vibes" }] },
   { delay: 2200, typingBefore: { who: "stranger", duration: 1600 }, messages: [{ type: "stranger", text: "Exactly. Pure connection ✨" }] },
   { delay: 3000, messages: [{ type: "status", text: "Ghost#8a2f disconnected" }] },
@@ -234,7 +234,7 @@ const TerminalDemo = () => {
           <h2 className="text-2xl md:text-3xl font-bold font-['Space_Grotesk'] mb-3">
             See It In <span className="text-gradient">Action</span>
           </h2>
-          <p className="text-muted-foreground text-sm">A real-time preview of a Specter conversation</p>
+          <p className="text-muted-foreground text-sm">A real-time preview of a Specterchat conversation</p>
         </div>
 
         {/* Chat window */}

@@ -360,7 +360,7 @@ const Chat = () => {
           </button>
           <Link to="/" className="flex items-center gap-2">
             <img src={specterMascot} alt="" className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="font-heading font-black text-xs sm:text-sm tracking-widest text-gradient hidden xs:inline">SPECTER</span>
+            <span className="font-heading font-black text-xs sm:text-sm tracking-widest hidden xs:inline"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </Link>
         </div>
 
@@ -417,9 +417,9 @@ const Chat = () => {
                 style={{ background: "hsl(var(--card))" }}
               >
                 <div className="px-5 mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
                     <img src={specterMascot} alt="" className="w-6 h-6" />
-                    <span className="font-heading font-black text-sm tracking-widest text-gradient">SPECTER</span>
+                    <span className="font-heading font-black text-sm tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
                   </div>
                   <button onClick={() => setMobileDrawerOpen(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground">
                     <X className="w-4 h-4" />
@@ -473,7 +473,7 @@ const Chat = () => {
         <div className="hidden sm:flex w-64 shrink-0 border-r border-border flex-col py-6 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
           <div className="px-5 mb-6 flex items-center gap-2">
             <img src={specterMascot} alt="" className="w-6 h-6" />
-            <span className="font-heading font-black text-sm tracking-widest text-gradient">SPECTER</span>
+            <span className="font-heading font-black text-sm tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </div>
 
           <div className="px-5 mb-6">
@@ -557,7 +557,7 @@ const Chat = () => {
 
               <motion.img
                 src={specterMascot}
-                alt="SPECTER mascot"
+                alt="SPECTERCHAT mascot"
                 className="w-16 h-16 sm:w-20 sm:h-20 relative z-10"
                 style={{ filter: "drop-shadow(0 0 25px hsl(0 72% 51% / 0.4))" }}
                 animate={{ y: [-6, 6, -6] }}

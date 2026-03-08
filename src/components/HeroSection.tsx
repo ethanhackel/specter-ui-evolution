@@ -128,7 +128,7 @@ const HeroSection = () => {
         >
           <motion.img
             src={specterMascot}
-            alt="SPECTER Ghost"
+            alt="SPECTERCHAT Ghost"
             className="w-18 h-18 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -141,7 +141,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
         >
-          <span className="text-gradient">SPECTER</span>
+          <span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span>
         </motion.h1>
 
         <motion.p

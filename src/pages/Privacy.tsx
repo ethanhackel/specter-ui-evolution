@@ -8,7 +8,7 @@ const sections = [
     icon: Eye,
     title: "Information We Collect",
     content: [
-      "SPECTER is designed to collect as little information as possible. We do not require any personal information to use our platform.",
+      "SPECTERCHAT is designed to collect as little information as possible. We do not require any personal information to use our platform.",
       "**Anonymous Users:** No data is collected. No IP addresses are stored. No cookies are used for tracking. Your session exists only in memory and is erased upon disconnection.",
       "**Registered Personas:** If you choose to create a persona, we store only your chosen handle, avatar preferences, and karma score. No real identity information is ever required or stored.",
       "**Technical Data:** We may temporarily process minimal technical data (such as connection timestamps) for service stability. This data is automatically purged within 24 hours and is never linked to any user identity.",
@@ -20,7 +20,7 @@ const sections = [
     content: [
       "All chat messages are encrypted in transit using industry-standard TLS encryption. Messages are processed in real-time and are never written to persistent storage.",
       "We employ end-to-end encryption for all active chat sessions. Once a session ends, all message data is permanently and irrecoverably destroyed.",
-      "Our infrastructure is designed with a zero-knowledge architecture — even SPECTER's own team cannot read your messages or identify you.",
+      "Our infrastructure is designed with a zero-knowledge architecture — even SPECTERCHAT's own team cannot read your messages or identify you.",
       "Regular security audits and penetration testing ensure our systems remain hardened against threats.",
     ],
   },
@@ -38,7 +38,7 @@ const sections = [
     icon: Trash2,
     title: "Your Rights & Data Deletion",
     content: [
-      "You have the right to use SPECTER without providing any personal information whatsoever.",
+      "You have the right to use SPECTERCHAT without providing any personal information whatsoever.",
       "If you've created a registered persona, you can permanently delete it at any time. This action is irreversible and removes all associated data from our systems.",
       "Since we don't collect personal data for anonymous users, there is nothing to delete — your anonymity is maintained by design.",
       "You may contact us at any time to inquire about data practices or request information about data we may hold.",
@@ -48,7 +48,7 @@ const sections = [
     icon: Globe,
     title: "Third-Party Services",
     content: [
-      "SPECTER does not sell, trade, or share any user data with third parties. Period.",
+      "SPECTERCHAT does not sell, trade, or share any user data with third parties. Period.",
       "We do not use any third-party analytics, advertising, or tracking services.",
       "Our platform does not integrate with social media platforms or any external service that could compromise your anonymity.",
       "We do not use browser fingerprinting, tracking pixels, or any form of cross-site tracking technology.",
@@ -59,7 +59,7 @@ const sections = [
     title: "Changes & Contact",
     content: [
       "We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated effective date.",
-      "We will never change our core commitment: SPECTER will always prioritize your privacy and anonymity above all else.",
+      "We will never change our core commitment: SPECTERCHAT will always prioritize your privacy and anonymity above all else.",
       "If you have any questions, concerns, or requests regarding this Privacy Policy, please reach out to us through our platform's feedback system.",
       `This policy is effective as of ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.`,
     ],
@@ -72,8 +72,8 @@ const Privacy = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg border-b" style={{ borderColor: 'hsl(0 0% 100% / 0.06)', background: 'hsl(0 0% 5% / 0.8)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={specterMascot} alt="SPECTER" className="w-7 h-7 sm:w-8 sm:h-8" />
-            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight text-gradient">SPECTER</span>
+            <img src={specterMascot} alt="SPECTERCHAT" className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="font-heading text-lg sm:text-xl font-bold tracking-tight"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </Link>
           <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back
@@ -90,7 +90,7 @@ const Privacy = () => {
             Privacy <span className="text-gradient">Policy</span>
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Your privacy isn't just a feature — it's our foundation. SPECTER is built from the ground up to ensure you remain completely anonymous.
+            Your privacy isn't just a feature — it's our foundation. SPECTERCHAT is built from the ground up to ensure you remain completely anonymous.
           </p>
         </motion.div>
 
