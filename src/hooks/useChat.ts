@@ -14,6 +14,7 @@ export type ChatMessage = {
   unsent?: boolean;
   reaction?: string;
   replyTo?: { text: string; sender: string };
+  replyToDbId?: string; // DB id of the message being replied to
   dbId?: string; // actual DB message id
 };
 
@@ -120,6 +121,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
               unsent: msg.is_unsent,
               reaction: msg.reaction,
               replyTo,
+              replyToDbId: msg.reply_to_id || undefined,
             };
             setMessages((prev) => [...prev, chatMsg]);
             playReceiveSound();
@@ -389,6 +391,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         text,
         time: now(),
         replyTo,
+        replyToDbId: replyToDbId || undefined,
       };
       setMessages((prev) => [...prev, chatMsg]);
       playSendSound();
@@ -491,10 +494,10 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         prev.map((m) => (m.id === msgId ? { ...m, reaction: emoji } : m))
       );
       if (dbId) {
-        await supabase
-          .from("messages")
-          .update({ reaction: emoji || null })
-          .eq("id", dbId);
+        await supabase.rpc("react_to_message", {
+          _message_id: dbId,
+          _reaction: emoji || "",
+        });
       }
     },
     []

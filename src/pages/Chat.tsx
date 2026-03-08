@@ -613,7 +613,8 @@ const Chat = () => {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex max-w-[85%] sm:max-w-[75%] gap-1.5 sm:gap-2 items-end animate-[slideIn_0.25s_ease-out] ${
+                id={`msg-${msg.id}`}
+                className={`flex max-w-[85%] sm:max-w-[75%] gap-1.5 sm:gap-2 items-end animate-[slideIn_0.25s_ease-out] transition-all duration-300 ${
                   msg.type === "me" ? "self-end flex-row-reverse" :
                   msg.type === "system" ? "self-center max-w-[95%] sm:max-w-[90%]" :
                   "self-start"
@@ -632,7 +633,22 @@ const Chat = () => {
                     </div>
                     <div className="relative group">
                       {msg.replyTo && !msg.unsent && (
-                        <div className={`mb-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[0.6rem] sm:text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground ${msg.type === "me" ? "text-right" : ""}`}>
+                        <div
+                          className={`mb-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[0.6rem] sm:text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground cursor-pointer hover:bg-secondary/70 transition-colors ${msg.type === "me" ? "text-right" : ""}`}
+                          onClick={() => {
+                            // Find the original message by dbId matching reply_to
+                            const replyDbId = (msg as any).replyToDbId;
+                            const originalMsg = messages.find((m) => m.dbId === replyDbId || m.id === replyDbId);
+                            if (originalMsg) {
+                              const el = document.getElementById(`msg-${originalMsg.id}`);
+                              if (el) {
+                                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                el.classList.add("ring-2", "ring-primary/50");
+                                setTimeout(() => el.classList.remove("ring-2", "ring-primary/50"), 1500);
+                              }
+                            }
+                          }}
+                        >
                           <span className="font-semibold text-primary/70">{msg.replyTo.sender}</span>
                           <p className="truncate max-w-[180px] sm:max-w-[200px]">{msg.replyTo.text}</p>
                         </div>
