@@ -213,6 +213,7 @@ const Chat = () => {
       ...prev,
       { id: Date.now(), type: "me", text: "", time: now(), isSticker: true, stickerSrc: src },
     ]);
+    playSendSound();
     simulateReply();
   };
 
