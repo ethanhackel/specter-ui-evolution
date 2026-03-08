@@ -201,6 +201,7 @@ const Chat = () => {
       ...(replyingTo ? { replyTo: { text: replyingTo.text, sender: replyingTo.sender } } : {}),
     };
     setMessages((prev) => [...prev, newMsg]);
+    playSendSound();
     setReplyingTo(null);
     simulateReply();
   };
