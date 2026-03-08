@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Shield, Wifi, WifiOff } from "lucide-react";
+import mascot from "@/assets/specter-mascot.png";
 
 type MessageType = "system" | "you" | "stranger" | "status";
 
@@ -117,8 +118,8 @@ const MessageBubble = ({ msg }: { msg: ChatMessage }) => {
       className={`flex items-end gap-2 ${isYou ? "justify-end" : "justify-start"}`}
     >
       {!isYou && (
-        <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-xs shrink-0 border border-border">
-          👻
+        <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center shrink-0 border border-border overflow-hidden">
+          <img src={mascot} alt="Specter" className="w-5 h-5 object-contain" />
         </div>
       )}
       <div className="flex flex-col gap-0.5">
@@ -255,8 +256,8 @@ const TerminalDemo = () => {
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-secondary/40">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-sm border border-border">
-                  👻
+                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center border border-border overflow-hidden">
+                  <img src={mascot} alt="Specter" className="w-6 h-6 object-contain" />
                 </div>
                 <motion.div
                   className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${
@@ -306,13 +307,13 @@ const TerminalDemo = () => {
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center justify-center h-full text-muted-foreground/40"
               >
-                <motion.span
-                  className="text-4xl mb-3"
+                <motion.img
+                  src={mascot}
+                  alt="Specter"
+                  className="w-10 h-10 mb-3"
                   animate={{ y: [0, -8, 0] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                >
-                  👻
-                </motion.span>
+                />
                 <span className="text-xs">Waiting to connect...</span>
               </motion.div>
             )}
