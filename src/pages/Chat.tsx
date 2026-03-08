@@ -256,6 +256,12 @@ const Chat = () => {
     setHoverRating(0);
   };
 
+  const findNext = () => {
+    setRating(0);
+    setHoverRating(0);
+    findMatch();
+  };
+
   const copyText = (text: string) => {
     navigator.clipboard.writeText(text);
     setMenuOpenId(null);
