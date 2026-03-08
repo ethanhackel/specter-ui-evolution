@@ -65,6 +65,14 @@ const Register = () => {
       setError("Username must be 3-30 characters");
       return;
     }
+    if (/[<>"'&\/\\]/.test(username)) {
+      setError("Username contains invalid characters");
+      return;
+    }
+    if (!/^[a-zA-Z0-9_.\- ]+$/.test(username)) {
+      setError("Username can only contain letters, numbers, underscores, dots, hyphens and spaces");
+      return;
+    }
     if (usernameStatus === "taken") {
       setError("Username is already taken. Please choose another.");
       return;
