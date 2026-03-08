@@ -101,13 +101,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const available = await checkUsernameAvailable(sanitizedUsername);
     if (!available) return { error: "Username is already taken. Please choose another." };
 
-    const authEmail = email || `${username.toLowerCase().replace(/[^a-z0-9_]/g, '')}@specterchat.ghost`;
+    const authEmail = email || `${sanitizedUsername.toLowerCase().replace(/[^a-z0-9_]/g, '')}@specterchat.ghost`;
     
     const { data, error } = await supabase.auth.signUp({
       email: authEmail,
       password,
       options: {
-        data: { username },
+        data: { username: sanitizedUsername },
         emailRedirectTo: window.location.origin,
       },
     });
