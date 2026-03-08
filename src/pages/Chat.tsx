@@ -259,6 +259,8 @@ const Chat = () => {
   };
 
   const quickReacts = ["❤️", "😂", "😮", "😢", "😡", "👍"];
+
+  const statusConfig = {
     idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
     searching: { label: "SEARCHING", dotClass: "bg-amber-500 animate-pulse", pillBg: "bg-amber-500/10" },
     connected: { label: "CONNECTED", dotClass: "bg-emerald-500", pillBg: "bg-emerald-500/10" },
