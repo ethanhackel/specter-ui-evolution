@@ -88,6 +88,16 @@ const emojiCategories = [
   },
 ];
 
+const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 90 + 5,
+  y: Math.random() * 80 + 10,
+  size: Math.random() * 20 + 30,
+  delay: Math.random() * 3,
+  duration: Math.random() * 8 + 10,
+  opacity: Math.random() * 0.08 + 0.03,
+}));
+
 const Chat = () => {
   const [state, setState] = useState<ChatState>("idle");
   const [messages, setMessages] = useState<Message[]>([]);
