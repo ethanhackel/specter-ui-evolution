@@ -17,9 +17,9 @@ const sections = [
     icon: Scale,
     title: "Use of the Platform",
     content: [
-      "SPECTER is an anonymous chat platform designed for genuine human connection. You agree to use it respectfully and lawfully.",
-      "You must be at least 18 years of age to use SPECTER. We do not knowingly provide services to minors.",
-      "You may use SPECTER without creating an account (anonymous mode) or by creating a registered persona. Both modes are subject to these terms.",
+      "SPECTERCHAT is an anonymous chat platform designed for genuine human connection. You agree to use it respectfully and lawfully.",
+      "You must be at least 18 years of age to use SPECTERCHAT. We do not knowingly provide services to minors.",
+      "You may use SPECTERCHAT without creating an account (anonymous mode) or by creating a registered persona. Both modes are subject to these terms.",
       "You are responsible for maintaining the confidentiality of your persona credentials if you choose to register.",
     ],
   },
