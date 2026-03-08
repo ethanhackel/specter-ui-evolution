@@ -360,7 +360,7 @@ const Chat = () => {
           </button>
           <Link to="/" className="flex items-center gap-2">
             <img src={specterMascot} alt="" className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="font-heading font-black text-xs sm:text-sm tracking-widest text-gradient hidden xs:inline">SPECTER</span>
+            <span className="font-heading font-black text-xs sm:text-sm tracking-widest hidden xs:inline"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </Link>
         </div>
 
