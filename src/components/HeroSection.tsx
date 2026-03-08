@@ -211,7 +211,7 @@ const HeroSection = () => {
                     <AnimatedCounter target={stat.value} duration={2 + i * 0.5} />
                   </span>
                   <span className="text-[0.55rem] sm:text-[0.65rem] font-mono tracking-[0.2em] text-muted-foreground mt-1 block">
-                    // {stat.label}
+                    {stat.label}
                   </span>
                 </div>
               </div>

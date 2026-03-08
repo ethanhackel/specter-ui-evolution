@@ -48,7 +48,7 @@ const FeaturesSection = () => {
           viewport={{ once: true }}
         >
           <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 sm:mb-3 font-mono uppercase">
-            // What Makes Us Different
+            What Makes Us Different
           </p>
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
             Built for <span className="text-gradient">real</span> connection.

@@ -427,7 +427,7 @@ const Chat = () => {
                 </div>
 
                 <div className="px-5 mb-6">
-                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Session</p>
+                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Session</p>
                   <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
                     <p className="font-heading text-3xl font-bold text-primary tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
                       {formatTime(timer)}
@@ -437,7 +437,7 @@ const Chat = () => {
 
                 {state === "connected" && (
                   <div className="px-5 mb-6">
-                    <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Stranger</p>
+                    <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Stranger</p>
                     <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
                       <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
                       <p className="text-xs font-mono text-muted-foreground">Connected</p>
@@ -446,7 +446,7 @@ const Chat = () => {
                 )}
 
                 <div className="px-5 flex-1 overflow-y-auto">
-                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Interests</p>
+                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
                   <div className="flex flex-wrap gap-2">
                     {interests.map((i) => (
                       <button
@@ -477,7 +477,7 @@ const Chat = () => {
           </div>
 
           <div className="px-5 mb-6">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Session</p>
+            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Session</p>
             <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
               <p className="font-heading text-3xl font-bold text-primary tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
                 {formatTime(timer)}
@@ -487,7 +487,7 @@ const Chat = () => {
 
           {state === "connected" && (
             <div className="px-5 mb-6">
-              <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Stranger</p>
+              <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Stranger</p>
               <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
                 <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
                 <p className="text-xs font-mono text-muted-foreground">Connected</p>
@@ -496,7 +496,7 @@ const Chat = () => {
           )}
 
           <div className="px-5 flex-1 overflow-y-auto">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Interests</p>
+            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
             <div className="flex flex-wrap gap-2">
               {interests.map((i) => (
                 <button
