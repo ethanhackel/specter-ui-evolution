@@ -172,6 +172,7 @@ const Chat = () => {
       const ghostId = Math.random().toString(36).substring(2, 6);
       setPartnerName(`Ghost#${ghostId}`);
       setState("connected");
+      playConnectSound();
       setMessages([
         { id: 1, type: "system", text: `Connected with Ghost#${ghostId} — say hello! 👋`, time: now() },
       ]);
