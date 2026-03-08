@@ -639,6 +639,13 @@ const Chat = () => {
           {/* Rating Overlay */}
           {state === "rating" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-4 sm:gap-5 px-6 sm:px-8 text-center">
+              <motion.img
+                src={stickerCry}
+                alt="Sad Specter"
+                className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-[0_0_15px_hsl(var(--primary)/0.4)]"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
               <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Chat Ended</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">Rate your conversation with {partnerName}</p>
               <div className="flex gap-2">
