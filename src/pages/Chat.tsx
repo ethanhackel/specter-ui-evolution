@@ -566,9 +566,11 @@ const Chat = () => {
                               <Undo2 className="w-4 h-4 text-amber-400" /> Unsend
                             </button>
                           )}
-                          <button onClick={() => reportMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-secondary/80 transition-colors">
-                            <Flag className="w-4 h-4" /> Report
-                          </button>
+                          {msg.type !== "me" && (
+                            <button onClick={() => reportMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-secondary/80 transition-colors">
+                              <Flag className="w-4 h-4" /> Report
+                            </button>
+                          )}
                         </div>
                       )}
 
