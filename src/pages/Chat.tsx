@@ -586,18 +586,18 @@ const Chat = () => {
           {state === "searching" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-5 sm:gap-6 px-6 sm:px-8 text-center">
               <div className="relative w-20 h-20 sm:w-24 sm:h-24">
-                {[0, 1, 2].map((i) => (
+                {[0, 1].map((i) => (
                   <div
                     key={i}
                     className="absolute rounded-full border-2 border-primary"
                     style={{
-                      inset: `${i * 12}px`,
+                      inset: `${i * 14}px`,
                       animation: `ring-anim 2s ease-out ${i * 0.5}s infinite`,
                     }}
                   />
                 ))}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <img src={specterMascot} alt="Specter" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]" />
+                  <img src={specterMascot} alt="Specter" className="w-9 h-9 sm:w-11 sm:h-11 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
                 </div>
               </div>
               <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Searching the void...</h2>
