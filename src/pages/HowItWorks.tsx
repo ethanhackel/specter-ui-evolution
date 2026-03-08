@@ -207,7 +207,7 @@ const HowItWorksPage = () => {
         <motion.div className="text-center px-4 sm:px-6 mb-16 sm:mb-20" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-3 font-mono uppercase">// The Protocol</p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-            How <span className="text-gradient">SPECTER</span> Works
+            How <span className="text-gradient">SPECTERCHAT</span> Works
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
             From entering the void to vanishing without a trace — here's the complete SPECTER experience, explained step by step.
