@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import specterMascot from "@/assets/specter-mascot.png";
@@ -19,6 +19,9 @@ import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Copy, Reply, Flag, Undo2
 import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/hooks/useChat";
 import { usePresence } from "@/hooks/usePresence";
+import { useToast } from "@/hooks/use-toast";
+import ChatSidebar, { formatTime } from "@/components/chat/ChatSidebar";
+import ChatMessageBubble from "@/components/chat/ChatMessageBubble";
 
 type PickerTab = "emoji" | "sticker";
 
@@ -92,6 +95,8 @@ const emojiCategories = [
   },
 ];
 
+const reactionEmojis = ["❤️","😂","😮","😢","😡","👍","🔥","😍","🤣","👏","🙏","💯","😭","🤔","😊","🥺","😎","🤩","😤","💀","👀","🫡","🤝","✨","🎉","💪","😈","🥰","😏","🤗"];
+
 const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
   id: i,
   x: Math.random() * 90 + 5,
@@ -102,9 +107,9 @@ const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
   opacity: Math.random() * 0.08 + 0.03,
 }));
 
-
 const Chat = () => {
   const { user, signInAnonymously, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const {
     state, setState,
     messages,
@@ -124,7 +129,6 @@ const Chat = () => {
     reportMessage,
   } = useChat({ userId: user?.id, username: "You" });
 
-  // Presence heartbeat
   usePresence(user?.id);
 
   const [input, setInput] = useState("");
@@ -142,7 +146,7 @@ const Chat = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto sign-in anonymously if not authenticated
+  // Auto sign-in anonymously
   useEffect(() => {
     if (!authLoading && !user && !autoAuthDone) {
       setAutoAuthDone(true);
@@ -165,7 +169,6 @@ const Chat = () => {
         const vh = window.visualViewport.height;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
       }
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
@@ -176,11 +179,15 @@ const Chat = () => {
     };
   }, []);
 
+  // Auto-scroll on new messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Use requestAnimationFrame to avoid layout thrashing
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    });
   }, [messages]);
 
-  // Close picker on outside click
+  // Close picker/menu on outside click
   useEffect(() => {
     const handler = (e: MouseEvent | TouchEvent) => {
       const target = e.target as Node;
@@ -200,12 +207,6 @@ const Chat = () => {
       document.removeEventListener("touchstart", handler);
     };
   }, [pickerOpen, menuOpenId]);
-
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
-  };
 
   const handleFindMatch = useCallback(() => {
     setMobileDrawerOpen(false);
@@ -230,45 +231,46 @@ const Chat = () => {
     sendStickerHook(key);
   }, [state, sendStickerHook]);
 
-  const addEmoji = (emoji: string) => {
+  const addEmoji = useCallback((emoji: string) => {
     setInput((prev) => prev + emoji);
-  };
+  }, []);
 
-  const toggleInterest = (key: string) => {
+  const toggleInterest = useCallback((key: string) => {
     setSelectedInterests((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
       return next;
     });
-  };
+  }, [setSelectedInterests]);
 
-  const handleSubmitRating = () => {
+  const handleSubmitRating = useCallback(() => {
     submitRating(rating);
     setRating(0);
     setHoverRating(0);
-  };
+  }, [submitRating, rating]);
 
-  const findNext = () => {
+  const findNext = useCallback(() => {
     submitRating(0);
     setRating(0);
     setHoverRating(0);
     setSelectedInterests(new Set());
     setState("picking");
-  };
+  }, [submitRating, setSelectedInterests, setState]);
 
-  const skipRating = () => {
+  const skipRating = useCallback(() => {
     submitRating(0);
     setRating(0);
     setHoverRating(0);
-  };
+  }, [submitRating]);
 
-  const copyText = (text: string) => {
+  const copyText = useCallback((text: string) => {
     navigator.clipboard.writeText(text);
     setMenuOpenId(null);
-  };
+    toast({ title: "Copied!", description: "Text copied to clipboard" });
+  }, [toast]);
 
-  const replyToMsg = (msg: typeof messages[0]) => {
+  const replyToMsg = useCallback((msg: typeof messages[0]) => {
     setReplyingTo({
       id: msg.id,
       text: msg.isSticker ? "🖼️ Sticker" : msg.text,
@@ -277,29 +279,28 @@ const Chat = () => {
     });
     setMenuOpenId(null);
     inputRef.current?.focus();
-  };
+  }, [partnerName, messages]);
 
-  const handleReactToMsg = (msgId: string, emoji: string, dbId?: string) => {
+  const handleReactToMsg = useCallback((msgId: string, emoji: string, dbId?: string) => {
     reactToMessage(msgId, emoji, dbId);
     setMenuOpenId(null);
-  };
+  }, [reactToMessage]);
 
-  const handleUnsendMsg = (msgId: string, dbId?: string) => {
+  const handleUnsendMsg = useCallback((msgId: string, dbId?: string) => {
     unsendMessage(msgId, dbId);
     setMenuOpenId(null);
-  };
+  }, [unsendMessage]);
 
-  const handleReportMsg = (msgId: string, dbId?: string) => {
+  const handleReportMsg = useCallback((msgId: string, dbId?: string) => {
     reportMessage(msgId, dbId);
     setMenuOpenId(null);
-    alert("Message reported. Our team will review it.");
-  };
+    toast({ title: "Reported", description: "Message reported. Our team will review it." });
+  }, [reportMessage, toast]);
 
-  // Typing indicator on input change
-  const handleInputChange = (val: string) => {
+  const handleInputChange = useCallback((val: string) => {
     setInput(val);
     if (val.trim()) sendTypingIndicator();
-  };
+  }, [sendTypingIndicator]);
 
   const statusConfig = {
     idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
@@ -310,11 +311,8 @@ const Chat = () => {
   };
 
   const status = statusConfig[state];
+  const getStickerSrc = useCallback((key?: string) => key ? stickerMap[key] || "" : "", []);
 
-  // Get sticker src from key
-  const getStickerSrc = (key?: string) => key ? stickerMap[key] || "" : "";
-
-  // Show loading while auth is setting up
   if (authLoading || (!user && !autoAuthDone)) {
     return (
       <div className="h-[100dvh] bg-background flex items-center justify-center">
@@ -329,8 +327,9 @@ const Chat = () => {
 
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+      {/* Preload critical images */}
       <img src={specterMascot} alt="" width={1} height={1} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }} aria-hidden="true" fetchPriority="high" />
-      <img src={stickerCry} alt="" width={1} height={1} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }} aria-hidden="true" fetchPriority="high" />
+
       {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
@@ -341,11 +340,12 @@ const Chat = () => {
       />
 
       {/* Top Bar */}
-      <div className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0" style={{ background: "hsl(var(--card))" }}>
+      <header className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0" style={{ background: "hsl(var(--card))" }}>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
             className="sm:hidden w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+            aria-label="Open menu"
           >
             <MenuIcon className="w-4.5 h-4.5" />
           </button>
@@ -383,11 +383,11 @@ const Chat = () => {
             )}
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main */}
       <div className="flex flex-1 overflow-hidden relative z-10">
-        {/* Mobile Drawer Overlay */}
+        {/* Mobile Drawer */}
         <AnimatePresence>
           {mobileDrawerOpen && (
             <>
@@ -407,33 +407,11 @@ const Chat = () => {
                 style={{ background: "hsl(var(--card))" }}
               >
                 <div className="px-5 mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img src={specterMascot} alt="" className="w-6 h-6" />
-                    <span className="font-heading font-black text-sm tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
-                  </div>
-                  <button onClick={() => setMobileDrawerOpen(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground">
+                  <ChatSidebar timer={timer} state={state} partnerName={partnerName} />
+                  <button onClick={() => setMobileDrawerOpen(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground" aria-label="Close menu">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-
-                <div className="px-5 mb-6">
-                  <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Session</p>
-                  <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
-                    <p className="font-heading text-3xl font-bold text-primary tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
-                      {formatTime(timer)}
-                    </p>
-                  </div>
-                </div>
-
-                {state === "connected" && (
-                  <div className="px-5 mb-6">
-                    <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Stranger</p>
-                    <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
-                      <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
-                      <p className="text-xs font-mono text-muted-foreground">Connected</p>
-                    </div>
-                  </div>
-                )}
               </motion.div>
             </>
           )}
@@ -441,29 +419,7 @@ const Chat = () => {
 
         {/* Desktop Sidebar */}
         <div className="hidden sm:flex w-64 shrink-0 border-r border-border flex-col py-6 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
-          <div className="px-5 mb-6 flex items-center gap-2">
-            <img src={specterMascot} alt="" className="w-6 h-6" />
-            <span className="font-heading font-black text-sm tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
-          </div>
-
-          <div className="px-5 mb-6">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Session</p>
-            <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
-              <p className="font-heading text-3xl font-bold text-primary tracking-wider" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}>
-                {formatTime(timer)}
-              </p>
-            </div>
-          </div>
-
-          {state === "connected" && (
-            <div className="px-5 mb-6">
-              <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Stranger</p>
-              <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
-                <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
-                <p className="text-xs font-mono text-muted-foreground">Connected</p>
-              </div>
-            </div>
-          )}
+          <ChatSidebar timer={timer} state={state} partnerName={partnerName} />
         </div>
 
         {/* Chat Area */}
@@ -609,7 +565,7 @@ const Chat = () => {
           )}
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 flex flex-col gap-2 sm:gap-3 overscroll-contain">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 flex flex-col gap-2 sm:gap-3 chat-messages-scroll">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -620,114 +576,49 @@ const Chat = () => {
                   "self-start"
                 }`}
               >
-                {msg.type === "system" ? (
-                  <div className="text-[0.65rem] sm:text-xs font-mono tracking-wider text-muted-foreground text-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full glass-card">
-                    {msg.text}
-                  </div>
-                ) : (
-                  <>
-                    <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full shrink-0 flex items-center justify-center text-[0.5rem] sm:text-[0.6rem] font-heading font-bold ${
-                      msg.type === "me" ? "bg-primary/20 text-primary" : "bg-accent text-accent-foreground"
-                    }`}>
-                      {msg.type === "me" ? "Y" : "G"}
-                    </div>
-                    <div className="relative group">
-                      {msg.replyTo && !msg.unsent && (
-                        <div
-                          className={`mb-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[0.6rem] sm:text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground cursor-pointer hover:bg-secondary/70 transition-colors ${msg.type === "me" ? "text-right" : ""}`}
-                          onClick={() => {
-                            // Find the original message by dbId matching reply_to
-                            const replyDbId = (msg as any).replyToDbId;
-                            const originalMsg = messages.find((m) => m.dbId === replyDbId || m.id === replyDbId);
-                            if (originalMsg) {
-                              const el = document.getElementById(`msg-${originalMsg.id}`);
-                              if (el) {
-                                el.scrollIntoView({ behavior: "smooth", block: "center" });
-                                el.classList.add("ring-2", "ring-primary/50");
-                                setTimeout(() => el.classList.remove("ring-2", "ring-primary/50"), 1500);
-                              }
-                            }
-                          }}
-                        >
-                          <span className="font-semibold text-primary/70">{msg.replyTo.sender}</span>
-                          <p className="truncate max-w-[180px] sm:max-w-[200px]">{msg.replyTo.text}</p>
-                        </div>
-                      )}
+                <ChatMessageBubble
+                  msg={msg}
+                  messages={messages}
+                  menuOpenId={menuOpenId}
+                  getStickerSrc={getStickerSrc}
+                  setMenuOpenId={setMenuOpenId}
+                  handleReactToMsg={handleReactToMsg}
+                />
 
-                      {msg.unsent ? (
-                        <div className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm leading-relaxed italic border border-dashed border-border/50 text-muted-foreground/50 ${msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"}`}>
-                          This message was unsent
-                        </div>
-                      ) : msg.isSticker ? (
-                        <div className={`p-1.5 sm:p-2 rounded-xl ${msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"}`}>
-                          <img src={getStickerSrc(msg.stickerKey)} alt="sticker" className="w-24 h-24 sm:w-28 sm:h-28 object-contain" />
-                        </div>
-                      ) : (
-                        <div className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm leading-relaxed ${
-                          msg.type === "me"
-                            ? "bg-primary/15 border border-primary/20 rounded-br-sm text-foreground"
-                            : "bg-secondary border border-border rounded-bl-sm text-foreground"
-                        }`}>
-                          {msg.text}
-                        </div>
-                      )}
-
-                      {msg.reaction && (
-                        <div className={`absolute -bottom-2 ${msg.type === "me" ? "right-2" : "left-2"} bg-secondary border border-border rounded-full px-1.5 py-0.5 text-sm shadow-sm cursor-pointer hover:scale-110 active:scale-105 transition-transform`}
-                          onClick={() => handleReactToMsg(msg.id, "", msg.dbId)}>
-                          {msg.reaction}
-                        </div>
-                      )}
-
-                      {!msg.unsent && (
-                        <button
-                          onClick={() => setMenuOpenId(menuOpenId === msg.id ? null : msg.id)}
-                          className={`absolute top-1/2 -translate-y-1/2 ${msg.type === "me" ? "-left-7 sm:-left-8" : "-right-7 sm:-right-8"} w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-secondary/80 border border-border flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 opacity-60 transition-all hover:bg-secondary text-muted-foreground hover:text-foreground`}
-                        >
-                          <MoreVertical className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                {/* Context menu */}
+                {menuOpenId === msg.id && !msg.unsent && msg.type !== "system" && (
+                  <div
+                    ref={menuRef}
+                    className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 w-[200px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
+                    style={{ background: "hsl(var(--card))" }}
+                  >
+                    <div className="flex items-center gap-1 px-2 py-2 border-b border-border overflow-x-auto picker-scroll" style={{ scrollbarWidth: 'none' }}>
+                      {reactionEmojis.map((emoji) => (
+                        <button key={emoji} onClick={() => handleReactToMsg(msg.id, emoji, msg.dbId)} className="w-8 h-8 sm:w-7 sm:h-7 shrink-0 flex items-center justify-center text-base rounded-full hover:bg-primary/10 transition-all hover:scale-110 active:scale-95">
+                          {emoji}
                         </button>
-                      )}
-
-                      {menuOpenId === msg.id && !msg.unsent && (
-                        <div
-                          ref={menuRef}
-                          className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 w-[200px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
-                          style={{ background: "hsl(var(--card))" }}
-                        >
-                          <div className="flex items-center gap-1 px-2 py-2 border-b border-border overflow-x-auto picker-scroll" style={{ scrollbarWidth: 'none' }}>
-                            {["❤️","😂","😮","😢","😡","👍","🔥","😍","🤣","👏","🙏","💯","😭","🤔","😊","🥺","😎","🤩","😤","💀","👀","🫡","🤝","✨","🎉","💪","😈","🥰","😏","🤗"].map((emoji) => (
-                              <button key={emoji} onClick={() => handleReactToMsg(msg.id, emoji, msg.dbId)} className="w-8 h-8 sm:w-7 sm:h-7 shrink-0 flex items-center justify-center text-base rounded-full hover:bg-primary/10 transition-all hover:scale-110 active:scale-95">
-                                {emoji}
-                              </button>
-                            ))}
-                          </div>
-
-                          {!msg.isSticker && (
-                            <button onClick={() => copyText(msg.text)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
-                              <Copy className="w-4 h-4 text-muted-foreground" /> Copy text
-                            </button>
-                          )}
-                          <button onClick={() => replyToMsg(msg)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
-                            <Reply className="w-4 h-4 text-blue-400" /> Reply
-                          </button>
-                          {msg.type === "me" && (
-                            <button onClick={() => handleUnsendMsg(msg.id, msg.dbId)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
-                              <Undo2 className="w-4 h-4 text-amber-400" /> Unsend
-                            </button>
-                          )}
-                          {msg.type !== "me" && (
-                            <button onClick={() => handleReportMsg(msg.id, msg.dbId)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-destructive hover:bg-secondary/80 active:bg-secondary transition-colors">
-                              <Flag className="w-4 h-4" /> Report
-                            </button>
-                          )}
-                        </div>
-                      )}
-
-                      <span className={`text-[0.55rem] sm:text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.reaction ? "mt-3" : "mt-1"} ${msg.type === "me" ? "text-right" : ""}`}>
-                        {msg.time}
-                      </span>
+                      ))}
                     </div>
-                  </>
+
+                    {!msg.isSticker && (
+                      <button onClick={() => copyText(msg.text)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
+                        <Copy className="w-4 h-4 text-muted-foreground" /> Copy text
+                      </button>
+                    )}
+                    <button onClick={() => replyToMsg(msg)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
+                      <Reply className="w-4 h-4 text-blue-400" /> Reply
+                    </button>
+                    {msg.type === "me" && (
+                      <button onClick={() => handleUnsendMsg(msg.id, msg.dbId)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
+                        <Undo2 className="w-4 h-4 text-amber-400" /> Unsend
+                      </button>
+                    )}
+                    {msg.type !== "me" && (
+                      <button onClick={() => handleReportMsg(msg.id, msg.dbId)} className="w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 text-sm text-destructive hover:bg-secondary/80 active:bg-secondary transition-colors">
+                        <Flag className="w-4 h-4" /> Report
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             ))}
@@ -782,7 +673,7 @@ const Chat = () => {
                     <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 sm:gap-3">
                       {stickers.map((sticker) => (
                         <button key={sticker.key} onClick={() => handleSendSticker(sticker.key)} disabled={state !== "connected"} className="flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 rounded-xl hover:bg-primary/10 active:bg-primary/20 transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed group">
-                          <img src={sticker.src} alt={sticker.label} loading="eager" decoding="async" className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-110 transition-transform" />
+                          <img src={sticker.src} alt={sticker.label} loading="lazy" decoding="async" className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-110 transition-transform" />
                           <span className="text-[0.55rem] sm:text-[0.6rem] text-muted-foreground font-medium">{sticker.label}</span>
                         </button>
                       ))}
@@ -798,7 +689,7 @@ const Chat = () => {
                   <p className="text-[0.6rem] sm:text-[0.65rem] font-semibold text-primary/70">{replyingTo.sender}</p>
                   <p className="text-[0.65rem] sm:text-xs text-muted-foreground truncate">{replyingTo.text}</p>
                 </div>
-                <button onClick={() => setReplyingTo(null)} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all">
+                <button onClick={() => setReplyingTo(null)} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all" aria-label="Cancel reply">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -806,10 +697,10 @@ const Chat = () => {
 
             <div className="p-2.5 sm:p-4">
               <div className="flex gap-1.5 sm:gap-2 items-end">
-                <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("emoji"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "emoji" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`}>
+                <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("emoji"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "emoji" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`} aria-label="Open emoji picker">
                   <Smile className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </button>
-                <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20" : "hover:bg-secondary/50"}`}>
+                <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20" : "hover:bg-secondary/50"}`} aria-label="Open sticker picker">
                   <img src={specterMascot} alt="Stickers" className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${pickerOpen && pickerTab === "sticker" ? "opacity-100 scale-110" : "opacity-70 hover:opacity-100"}`} />
                 </button>
 
@@ -832,6 +723,7 @@ const Chat = () => {
                   onClick={handleSendMessage}
                   disabled={state !== "connected" || !input.trim()}
                   className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-primary flex items-center justify-center transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed btn-primary-glow"
+                  aria-label="Send message"
                 >
                   <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-foreground" />
                 </button>
@@ -840,28 +732,6 @@ const Chat = () => {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes ring-anim {
-          0% { transform: scale(1); opacity: 0.8; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
-        @keyframes tdot {
-          0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
-          40% { transform: scale(1.2); opacity: 1; }
-        }
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: none; }
-        }
-        .scrollbar-none::-webkit-scrollbar { display: none; }
-        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-        .picker-scroll { scrollbar-width: thin; scrollbar-color: hsl(0 72% 51% / 0.3) transparent; }
-        .picker-scroll::-webkit-scrollbar { width: 4px; }
-        .picker-scroll::-webkit-scrollbar-track { background: transparent; }
-        .picker-scroll::-webkit-scrollbar-thumb { background: hsl(0 72% 51% / 0.3); border-radius: 9999px; }
-        .picker-scroll::-webkit-scrollbar-thumb:hover { background: hsl(0 72% 51% / 0.5); }
-      `}</style>
     </div>
   );
 };

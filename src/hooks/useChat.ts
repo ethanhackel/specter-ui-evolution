@@ -14,8 +14,8 @@ export type ChatMessage = {
   unsent?: boolean;
   reaction?: string;
   replyTo?: { text: string; sender: string };
-  replyToDbId?: string; // DB id of the message being replied to
-  dbId?: string; // actual DB message id
+  replyToDbId?: string;
+  dbId?: string;
 };
 
 type UseChatOptions = {
@@ -39,6 +39,8 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   const queuePollingRef = useRef<ReturnType<typeof setInterval>>();
   const partnerNameRef = useRef("");
   const messagesRef = useRef<ChatMessage[]>([]);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const lastTypingSentRef = useRef(0);
 
   // Keep refs in sync
   useEffect(() => { partnerNameRef.current = partnerName; }, [partnerName]);
@@ -62,7 +64,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   // Subscribe to messages in a room
   const subscribeToRoom = useCallback(
     (roomId: string) => {
-      // Clean up previous subscription
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
       }
@@ -79,12 +80,10 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
           },
           async (payload) => {
             const msg = payload.new as any;
-            if (msg.sender_id === userId) return; // skip own messages (already in state)
+            if (msg.sender_id === userId) return;
 
-            // Look up reply info if this message is a reply
             let replyTo: { text: string; sender: string } | undefined;
             if (msg.reply_to_id) {
-              // First check local messages
               const localReply = messagesRef.current.find((m) => m.dbId === msg.reply_to_id);
               if (localReply) {
                 replyTo = {
@@ -92,7 +91,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
                   sender: localReply.type === "me" ? "You" : partnerNameRef.current,
                 };
               } else {
-                // Fetch from DB
                 const { data: replyData } = await supabase
                   .from("messages")
                   .select("content, sender_id, is_sticker, sticker_key")
@@ -165,7 +163,8 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         .on("broadcast", { event: "typing" }, (payload) => {
           if (payload.payload?.user_id !== userId) {
             setIsTyping(true);
-            setTimeout(() => setIsTyping(false), 2000);
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000);
           }
         })
         .subscribe();
@@ -191,7 +190,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         (payload) => {
           const room = payload.new as any;
           if (room.status === "ended" && room.ended_by !== userId) {
-            // Partner left
             playVanishSound();
             setMessages((prev) => [
               ...prev,
@@ -217,7 +215,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   const findMatch = useCallback(async () => {
     if (!userId) return;
 
-    // Check if user is banned
     const { data: banCheck } = await supabase.rpc("is_user_banned", { _user_id: userId });
     if (banCheck === true) {
       setMessages([{
@@ -232,19 +229,15 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
     setState("searching");
     setMessages([]);
     setTimer(0);
-    setMessages([]);
-    setTimer(0);
 
     const interestsArr = Array.from(selectedInterests);
 
-    // Add to queue
     await supabase.from("matchmaking_queue").insert({
       user_id: userId,
       interests: interestsArr,
       status: "waiting" as const,
     });
 
-    // Try to find match via RPC
     const tryMatch = async (): Promise<boolean> => {
       const { data, error } = await supabase.rpc("find_and_create_match", {
         _user_id: userId,
@@ -260,7 +253,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
       setState("connected");
       playConnectSound();
 
-      // Update own queue entry
       await supabase
         .from("matchmaking_queue")
         .update({ status: "matched" as const, matched_room_id: match.room_id })
@@ -280,13 +272,10 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
       return true;
     };
 
-    // Try immediately
     const found = await tryMatch();
     if (found) return;
 
-    // Poll every 2 seconds
     queuePollingRef.current = setInterval(async () => {
-      // Check if our queue entry was matched by someone else
       const { data: queueEntry } = await supabase
         .from("matchmaking_queue")
         .select("*, matched_room_id")
@@ -299,7 +288,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
       if (queueEntry?.matched_room_id) {
         clearInterval(queuePollingRef.current!);
 
-        // Fetch room details
         const { data: room } = await supabase
           .from("chat_rooms")
           .select("*")
@@ -331,7 +319,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         return;
       }
 
-      // Also try to match someone else
       const matched = await tryMatch();
       if (matched) {
         clearInterval(queuePollingRef.current!);
@@ -341,7 +328,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
 
   const cancelSearch = useCallback(async () => {
     if (queuePollingRef.current) clearInterval(queuePollingRef.current);
-    // Cancel queue entry
     if (userId) {
       await supabase
         .from("matchmaking_queue")
@@ -362,14 +348,12 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         .update({ status: "ended" as const, ended_by: userId, ended_at: new Date().toISOString() })
         .eq("id", roomId);
 
-      // Update presence
       await supabase
         .from("presence")
         .update({ is_in_chat: false, current_room_id: null })
         .eq("user_id", userId);
     }
 
-    // Clean up channels
     if (channelRef.current) supabase.removeChannel(channelRef.current);
     if (typingChannelRef.current) supabase.removeChannel(typingChannelRef.current);
 
@@ -396,7 +380,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
       setMessages((prev) => [...prev, chatMsg]);
       playSendSound();
 
-      // Broadcast typing stop
       typingChannelRef.current?.send({
         type: "broadcast",
         event: "typing_stop",
@@ -415,7 +398,6 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         .single();
 
       if (data) {
-        // Update temp message with real DB id
         setMessages((prev) =>
           prev.map((m) => (m.id === tempId ? { ...m, dbId: data.id } : m))
         );
@@ -461,7 +443,12 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
     [state, roomId, userId]
   );
 
+  // Debounced typing indicator - max once per 1.5s
   const sendTypingIndicator = useCallback(() => {
+    const now = Date.now();
+    if (now - lastTypingSentRef.current < 1500) return;
+    lastTypingSentRef.current = now;
+
     typingChannelRef.current?.send({
       type: "broadcast",
       event: "typing",
@@ -512,9 +499,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
           rated_id: partnerId,
           score,
         });
-
-        // Update partner karma
-        await supabase.rpc("refresh_online_count"); // reuse as general stat refresh
+        await supabase.rpc("refresh_online_count");
       }
       setRoomId(null);
       setPartnerId(null);
@@ -544,6 +529,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
       if (queuePollingRef.current) clearInterval(queuePollingRef.current);
       if (channelRef.current) supabase.removeChannel(channelRef.current);
       if (typingChannelRef.current) supabase.removeChannel(typingChannelRef.current);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
   }, []);
 
