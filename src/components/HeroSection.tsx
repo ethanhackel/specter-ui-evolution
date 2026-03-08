@@ -30,6 +30,27 @@ const floatingGhosts = Array.from({ length: 4 }, (_, i) => ({
   opacity: Math.random() * 0.08 + 0.03,
 }));
 
+const AnimatedCounter = ({ target, duration = 2 }: { target: number; duration?: number }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (v) => {
+    if (v >= 1000) return Math.round(v).toLocaleString();
+    return Math.round(v).toString();
+  });
+
+  useEffect(() => {
+    const controls = animate(count, target, { duration, ease: "easeOut" });
+    return controls.stop;
+  }, [target, duration, count]);
+
+  return <motion.span>{rounded}</motion.span>;
+};
+
+const stats = [
+  { value: 48, label: "ONLINE", icon: Users, pulse: true },
+  { value: 1247, label: "TODAY", icon: Activity, pulse: false },
+  { value: 5237, label: "TOTAL", icon: Globe, pulse: false },
+];
+
 const HeroSection = () => {
   return (
     <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-14 sm:pt-16">
