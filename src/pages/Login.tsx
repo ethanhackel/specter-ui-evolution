@@ -132,7 +132,7 @@ const Login = () => {
         </div>
 
         <p className="text-center text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
-          New to SPECTER?{" "}
+          New to SPECTERCHAT?{" "}
           <Link to="/register" className="text-primary hover:underline">
             Create account
           </Link>
