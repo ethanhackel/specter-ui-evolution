@@ -210,7 +210,7 @@ const HowItWorksPage = () => {
             How <span className="text-gradient">SPECTERCHAT</span> Works
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            From entering the void to vanishing without a trace — here's the complete SPECTER experience, explained step by step.
+            From entering the void to vanishing without a trace — here's the complete SPECTERCHAT experience, explained step by step.
           </p>
         </motion.div>
 
