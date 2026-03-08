@@ -139,8 +139,8 @@ const ChatInputArea = memo(({ state, input, setInput, pickerOpen, setPickerOpen,
           <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("emoji"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "emoji" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`} aria-label="Open emoji picker">
             <Smile className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
-          <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20" : "hover:bg-secondary/50"}`} aria-label="Open sticker picker">
-            <img src={specterMascot} alt="Stickers" className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${pickerOpen && pickerTab === "sticker" ? "opacity-100 scale-110" : "opacity-70 hover:opacity-100"}`} />
+          <button onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }} className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg flex items-center justify-center transition-all active:scale-90 ${pickerOpen && pickerTab === "sticker" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"}`} aria-label="Open sticker picker">
+            <Sticker className="w-[1.15rem] h-[1.15rem] sm:w-5 sm:h-5" />
           </button>
 
           <textarea
