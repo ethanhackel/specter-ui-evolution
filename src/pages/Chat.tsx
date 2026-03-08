@@ -692,40 +692,42 @@ const Chat = () => {
                   </button>
                 </div>
 
-                {pickerTab === "emoji" ? (
-                  <div>
-                    {/* Category tabs */}
-                    <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
-                      {emojiCategories.map((cat, idx) => (
+                {/* Emoji tab - always mounted, toggle visibility */}
+                <div className={pickerTab === "emoji" ? "block" : "hidden"}>
+                  {/* Category tabs */}
+                  <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
+                    {emojiCategories.map((cat, idx) => (
+                      <button
+                        key={cat.name}
+                        onClick={() => setEmojiCategory(idx)}
+                        className={`px-3 py-1.5 rounded-lg text-[0.65rem] font-medium whitespace-nowrap transition-all ${
+                          emojiCategory === idx
+                            ? "bg-primary/20 text-primary border border-primary/30"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </div>
+                  {/* Emoji grid */}
+                  <div className="h-52 overflow-y-auto p-3 picker-scroll">
+                    <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-0.5">
+                      {emojiCategories[emojiCategory].emojis.map((emoji, idx) => (
                         <button
-                          key={cat.name}
-                          onClick={() => setEmojiCategory(idx)}
-                          className={`px-3 py-1.5 rounded-lg text-[0.65rem] font-medium whitespace-nowrap transition-all ${
-                            emojiCategory === idx
-                              ? "bg-primary/20 text-primary border border-primary/30"
-                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                          }`}
+                          key={idx}
+                          onClick={() => addEmoji(emoji)}
+                          className="w-9 h-9 flex items-center justify-center text-xl rounded-lg hover:bg-primary/10 transition-colors active:scale-90"
                         >
-                          {cat.name}
+                          {emoji}
                         </button>
                       ))}
                     </div>
-                    {/* Emoji grid */}
-                    <div className="h-52 overflow-y-auto p-3 picker-scroll">
-                      <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-0.5">
-                        {emojiCategories[emojiCategory].emojis.map((emoji, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => addEmoji(emoji)}
-                            className="w-9 h-9 flex items-center justify-center text-xl rounded-lg hover:bg-primary/10 transition-colors active:scale-90"
-                          >
-                            {emoji}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
                   </div>
-                ) : (
+                </div>
+
+                {/* Sticker tab - always mounted, toggle visibility */}
+                <div className={pickerTab === "sticker" ? "block" : "hidden"}>
                   <div className="h-52 overflow-y-auto p-4 picker-scroll">
                     <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                       {stickers.map((sticker) => (
@@ -738,6 +740,8 @@ const Chat = () => {
                           <img
                             src={sticker.src}
                             alt={sticker.label}
+                            loading="eager"
+                            decoding="async"
                             className="w-14 h-14 object-contain group-hover:scale-110 transition-transform"
                           />
                           <span className="text-[0.6rem] text-muted-foreground font-medium">{sticker.label}</span>
@@ -745,7 +749,7 @@ const Chat = () => {
                       ))}
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
 
