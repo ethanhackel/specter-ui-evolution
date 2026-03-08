@@ -39,10 +39,14 @@ const Register = () => {
     generateCaptcha();
   }, []);
 
-  // Redirect if already logged in (non-anonymous)
+  // Redirect only if logged in with a real (non-anonymous, non-guest) account
   useEffect(() => {
     if (!authLoading && user && !user.is_anonymous) {
-      navigate("/chat");
+      // Check if user registered with a real email (not a ghost placeholder)
+      const email = user.email ?? "";
+      if (!email.endsWith("@specterchat.ghost")) {
+        navigate("/chat");
+      }
     }
   }, [user, authLoading, navigate]);
 
