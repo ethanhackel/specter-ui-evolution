@@ -58,9 +58,9 @@ const sections = [
     icon: Gavel,
     title: "Disclaimers & Liability",
     content: [
-      "SPECTER is provided \"as is\" without warranties of any kind, express or implied. We do not guarantee uninterrupted service or error-free operation.",
+      "SPECTERCHAT is provided \"as is\" without warranties of any kind, express or implied. We do not guarantee uninterrupted service or error-free operation.",
       "We are not responsible for the behavior, statements, or actions of other users on the platform. Interactions with strangers carry inherent risks.",
-      "To the maximum extent permitted by law, SPECTER shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform.",
+      "To the maximum extent permitted by law, SPECTERCHAT shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform.",
       "These terms shall be governed by and construed in accordance with applicable laws. Any disputes shall be resolved through binding arbitration.",
       `These terms are effective as of ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.`,
     ],
