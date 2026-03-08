@@ -13,7 +13,7 @@ const perks = [
 
 const Register = () => {
   const navigate = useNavigate();
-  const { signUp, user, loading: authLoading } = useAuth();
+  const { signUp, user, profile, loading: authLoading } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,16 +39,12 @@ const Register = () => {
     generateCaptcha();
   }, []);
 
-  // Redirect only if logged in with a real (non-anonymous, non-guest) account
+  // Only redirect if user has a real registered account (not anonymous/guest)
   useEffect(() => {
-    if (!authLoading && user && !user.is_anonymous) {
-      // Check if user registered with a real email (not a ghost placeholder)
-      const email = user.email ?? "";
-      if (!email.endsWith("@specterchat.ghost")) {
-        navigate("/chat");
-      }
+    if (!authLoading && user && profile && !profile.is_guest && !user.is_anonymous) {
+      navigate("/chat");
     }
-  }, [user, authLoading, navigate]);
+  }, [user, profile, authLoading, navigate]);
 
   const handleRegister = async () => {
     setError("");

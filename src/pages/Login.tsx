@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn, user, loading: authLoading } = useAuth();
+  const { signIn, user, profile, loading: authLoading } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [captcha, setCaptcha] = useState("");
@@ -28,12 +28,12 @@ const Login = () => {
     generateCaptcha();
   }, []);
 
-  // Redirect if already logged in
+  // Only redirect if user has a real registered account
   useEffect(() => {
-    if (!authLoading && user && !user.is_anonymous) {
+    if (!authLoading && user && profile && !profile.is_guest && !user.is_anonymous) {
       navigate("/chat");
     }
-  }, [user, authLoading, navigate]);
+  }, [user, profile, authLoading, navigate]);
 
   const handleLogin = async () => {
     if (!username || !password) {
