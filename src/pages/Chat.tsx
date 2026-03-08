@@ -340,6 +340,8 @@ const Chat = () => {
 
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+      {/* Hidden preload of mascot so it's instantly available */}
+      <img src={specterMascot} alt="" className="absolute w-0 h-0 opacity-0 pointer-events-none" aria-hidden="true" />
       {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
