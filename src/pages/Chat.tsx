@@ -17,7 +17,7 @@ import stickerShocked from "@/assets/stickers/shocked.png";
 import stickerDance from "@/assets/stickers/dance.png";
 import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Copy, Reply, Flag, Undo2, MoreVertical, Menu as MenuIcon } from "lucide-react";
 
-type ChatState = "idle" | "searching" | "connected" | "rating";
+type ChatState = "idle" | "picking" | "searching" | "connected" | "rating";
 
 type Message = {
   id: number;
@@ -291,7 +291,8 @@ const Chat = () => {
   const findNext = () => {
     setRating(0);
     setHoverRating(0);
-    findMatch();
+    setSelectedInterests(new Set());
+    setState("picking");
   };
 
   const skipRating = () => {
@@ -378,7 +379,7 @@ const Chat = () => {
 
           <div className="flex gap-1.5 sm:gap-2">
             {state === "idle" && (
-              <button onClick={findMatch} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-primary/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-foreground active:scale-95">
+              <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-primary/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-foreground active:scale-95">
                 <Zap className="w-3 h-3" /> FIND
               </button>
             )}
@@ -531,29 +532,8 @@ const Chat = () => {
                 Click below to be matched with a random stranger. Completely anonymous. No account needed.
               </p>
 
-              {/* Interests selection */}
-              <div className="relative z-10 max-w-sm w-full">
-                <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase text-center">Pick Interests (optional)</p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {interests.map((i) => (
-                    <button
-                      key={i.key}
-                      onClick={() => toggleInterest(i.key)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
-                        selectedInterests.has(i.key)
-                          ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
-                          : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                      }`}
-                    >
-                      <span className="mr-1.5">{i.emoji}</span>
-                      {i.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <button
-                onClick={findMatch}
+                onClick={() => { setSelectedInterests(new Set()); setState("picking"); }}
                 className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95"
               >
                 ⚡ Find a Stranger
@@ -564,6 +544,53 @@ const Chat = () => {
               >
                 Create Account for More Features
               </Link>
+            </div>
+          )}
+
+          {/* Interests Picking Overlay */}
+          {state === "picking" && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-5 sm:gap-6 px-6 sm:px-8 text-center">
+              <motion.img
+                src={specterMascot}
+                alt="Specter"
+                className="w-14 h-14 sm:w-16 sm:h-16"
+                style={{ filter: "drop-shadow(0 0 20px hsl(0 72% 51% / 0.3))" }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+              <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Pick Your Interests</h2>
+              <p className="text-muted-foreground text-xs sm:text-sm max-w-xs">Select topics to match with like-minded strangers, or skip to connect with anyone.</p>
+              <div className="flex flex-wrap gap-2 justify-center max-w-sm">
+                {interests.map((i) => (
+                  <button
+                    key={i.key}
+                    onClick={() => toggleInterest(i.key)}
+                    className={`px-3 py-2 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                      selectedInterests.has(i.key)
+                        ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
+                        : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                    }`}
+                  >
+                    <span className="mr-1.5">{i.emoji}</span>
+                    {i.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={findMatch}
+                  className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95"
+                >
+                  ⚡ Search Now
+                </button>
+                <button
+                  onClick={findMatch}
+                  className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95"
+                >
+                  Skip →
+                </button>
+              </div>
             </div>
           )}
 
