@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import specterMascot from "@/assets/specter-mascot.png";
+import { playSendSound, playReceiveSound, playVanishSound, playConnectSound } from "@/lib/sounds";
 import stickerSpooky from "@/assets/stickers/spooky.png";
 import stickerHello from "@/assets/stickers/hello.png";
 import stickerLaugh from "@/assets/stickers/laugh.png";
