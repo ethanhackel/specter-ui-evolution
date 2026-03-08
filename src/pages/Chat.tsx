@@ -481,8 +481,23 @@ const Chat = () => {
                     }`}>
                       {msg.type === "me" ? "Y" : "G"}
                     </div>
-                    <div>
-                      {msg.isSticker ? (
+                    <div className="relative group">
+                      {/* Reply reference */}
+                      {msg.replyTo && !msg.unsent && (
+                        <div className={`mb-1 px-3 py-1.5 rounded-lg text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground ${msg.type === "me" ? "text-right" : ""}`}>
+                          <span className="font-semibold text-primary/70">{msg.replyTo.sender}</span>
+                          <p className="truncate max-w-[200px]">{msg.replyTo.text}</p>
+                        </div>
+                      )}
+
+                      {/* Unsent message */}
+                      {msg.unsent ? (
+                        <div className={`px-4 py-3 rounded-xl text-sm leading-relaxed italic border border-dashed border-border/50 text-muted-foreground/50 ${
+                          msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"
+                        }`}>
+                          This message was unsent
+                        </div>
+                      ) : msg.isSticker ? (
                         <div className={`p-2 rounded-xl ${
                           msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"
                         }`}>
@@ -497,7 +512,65 @@ const Chat = () => {
                           {msg.text}
                         </div>
                       )}
-                      <span className={`text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.type === "me" ? "text-right" : ""}`}>
+
+                      {/* Reaction badge */}
+                      {msg.reaction && (
+                        <div className={`absolute -bottom-2 ${msg.type === "me" ? "right-2" : "left-2"} bg-secondary border border-border rounded-full px-1.5 py-0.5 text-sm shadow-sm cursor-pointer hover:scale-110 transition-transform`}
+                          onClick={() => reactToMsg(msg.id, "")}>
+                          {msg.reaction}
+                        </div>
+                      )}
+
+                      {/* Three-dot menu button */}
+                      {!msg.unsent && (
+                        <button
+                          onClick={() => setMenuOpenId(menuOpenId === msg.id ? null : msg.id)}
+                          className={`absolute top-1/2 -translate-y-1/2 ${msg.type === "me" ? "-left-8" : "-right-8"} w-7 h-7 rounded-full bg-secondary/80 border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-secondary text-muted-foreground hover:text-foreground`}
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
+                      {/* Context menu dropdown */}
+                      {menuOpenId === msg.id && !msg.unsent && (
+                        <div
+                          ref={menuRef}
+                          className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 min-w-[160px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
+                          style={{ background: "hsl(var(--card))" }}
+                        >
+                          {/* Quick react row */}
+                          <div className="flex items-center justify-center gap-1 px-3 py-2 border-b border-border">
+                            {quickReacts.map((emoji) => (
+                              <button
+                                key={emoji}
+                                onClick={() => reactToMsg(msg.id, emoji)}
+                                className="w-8 h-8 flex items-center justify-center text-lg rounded-full hover:bg-primary/10 transition-all hover:scale-125 active:scale-95"
+                              >
+                                {emoji}
+                              </button>
+                            ))}
+                          </div>
+
+                          {!msg.isSticker && (
+                            <button onClick={() => copyText(msg.text)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                              <Copy className="w-4 h-4 text-muted-foreground" /> Copy text
+                            </button>
+                          )}
+                          <button onClick={() => replyToMsg(msg)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                            <Reply className="w-4 h-4 text-blue-400" /> Reply
+                          </button>
+                          {msg.type === "me" && (
+                            <button onClick={() => unsendMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                              <Undo2 className="w-4 h-4 text-amber-400" /> Unsend
+                            </button>
+                          )}
+                          <button onClick={() => reportMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-secondary/80 transition-colors">
+                            <Flag className="w-4 h-4" /> Report
+                          </button>
+                        </div>
+                      )}
+
+                      <span className={`text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.reaction ? "mt-3" : "mt-1"} ${msg.type === "me" ? "text-right" : ""}`}>
                         {msg.time}
                       </span>
                     </div>
