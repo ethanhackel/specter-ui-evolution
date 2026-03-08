@@ -118,8 +118,8 @@ const MessageBubble = ({ msg }: { msg: ChatMessage }) => {
       className={`flex items-end gap-2 ${isYou ? "justify-end" : "justify-start"}`}
     >
       {!isYou && (
-        <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-xs shrink-0 border border-border">
-          👻
+        <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center shrink-0 border border-border overflow-hidden">
+          <img src={mascot} alt="Specter" className="w-5 h-5 object-contain" />
         </div>
       )}
       <div className="flex flex-col gap-0.5">
