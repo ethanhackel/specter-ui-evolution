@@ -77,8 +77,8 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
           )}
           {state === "connected" && (
             <>
-              <button onClick={onLeave} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-amber-500/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-amber-500 active:scale-95">
-                <SkipForward className="w-3 h-3" /> <span className="hidden xs:inline">SKIP</span>
+              <button onClick={() => setReportOpen(true)} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-destructive active:scale-95">
+                <Flag className="w-3 h-3" /> <span className="hidden xs:inline">REPORT</span>
               </button>
               <button onClick={onLeave} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-destructive active:scale-95">
                 <X className="w-3 h-3" /> <span className="hidden xs:inline">LEAVE</span>
