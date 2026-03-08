@@ -17,7 +17,7 @@ import stickerShocked from "@/assets/stickers/shocked.png";
 import stickerDance from "@/assets/stickers/dance.png";
 import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Copy, Reply, Flag, Undo2, MoreVertical, Menu as MenuIcon } from "lucide-react";
 
-type ChatState = "idle" | "searching" | "connected" | "rating";
+type ChatState = "idle" | "picking" | "searching" | "connected" | "rating";
 
 type Message = {
   id: number;
