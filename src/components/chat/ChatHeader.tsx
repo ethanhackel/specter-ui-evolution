@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Ghost, Zap, Flag, X, Menu as MenuIcon, User, LogOut } from "lucide-react";
 import ReportSessionDialog from "@/components/chat/ReportSessionDialog";
+import LeaveConfirmDialog from "@/components/chat/LeaveConfirmDialog";
 import specterMascot from "@/assets/specter-mascot.png";
 import { formatTime } from "@/components/chat/ChatSidebar";
 import type { ChatState } from "@/hooks/useChat";
@@ -24,6 +25,7 @@ type Props = {
   setState: (s: ChatState) => void;
   setSelectedInterests: (s: Set<string>) => void;
   onReportSession?: (reason: string) => void;
+  partnerName?: string;
 };
 
 const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg: string }> = {
@@ -34,11 +36,12 @@ const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg:
   rating: { label: "DISCONNECTED", dotClass: "bg-destructive", pillBg: "bg-destructive/10" },
 };
 
-const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests, onReportSession }: Props) => {
+const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests, onReportSession, partnerName }: Props) => {
   const status = statusConfig[state];
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const [reportOpen, setReportOpen] = useState(false);
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
 
   return (
     <header className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0 bg-card">
@@ -80,7 +83,7 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
               <button onClick={() => setReportOpen(true)} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Report">
                 <Flag className="w-3.5 h-3.5 sm:w-3 sm:h-3" /> <span className="hidden sm:inline">REPORT</span>
               </button>
-              <button onClick={onLeave} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Leave">
+              <button onClick={() => setLeaveConfirmOpen(true)} className="w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 rounded sm:rounded flex items-center justify-center sm:gap-1.5 text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all text-muted-foreground hover:text-destructive active:scale-95" aria-label="Leave">
                 <X className="w-3.5 h-3.5 sm:w-3 sm:h-3" /> <span className="hidden sm:inline">LEAVE</span>
               </button>
             </>
@@ -119,6 +122,13 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
           onReportSession?.(reason);
           setReportOpen(false);
         }}
+      />
+
+      <LeaveConfirmDialog
+        open={leaveConfirmOpen}
+        onOpenChange={setLeaveConfirmOpen}
+        onConfirm={onLeave}
+        partnerName={partnerName}
       />
     </header>
   );
