@@ -216,7 +216,7 @@ const Features = () => {
           >
             <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 font-mono uppercase">// The Protocol</p>
             <h2 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-              How <span className="text-gradient">SPECTER</span> Works
+              How <span className="text-gradient">SPECTERCHAT</span> Works
             </h2>
           </motion.div>
 

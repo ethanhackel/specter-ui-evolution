@@ -249,7 +249,7 @@ const HowItWorksPage = () => {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-heading mb-3">
               See It In <span className="text-gradient">Action</span>
             </h2>
-            <p className="text-muted-foreground text-sm">A real-time preview of a SPECTER conversation</p>
+            <p className="text-muted-foreground text-sm">A real-time preview of a SPECTERCHAT conversation</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <LiveDemo />
