@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import specterMascot from "@/assets/specter-mascot.png";
 import stickerSpooky from "@/assets/stickers/spooky.png";
 import stickerHello from "@/assets/stickers/hello.png";
@@ -86,6 +87,16 @@ const emojiCategories = [
     emojis: ["🍎","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🥑","🍆","🌶️","🫑","🥒","🥬","🥦","🧄","🧅","🍄","🌽","🥕","🥔","🍞","🥐","🥖","🧀","🍕","🍔","🍟","🌭","🍿","🧂","🥚","🍳","🥞","🧇","🥓","🥩","🍗","🍖","🌮","🌯","🫔","🥙","🧆","🥗","🍝","🍜","🍲","🍛","🍣","🍱","🥟","🍤","🍙","🍚","🍘","🍥","🥠","🥮","🍢","🍡","🍧","🍨","🍦","🥧","🧁","🍰","🎂","🍮","🍭","🍬","🍫","🍩","🍪","☕","🍵","🧋","🥤","🍶","🍺","🍻","🥂","🍷","🍸","🍹","🧃"]
   },
 ];
+
+const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 90 + 5,
+  y: Math.random() * 80 + 10,
+  size: Math.random() * 20 + 30,
+  delay: Math.random() * 3,
+  duration: Math.random() * 8 + 10,
+  opacity: Math.random() * 0.08 + 0.03,
+}));
 
 const Chat = () => {
   const [state, setState] = useState<ChatState>("idle");
@@ -366,21 +377,63 @@ const Chat = () => {
         <div className="flex-1 flex flex-col relative overflow-hidden">
           {/* Idle Overlay */}
           {state === "idle" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-6 px-8 text-center">
-              <Ghost className="w-16 h-16 text-primary" style={{ filter: "drop-shadow(0 0 20px hsl(0 72% 51% / 0.3))" }} />
-              <h2 className="font-heading text-3xl font-bold text-gradient">Enter the Void</h2>
-              <p className="text-muted-foreground max-w-sm leading-relaxed">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background gap-6 px-8 text-center overflow-hidden">
+              {/* Floating ghosts background */}
+              {floatingGhosts.map((ghost) => (
+                <motion.div
+                  key={ghost.id}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: `${ghost.x}%`,
+                    top: `${ghost.y}%`,
+                    opacity: ghost.opacity,
+                  }}
+                  animate={{
+                    y: [-30, 30, -30],
+                    x: [-20, 20, -20],
+                    rotate: [-5, 5, -5],
+                    opacity: [ghost.opacity * 0.5, ghost.opacity, ghost.opacity * 0.5],
+                  }}
+                  transition={{
+                    duration: ghost.duration,
+                    delay: ghost.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <Ghost
+                    className="text-primary"
+                    style={{
+                      width: ghost.size,
+                      height: ghost.size,
+                      filter: `blur(${Math.random() * 2 + 1}px)`,
+                    }}
+                  />
+                </motion.div>
+              ))}
+
+              {/* Mascot image */}
+              <motion.img
+                src={specterMascot}
+                alt="SPECTER mascot"
+                className="w-20 h-20 relative z-10"
+                style={{ filter: "drop-shadow(0 0 25px hsl(0 72% 51% / 0.4))" }}
+                animate={{ y: [-6, 6, -6] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <h2 className="font-heading text-3xl font-bold text-gradient relative z-10">Enter the Void</h2>
+              <p className="text-muted-foreground max-w-sm leading-relaxed relative z-10">
                 Click below to be matched with a random stranger. Completely anonymous. No account needed.
               </p>
               <button
                 onClick={findMatch}
-                className="px-10 py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105"
+                className="relative z-10 px-10 py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105"
               >
                 ⚡ Find a Stranger
               </button>
               <Link
                 to="/register"
-                className="px-8 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all"
+                className="relative z-10 px-8 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all"
               >
                 Create Account for More Features
               </Link>
