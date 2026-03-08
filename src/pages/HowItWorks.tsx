@@ -22,7 +22,7 @@ const chatFlow = [
   { delay: 1800, typingBefore: { who: "you" as const, duration: 1400 }, messages: [{ type: "you" as const, text: "Hey! Where are you from? 👋" }] },
   { delay: 2000, typingBefore: { who: "stranger" as const, duration: 2200 }, messages: [{ type: "stranger" as const, text: "Somewhere between nowhere and everywhere 😄" }] },
   { delay: 1500, typingBefore: { who: "you" as const, duration: 1000 }, messages: [{ type: "you" as const, text: "haha that's mysterious, I like it" }] },
-  { delay: 1800, typingBefore: { who: "stranger" as const, duration: 1800 }, messages: [{ type: "stranger" as const, text: "That's the whole point of Specter right? 👻" }] },
+  { delay: 1800, typingBefore: { who: "stranger" as const, duration: 1800 }, messages: [{ type: "stranger" as const, text: "That's the whole point of Specterchat right? 👻" }] },
   { delay: 2000, typingBefore: { who: "you" as const, duration: 1200 }, messages: [{ type: "you" as const, text: "True. No names, no history, just vibes" }] },
   { delay: 2200, typingBefore: { who: "stranger" as const, duration: 1600 }, messages: [{ type: "stranger" as const, text: "Exactly. Pure connection ✨" }] },
   { delay: 3000, messages: [{ type: "status" as const, text: "Ghost#8a2f disconnected" }] },
