@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Shield, Zap, Smile, Star, Ghost, Users, Activity, Globe } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
 import { Link } from "react-router-dom";
+import { useRealtimeStats } from "@/hooks/useRealtimeStats";
 
 const features = [
   { icon: Shield, label: "100% Anonymous" },
@@ -45,16 +46,18 @@ const AnimatedCounter = ({ target, duration = 2 }: { target: number; duration?: 
   return <motion.span>{rounded}</motion.span>;
 };
 
-const stats = [
-  { value: 48, label: "ONLINE", icon: Users, pulse: true },
-  { value: 1247, label: "TODAY", icon: Activity, pulse: false },
-  { value: 5237, label: "TOTAL", icon: Globe, pulse: false },
-];
-
 const HeroSection = () => {
+  const { stats } = useRealtimeStats();
+
+  const statsConfig = [
+    { value: stats.online_count, label: "ONLINE", icon: Users, pulse: true },
+    { value: stats.chats_today, label: "TODAY", icon: Activity, pulse: false },
+    { value: stats.total_chats, label: "TOTAL", icon: Globe, pulse: false },
+  ];
+
   return (
     <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-14 sm:pt-16">
-      {/* Floating ghosts - fewer for performance */}
+      {/* Floating ghosts */}
       {floatingGhosts.map((ghost) => (
         <motion.div
           key={ghost.id}
@@ -127,7 +130,6 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="relative mx-auto mb-4 sm:mb-6 w-28 h-28 sm:w-28 sm:h-28 flex items-center justify-center"
         >
-          {/* Ambient glow behind mascot */}
           <div
             className="absolute inset-0 rounded-full blur-2xl sm:blur-3xl opacity-40"
             style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.35) 0%, hsl(var(--primary) / 0.08) 60%, transparent 80%)" }}
@@ -174,21 +176,20 @@ const HeroSection = () => {
           Just raw, unfiltered human connection — then gone like a ghost.
         </motion.p>
 
-        {/* Stats */}
+        {/* Stats - Real-time from database */}
         <motion.div
           className="flex items-center justify-center gap-3 sm:gap-5 mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.55 }}
         >
-          {stats.map((stat, i) => (
+          {statsConfig.map((stat, i) => (
             <motion.div
               key={stat.label}
               className="relative group flex-1 max-w-[140px]"
               whileHover={{ scale: 1.05, y: -4 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              {/* Glow background */}
               <div
                 className="absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"
                 style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.1))" }}
@@ -197,7 +198,6 @@ const HeroSection = () => {
                 className="relative glass-card rounded-xl px-3 sm:px-5 py-3 sm:py-4 text-center overflow-hidden"
                 style={{ borderColor: "hsl(var(--primary) / 0.15)" }}
               >
-                {/* Subtle scan line effect */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -230,7 +230,7 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
-        {/* Live online indicator - pill badge */}
+        {/* Live online indicator */}
         <motion.div
           className="flex items-center justify-center mb-5"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -250,7 +250,7 @@ const HeroSection = () => {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: "hsl(145 63% 49%)", boxShadow: "0 0 6px hsl(145 63% 49% / 0.8)" }} />
             </span>
             <span className="text-[0.7rem] sm:text-xs font-medium tracking-wide" style={{ color: "hsl(145 63% 65%)" }}>
-              <span className="font-bold">48</span> strangers online
+              <span className="font-bold">{stats.online_count}</span> strangers online
             </span>
           </div>
         </motion.div>
