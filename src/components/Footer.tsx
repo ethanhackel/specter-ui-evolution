@@ -19,7 +19,7 @@ const Footer = () => {
       </div>
       <div className="max-w-6xl mx-auto mt-4 sm:mt-6">
         <p className="text-[0.65rem] sm:text-xs font-mono text-muted-foreground tracking-wider text-center sm:text-left">
-          © {new Date().getFullYear()} SPECTER — Anonymous chat, no trace.
+          © {new Date().getFullYear()} SPECTERCHAT — Anonymous chat, no trace.
         </p>
       </div>
     </footer>

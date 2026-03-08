@@ -37,7 +37,7 @@ const HowItWorks = () => {
             // The Protocol
           </p>
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-            How <span className="text-gradient">SPECTER</span> Works
+            How <span className="text-gradient">SPECTERCHAT</span> Works
           </h2>
         </motion.div>
 

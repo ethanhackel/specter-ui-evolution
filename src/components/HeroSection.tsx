@@ -128,7 +128,7 @@ const HeroSection = () => {
         >
           <motion.img
             src={specterMascot}
-            alt="SPECTER Ghost"
+            alt="SPECTERCHAT Ghost"
             className="w-18 h-18 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
