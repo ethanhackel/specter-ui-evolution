@@ -24,7 +24,7 @@ type AuthContextType = {
   refreshProfile: () => Promise<void>;
   checkUsernameAvailable: (username: string) => Promise<boolean>;
   updateProfile: (updates: { username?: string }) => Promise<{ error: string | null }>;
-  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
