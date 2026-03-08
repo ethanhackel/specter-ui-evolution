@@ -39,12 +39,12 @@ const Register = () => {
     generateCaptcha();
   }, []);
 
-  // Redirect if already logged in (non-anonymous)
+  // Only redirect if user has a real registered account (not anonymous/guest)
   useEffect(() => {
-    if (!authLoading && user && !user.is_anonymous) {
+    if (!authLoading && user && profile && !profile.is_guest && !user.is_anonymous) {
       navigate("/chat");
     }
-  }, [user, authLoading, navigate]);
+  }, [user, profile, authLoading, navigate]);
 
   const handleRegister = async () => {
     setError("");
