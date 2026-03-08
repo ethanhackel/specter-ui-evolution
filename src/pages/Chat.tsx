@@ -119,6 +119,14 @@ const Chat = () => {
   const pickerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Preload sticker images on mount
+  useEffect(() => {
+    stickers.forEach((s) => {
+      const img = new Image();
+      img.src = s.src;
+    });
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
