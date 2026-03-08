@@ -174,10 +174,12 @@ const Chat = () => {
     if (!input.trim() || state !== "connected") return;
     const msg = input.trim();
     setInput("");
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "me", text: msg, time: now() },
-    ]);
+    const newMsg: Message = {
+      id: Date.now(), type: "me", text: msg, time: now(),
+      ...(replyingTo ? { replyTo: { text: replyingTo.text, sender: replyingTo.sender } } : {}),
+    };
+    setMessages((prev) => [...prev, newMsg]);
+    setReplyingTo(null);
     simulateReply();
   };
 
