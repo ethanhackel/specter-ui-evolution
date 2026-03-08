@@ -273,15 +273,12 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
 
         if (room) {
           const pId = room.user1_id === userId ? room.user2_id : room.user1_id;
-          const { data: partnerProfile } = await supabase
-            .from("profiles")
-            .select("username")
-            .eq("user_id", pId)
-            .single();
+          const { data: partnerUsername } = await supabase
+            .rpc("get_username", { _user_id: pId });
 
           setRoomId(room.id);
           setPartnerId(pId);
-          setPartnerName(partnerProfile?.username || `Ghost#${pId.substring(0, 4)}`);
+          setPartnerName(partnerUsername || `Ghost#${pId.substring(0, 4)}`);
           setState("connected");
           playConnectSound();
 
@@ -289,7 +286,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
             {
               id: `sys-connect`,
               type: "system",
-              text: `Connected with ${partnerProfile?.username || "Ghost#" + pId.substring(0, 4)} — say hello! 👋`,
+              text: `Connected with ${partnerUsername || "Ghost#" + pId.substring(0, 4)} — say hello! 👋`,
               time: now(),
             },
           ]);
