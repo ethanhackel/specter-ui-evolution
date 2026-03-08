@@ -29,9 +29,9 @@ const sections = [
     content: [
       "**Harassment & Abuse:** Any form of harassment, bullying, threats, or abusive behavior toward other users is strictly prohibited.",
       "**Illegal Content:** Sharing, distributing, or soliciting illegal content of any kind, including but not limited to child exploitation material, is grounds for immediate and permanent ban.",
-      "**Spam & Solicitation:** Using SPECTER for commercial solicitation, advertising, spam, or phishing is prohibited.",
-      "**Impersonation:** Attempting to impersonate SPECTER staff, moderators, or other users in a misleading way is not allowed.",
-      "**System Abuse:** Attempting to exploit, hack, reverse-engineer, or disrupt SPECTER's systems, infrastructure, or other users' experiences is strictly prohibited.",
+      "**Spam & Solicitation:** Using SPECTERCHAT for commercial solicitation, advertising, spam, or phishing is prohibited.",
+      "**Impersonation:** Attempting to impersonate SPECTERCHAT staff, moderators, or other users in a misleading way is not allowed.",
+      "**System Abuse:** Attempting to exploit, hack, reverse-engineer, or disrupt SPECTERCHAT's systems, infrastructure, or other users' experiences is strictly prohibited.",
     ],
   },
   {
