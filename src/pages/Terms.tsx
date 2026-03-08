@@ -8,9 +8,9 @@ const sections = [
     icon: FileText,
     title: "Acceptance of Terms",
     content: [
-      "By accessing or using SPECTER, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use the platform.",
+      "By accessing or using SPECTERCHAT, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use the platform.",
       "These terms apply to all users of the platform, including anonymous users and registered personas.",
-      "We reserve the right to update these terms at any time. Continued use of SPECTER after changes constitutes acceptance of the modified terms.",
+      "We reserve the right to update these terms at any time. Continued use of SPECTERCHAT after changes constitutes acceptance of the modified terms.",
     ],
   },
   {
