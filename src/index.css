@@ -237,11 +237,18 @@
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: hsl(0 0% 20%) transparent;
+  contain: layout style;
+  will-change: scroll-position;
 }
 
 .chat-messages-scroll::-webkit-scrollbar { width: 4px; }
 .chat-messages-scroll::-webkit-scrollbar-track { background: transparent; }
 .chat-messages-scroll::-webkit-scrollbar-thumb { background: hsl(0 0% 25%); border-radius: 9999px; }
+
+/* Contain layout for message bubbles */
+.chat-messages-scroll > div {
+  contain: layout style;
+}
 
 /* Mobile-specific optimizations */
 @media (max-width: 639px) {
