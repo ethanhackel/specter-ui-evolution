@@ -13,7 +13,7 @@ import stickerThink from "@/assets/stickers/think.png";
 import stickerThumbsup from "@/assets/stickers/thumbsup.png";
 import stickerShocked from "@/assets/stickers/shocked.png";
 import stickerDance from "@/assets/stickers/dance.png";
-import { Ghost, Zap, SkipForward, X, Send, Star, Smile } from "lucide-react";
+import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Copy, Reply, Flag, Undo2, MoreVertical } from "lucide-react";
 
 type ChatState = "idle" | "searching" | "connected" | "rating";
 
@@ -24,6 +24,9 @@ type Message = {
   time: string;
   isSticker?: boolean;
   stickerSrc?: string;
+  unsent?: boolean;
+  reaction?: string;
+  replyTo?: { text: string; sender: string };
 };
 
 type PickerTab = "emoji" | "sticker";
