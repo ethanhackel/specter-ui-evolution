@@ -1,6 +1,7 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Ghost, Zap, SkipForward, X, Menu as MenuIcon, User, LogOut } from "lucide-react";
+import { Ghost, Zap, Flag, X, Menu as MenuIcon, User, LogOut } from "lucide-react";
+import ReportSessionDialog from "@/components/chat/ReportSessionDialog";
 import specterMascot from "@/assets/specter-mascot.png";
 import { formatTime } from "@/components/chat/ChatSidebar";
 import type { ChatState } from "@/hooks/useChat";
