@@ -587,6 +587,18 @@ const Chat = () => {
               </div>
               <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Searching the void...</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">Looking for a stranger to connect with.</p>
+              {selectedInterests.size > 0 && (
+                <div className="flex flex-wrap gap-1.5 justify-center max-w-xs">
+                  {Array.from(selectedInterests).map((key) => {
+                    const interest = interests.find((i) => i.key === key);
+                    return interest ? (
+                      <span key={key} className="px-2 py-1 rounded-md text-[10px] bg-primary/15 border border-primary/30 text-primary">
+                        {interest.emoji} {interest.label}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              )}
               <button
                 onClick={cancelSearch}
                 className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95"
