@@ -273,11 +273,8 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
 
         if (room) {
           const pId = room.user1_id === userId ? room.user2_id : room.user1_id;
-          const { data: partnerProfile } = await supabase
-            .from("profiles")
-            .select("username")
-            .eq("user_id", pId)
-            .single();
+          const { data: partnerUsername } = await supabase
+            .rpc("get_username", { _user_id: pId });
 
           setRoomId(room.id);
           setPartnerId(pId);
