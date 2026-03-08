@@ -90,7 +90,7 @@ const Privacy = () => {
             Privacy <span className="text-gradient">Policy</span>
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Your privacy isn't just a feature — it's our foundation. SPECTER is built from the ground up to ensure you remain completely anonymous.
+            Your privacy isn't just a feature — it's our foundation. SPECTERCHAT is built from the ground up to ensure you remain completely anonymous.
           </p>
         </motion.div>
 

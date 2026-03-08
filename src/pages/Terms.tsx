@@ -91,7 +91,7 @@ const Terms = () => {
             Terms of <span className="text-gradient">Service</span>
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Please read these terms carefully before using SPECTER. By using our platform, you agree to abide by these guidelines.
+            Please read these terms carefully before using SPECTERCHAT. By using our platform, you agree to abide by these guidelines.
           </p>
         </motion.div>
 
