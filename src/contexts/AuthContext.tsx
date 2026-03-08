@@ -18,9 +18,13 @@ type AuthContextType = {
   profile: Profile | null;
   loading: boolean;
   signUp: (username: string, email: string, password: string) => Promise<{ error: string | null }>;
-  signIn: (username: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (usernameOrEmail: string, password: string) => Promise<{ error: string | null }>;
   signInAnonymously: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+  checkUsernameAvailable: (username: string) => Promise<boolean>;
+  updateProfile: (updates: { username?: string }) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,14 +50,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setProfile(data as Profile | null);
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (user) await fetchProfile(user.id);
+  }, [user, fetchProfile]);
+
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          // Use setTimeout to avoid potential deadlock with Supabase client
           setTimeout(() => fetchProfile(session.user.id), 0);
         } else {
           setProfile(null);
@@ -62,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    // THEN check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -75,10 +80,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
+  const checkUsernameAvailable = async (username: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id")
+      .ilike("username", username)
+      .limit(1);
+    if (error) return false;
+    return !data || data.length === 0;
+  };
+
   const signUp = async (username: string, email: string, password: string) => {
-    // Use email for auth, store username in metadata
-    const authEmail = email || `${username.toLowerCase()}@specterchat.ghost`;
-    const { error } = await supabase.auth.signUp({
+    // Check username availability first
+    const available = await checkUsernameAvailable(username);
+    if (!available) return { error: "Username is already taken. Please choose another." };
+
+    const authEmail = email || `${username.toLowerCase().replace(/[^a-z0-9_]/g, '')}@specterchat.ghost`;
+    
+    const { data, error } = await supabase.auth.signUp({
       email: authEmail,
       password,
       options: {
@@ -86,18 +105,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         emailRedirectTo: window.location.origin,
       },
     });
-    if (error) return { error: error.message };
+    
+    if (error) {
+      if (error.message.includes("already registered") || error.message.includes("already been registered")) {
+        return { error: "An account with this email already exists. Please sign in instead." };
+      }
+      return { error: error.message };
+    }
+
+    // If user was returned but no session, it means email confirmation is required
+    // but for ghost emails we should have auto-confirm
+    if (data.user && !data.session) {
+      return { error: "Please check your email to confirm your account." };
+    }
+
     return { error: null };
   };
 
-  const signIn = async (username: string, password: string) => {
-    // Try email login first - user may have registered with email
-    // If username contains @, use as-is, otherwise try ghost email
-    const email = username.includes("@")
-      ? username
-      : `${username.toLowerCase()}@specterchat.ghost`;
+  const signIn = async (usernameOrEmail: string, password: string) => {
+    let email: string;
+
+    if (usernameOrEmail.includes("@")) {
+      // User entered an email directly
+      email = usernameOrEmail;
+    } else {
+      // Look up email by username using our DB function
+      const { data, error } = await supabase.rpc("get_email_by_username", {
+        _username: usernameOrEmail,
+      });
+      
+      if (error || !data) {
+        return { error: "No account found with that username. Please check and try again." };
+      }
+      email = data as string;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return { error: error.message };
+    if (error) {
+      if (error.message.includes("Invalid login credentials")) {
+        return { error: "Incorrect password. Please try again." };
+      }
+      return { error: error.message };
+    }
     return { error: null };
   };
 
@@ -114,9 +163,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setProfile(null);
   };
 
+  const updateProfile = async (updates: { username?: string }) => {
+    if (!user) return { error: "Not logged in" };
+    
+    if (updates.username) {
+      const available = await checkUsernameAvailable(updates.username);
+      if (!available) return { error: "Username is already taken." };
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("user_id", user.id);
+    
+    if (error) return { error: error.message };
+    await refreshProfile();
+    return { error: null };
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) return { error: error.message };
+    return { error: null };
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, signUp, signIn, signInAnonymously, signOut }}
+      value={{ user, session, profile, loading, signUp, signIn, signInAnonymously, signOut, refreshProfile, checkUsernameAvailable, updateProfile, updatePassword }}
     >
       {children}
     </AuthContext.Provider>

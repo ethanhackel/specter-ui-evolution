@@ -381,6 +381,7 @@ export type Database = {
           room_id: string
         }[]
       }
+      get_email_by_username: { Args: { _username: string }; Returns: string }
       get_username: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
