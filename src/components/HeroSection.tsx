@@ -120,32 +120,6 @@ const HeroSection = () => {
       />
 
       <div className="relative z-10 text-center px-5 sm:px-6 max-w-2xl mx-auto">
-        {/* Live badge */}
-        <motion.div
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full text-[0.65rem] sm:text-xs font-mono tracking-widest mb-5 sm:mb-6"
-          style={{
-            background: "hsl(145 63% 42% / 0.08)",
-            border: "1px solid hsl(145 63% 42% / 0.2)",
-            color: "hsl(145 63% 42%)",
-          }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>48 ONLINE NOW</span>
-        </motion.div>
-
-        <motion.div
-          className="mb-2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <p className="text-[0.6rem] sm:text-xs tracking-[0.25em] text-muted-foreground font-mono mb-4 sm:mb-6">
-            // ANONYMOUS STRANGER CHAT — v2.0
-          </p>
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
