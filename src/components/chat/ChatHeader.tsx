@@ -111,6 +111,15 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <ReportSessionDialog
+        open={reportOpen}
+        onOpenChange={setReportOpen}
+        onSubmit={(reason) => {
+          onReportSession?.(reason);
+          setReportOpen(false);
+        }}
+      />
     </header>
   );
 });
