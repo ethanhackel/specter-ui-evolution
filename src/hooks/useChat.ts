@@ -36,6 +36,12 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const queuePollingRef = useRef<ReturnType<typeof setInterval>>();
+  const partnerNameRef = useRef("");
+  const messagesRef = useRef<ChatMessage[]>([]);
+
+  // Keep refs in sync
+  useEffect(() => { partnerNameRef.current = partnerName; }, [partnerName]);
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
 
   const now = () =>
     new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -70,9 +76,35 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
             table: "messages",
             filter: `room_id=eq.${roomId}`,
           },
-          (payload) => {
+          async (payload) => {
             const msg = payload.new as any;
             if (msg.sender_id === userId) return; // skip own messages (already in state)
+
+            // Look up reply info if this message is a reply
+            let replyTo: { text: string; sender: string } | undefined;
+            if (msg.reply_to_id) {
+              // First check local messages
+              const localReply = messagesRef.current.find((m) => m.dbId === msg.reply_to_id);
+              if (localReply) {
+                replyTo = {
+                  text: localReply.isSticker ? "🖼️ Sticker" : localReply.text,
+                  sender: localReply.type === "me" ? "You" : partnerNameRef.current,
+                };
+              } else {
+                // Fetch from DB
+                const { data: replyData } = await supabase
+                  .from("messages")
+                  .select("content, sender_id, is_sticker, sticker_key")
+                  .eq("id", msg.reply_to_id)
+                  .single();
+                if (replyData) {
+                  replyTo = {
+                    text: replyData.is_sticker ? "🖼️ Sticker" : replyData.content,
+                    sender: replyData.sender_id === userId ? "You" : partnerNameRef.current,
+                  };
+                }
+              }
+            }
 
             const chatMsg: ChatMessage = {
               id: `db-${msg.id}`,
@@ -87,6 +119,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
               stickerKey: msg.sticker_key,
               unsent: msg.is_unsent,
               reaction: msg.reaction,
+              replyTo,
             };
             setMessages((prev) => [...prev, chatMsg]);
             playReceiveSound();
