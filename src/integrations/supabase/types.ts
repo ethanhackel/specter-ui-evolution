@@ -163,8 +163,11 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          ban_reason: string | null
+          banned_at: string | null
           created_at: string
           id: string
+          is_banned: boolean
           is_guest: boolean
           karma: number
           total_chats: number
@@ -174,8 +177,11 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned_at?: string | null
           created_at?: string
           id?: string
+          is_banned?: boolean
           is_guest?: boolean
           karma?: number
           total_chats?: number
@@ -185,8 +191,11 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned_at?: string | null
           created_at?: string
           id?: string
+          is_banned?: boolean
           is_guest?: boolean
           karma?: number
           total_chats?: number
@@ -344,6 +353,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       refresh_online_count: { Args: never; Returns: undefined }
       reset_daily_stats: { Args: never; Returns: undefined }
       user_in_room: {
