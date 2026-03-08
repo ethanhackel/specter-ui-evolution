@@ -510,7 +510,7 @@ const Chat = () => {
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <Sticker className="w-4 h-4" /> STICKERS
+                    <img src={specterMascot} alt="" className={`w-4 h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
                   </button>
                 </div>
 
