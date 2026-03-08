@@ -233,6 +233,7 @@ const Chat = () => {
         ...prev,
         { id: Date.now() + 1, type: "them", text: replies[Math.floor(Math.random() * replies.length)], time: now() },
       ]);
+      playReceiveSound();
     }, 1000 + Math.random() * 2000);
   };
 
