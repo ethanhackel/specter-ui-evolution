@@ -242,6 +242,14 @@ const Chat = () => {
     toast({ title: "Reported", description: "Message reported. Our team will review it." });
   }, [reportMessage, toast]);
 
+  const handleReportSession = useCallback((reason: string) => {
+    // Report the session/partner
+    if (user?.id) {
+      reportMessage("session", undefined);
+    }
+    toast({ title: "Report Submitted", description: "Thank you. Our team will review this session." });
+  }, [user, reportMessage, toast]);
+
   const handleInputChange = useCallback((val: string) => {
     setInput(val);
     if (val.trim()) sendTypingIndicator();
