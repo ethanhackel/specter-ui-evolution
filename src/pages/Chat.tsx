@@ -297,6 +297,7 @@ const Chat = () => {
         setState={setState}
         setSelectedInterests={setSelectedInterests}
         onReportSession={handleReportSession}
+        partnerName={partnerName}
       />
 
       {/* Main */}

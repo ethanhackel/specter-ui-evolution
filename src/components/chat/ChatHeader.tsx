@@ -123,6 +123,13 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
           setReportOpen(false);
         }}
       />
+
+      <LeaveConfirmDialog
+        open={leaveConfirmOpen}
+        onOpenChange={setLeaveConfirmOpen}
+        onConfirm={onLeave}
+        partnerName={partnerName}
+      />
     </header>
   );
 });
