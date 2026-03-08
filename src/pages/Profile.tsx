@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star } from "lucide-react";
+import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star, Mail } from "lucide-react";
 import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
