@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import { ArrowLeft, RefreshCw } from "lucide-react";
+import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
