@@ -1,6 +1,5 @@
 import { memo, useRef, useCallback, useEffect } from "react";
-import { Send, Smile, X } from "lucide-react";
-import specterMascot from "@/assets/specter-mascot.png";
+import { Send, Smile, X, Sticker } from "lucide-react";
 import type { ChatState } from "@/hooks/useChat";
 
 import stickerHello from "@/assets/stickers/hello.png";
