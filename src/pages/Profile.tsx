@@ -203,6 +203,13 @@ const Profile = () => {
               <div className="space-y-3">
                 <input
                   type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Current password"
+                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+                />
+                <input
+                  type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="New password (min 6 chars)"
