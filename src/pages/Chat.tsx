@@ -99,6 +99,8 @@ const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
 }));
 
 const Chat = () => {
+  // Preload mascot image immediately so it's cached before searching state
+  useState(() => { const img = new Image(); img.src = specterMascot; });
   const [state, setState] = useState<ChatState>("idle");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
