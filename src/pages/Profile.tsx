@@ -187,7 +187,10 @@ const Profile = () => {
           {/* Email display */}
           {!isGhostEmail && (
             <div>
-              <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5">EMAIL</label>
+              <div className="flex items-center gap-2 mb-1.5">
+                <Mail className="w-4 h-4 text-primary" />
+                <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">EMAIL</span>
+              </div>
               <input
                 type="text"
                 value={email}
