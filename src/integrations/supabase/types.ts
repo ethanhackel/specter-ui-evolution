@@ -14,16 +14,347 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_rooms: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          ended_by: string | null
+          id: string
+          message_count: number
+          status: Database["public"]["Enums"]["room_status"]
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          ended_by?: string | null
+          id?: string
+          message_count?: number
+          status?: Database["public"]["Enums"]["room_status"]
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          ended_by?: string | null
+          id?: string
+          message_count?: number
+          status?: Database["public"]["Enums"]["room_status"]
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      matchmaking_queue: {
+        Row: {
+          created_at: string
+          id: string
+          interests: string[] | null
+          matched_room_id: string | null
+          status: Database["public"]["Enums"]["queue_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interests?: string[] | null
+          matched_room_id?: string | null
+          status?: Database["public"]["Enums"]["queue_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interests?: string[] | null
+          matched_room_id?: string | null
+          status?: Database["public"]["Enums"]["queue_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_sticker: boolean
+          is_unsent: boolean
+          reaction: string | null
+          reply_to_id: string | null
+          room_id: string
+          sender_id: string
+          sticker_key: string | null
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_sticker?: boolean
+          is_unsent?: boolean
+          reaction?: string | null
+          reply_to_id?: string | null
+          room_id: string
+          sender_id: string
+          sticker_key?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_sticker?: boolean
+          is_unsent?: boolean
+          reaction?: string | null
+          reply_to_id?: string | null
+          room_id?: string
+          sender_id?: string
+          sticker_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      presence: {
+        Row: {
+          current_room_id: string | null
+          is_in_chat: boolean
+          last_seen: string
+          user_id: string
+        }
+        Insert: {
+          current_room_id?: string | null
+          is_in_chat?: boolean
+          last_seen?: string
+          user_id: string
+        }
+        Update: {
+          current_room_id?: string | null
+          is_in_chat?: boolean
+          last_seen?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presence_current_room_id_fkey"
+            columns: ["current_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          is_guest: boolean
+          karma: number
+          total_chats: number
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          is_guest?: boolean
+          karma?: number
+          total_chats?: number
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          is_guest?: boolean
+          karma?: number
+          total_chats?: number
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rated_id: string
+          rater_id: string
+          room_id: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rated_id: string
+          rater_id: string
+          room_id: string
+          score: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rated_id?: string
+          rater_id?: string
+          room_id?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string | null
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          room_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          reason?: string
+          reported_user_id: string
+          reporter_id: string
+          room_id?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          reason?: string
+          reported_user_id?: string
+          reporter_id?: string
+          room_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_stats: {
+        Row: {
+          chats_today: number
+          id: number
+          online_count: number
+          total_chats: number
+          total_messages: number
+          updated_at: string
+        }
+        Insert: {
+          chats_today?: number
+          id?: number
+          online_count?: number
+          total_chats?: number
+          total_messages?: number
+          updated_at?: string
+        }
+        Update: {
+          chats_today?: number
+          id?: number
+          online_count?: number
+          total_chats?: number
+          total_messages?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      find_and_create_match: {
+        Args: { _interests: string[]; _user_id: string }
+        Returns: {
+          partner_id: string
+          partner_username: string
+          room_id: string
+        }[]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      refresh_online_count: { Args: never; Returns: undefined }
+      reset_daily_stats: { Args: never; Returns: undefined }
+      user_in_room: {
+        Args: { _room_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
+      queue_status: "waiting" | "matched" | "cancelled"
+      room_status: "active" | "ended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +481,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+      queue_status: ["waiting", "matched", "cancelled"],
+      room_status: ["active", "ended"],
+    },
   },
 } as const
