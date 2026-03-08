@@ -523,6 +523,13 @@ const Chat = () => {
                   Submit & Find New
                 </button>
                 <button
+                  onClick={findNext}
+                  className="px-6 py-3 rounded-sm bg-emerald-600 text-white font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 hover:bg-emerald-500"
+                  style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}
+                >
+                  ⚡ Find Next
+                </button>
+                <button
                   onClick={submitRating}
                   className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all"
                 >
