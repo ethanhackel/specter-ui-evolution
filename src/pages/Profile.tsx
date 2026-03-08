@@ -62,8 +62,12 @@ const Profile = () => {
   };
 
   const handleChangePassword = async () => {
+    if (!currentPassword) {
+      toast({ title: "Enter your current password", variant: "destructive" });
+      return;
+    }
     if (newPassword.length < 6) {
-      toast({ title: "Password must be at least 6 characters", variant: "destructive" });
+      toast({ title: "New password must be at least 6 characters", variant: "destructive" });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -71,12 +75,13 @@ const Profile = () => {
       return;
     }
     setSaving(true);
-    const { error } = await updatePassword(newPassword);
+    const { error } = await updatePassword(currentPassword, newPassword);
     setSaving(false);
     if (error) {
       toast({ title: error, variant: "destructive" });
     } else {
       toast({ title: "Password changed successfully!" });
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     }
