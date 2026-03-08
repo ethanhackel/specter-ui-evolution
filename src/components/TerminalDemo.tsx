@@ -209,6 +209,7 @@ const TerminalDemo = () => {
   useEffect(() => {
     if (hasStarted.current) return;
     hasStarted.current = true;
+    cancelledRef.current = false;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -223,7 +224,10 @@ const TerminalDemo = () => {
     const el = document.getElementById("terminal-demo");
     if (el) observer.observe(el);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelledRef.current = true;
+    };
   }, [runSequence]);
 
   return (
