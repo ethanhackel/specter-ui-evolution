@@ -98,9 +98,6 @@ const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
   opacity: Math.random() * 0.08 + 0.03,
 }));
 
-// Preload mascot at module level so it's instantly available
-const _preloadMascot = new Image();
-_preloadMascot.src = specterMascot;
 
 const Chat = () => {
   const [state, setState] = useState<ChatState>("idle");
