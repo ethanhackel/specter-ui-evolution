@@ -73,7 +73,7 @@ export const PickingOverlay = memo(({ selectedInterests, toggleInterest, onSearc
       ))}
     </div>
     <div className="flex gap-3">
-      <button onClick={onSearch} className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">⚡ Search Now</button>
+      <button onClick={onSearch} className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95 flex items-center gap-2"><Search className="w-4 h-4" /> Search Now</button>
       <button onClick={onSearch} className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95">Skip →</button>
     </div>
   </div>
