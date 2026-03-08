@@ -219,17 +219,29 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
-        {/* Live online indicator - social proof above CTA */}
+        {/* Live online indicator - pill badge */}
         <motion.div
-          className="flex items-center justify-center gap-2 mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex items-center justify-center mb-5"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "hsl(145 63% 49%)", boxShadow: "0 0 8px hsl(145 63% 49% / 0.6)" }} />
-          <span className="text-[0.65rem] sm:text-xs font-mono tracking-widest" style={{ color: "hsl(145 63% 49% / 0.8)" }}>
-            48 strangers online now
-          </span>
+          <div
+            className="inline-flex items-center gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full backdrop-blur-md"
+            style={{
+              background: "hsl(145 63% 42% / 0.08)",
+              border: "1px solid hsl(145 63% 42% / 0.2)",
+              boxShadow: "0 0 20px hsl(145 63% 42% / 0.08), inset 0 1px 0 hsl(145 63% 42% / 0.1)",
+            }}
+          >
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-50" style={{ background: "hsl(145 63% 49%)" }} />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: "hsl(145 63% 49%)", boxShadow: "0 0 6px hsl(145 63% 49% / 0.8)" }} />
+            </span>
+            <span className="text-[0.7rem] sm:text-xs font-medium tracking-wide" style={{ color: "hsl(145 63% 65%)" }}>
+              <span className="font-bold">48</span> strangers online
+            </span>
+          </div>
         </motion.div>
 
         {/* CTAs */}
