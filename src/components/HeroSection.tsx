@@ -219,6 +219,19 @@ const HeroSection = () => {
           ))}
         </motion.div>
 
+        {/* Live online indicator - social proof above CTA */}
+        <motion.div
+          className="flex items-center justify-center gap-2 mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "hsl(145 63% 49%)", boxShadow: "0 0 8px hsl(145 63% 49% / 0.6)" }} />
+          <span className="text-[0.65rem] sm:text-xs font-mono tracking-widest" style={{ color: "hsl(145 63% 49% / 0.8)" }}>
+            48 strangers online now
+          </span>
+        </motion.div>
+
         {/* CTAs */}
         <motion.div
           className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
