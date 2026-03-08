@@ -1,19 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { Check, ArrowLeft, RefreshCw } from "lucide-react";
+import { Check, ArrowLeft, RefreshCw, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-
-const perks = [
-  "Persistent persona across sessions",
-  "Interest-based matching priority",
-  "Karma & reputation system",
-  "Chat history (optional)",
-];
 
 const Register = () => {
   const navigate = useNavigate();
-  const { signUp, user, profile, loading: authLoading } = useAuth();
+  const { signUp, user, profile, loading: authLoading, checkUsernameAvailable } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +17,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
 
   const generateCaptcha = () => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -39,12 +33,25 @@ const Register = () => {
     generateCaptcha();
   }, []);
 
-  // Only redirect if user has a real registered account (not anonymous/guest)
   useEffect(() => {
     if (!authLoading && user && profile && !profile.is_guest && !user.is_anonymous) {
       navigate("/chat");
     }
   }, [user, profile, authLoading, navigate]);
+
+  // Debounced username availability check
+  useEffect(() => {
+    if (username.length < 3) {
+      setUsernameStatus("idle");
+      return;
+    }
+    setUsernameStatus("checking");
+    const timer = setTimeout(async () => {
+      const available = await checkUsernameAvailable(username);
+      setUsernameStatus(available ? "available" : "taken");
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [username, checkUsernameAvailable]);
 
   const handleRegister = async () => {
     setError("");
@@ -56,6 +63,10 @@ const Register = () => {
     }
     if (username.length < 3 || username.length > 30) {
       setError("Username must be 3-30 characters");
+      return;
+    }
+    if (usernameStatus === "taken") {
+      setError("Username is already taken. Please choose another.");
       return;
     }
     if (password !== confirm) {
@@ -126,14 +137,29 @@ const Register = () => {
         <div className="space-y-3 sm:space-y-4">
           <div>
             <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">USERNAME</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="3-30 chars (letters, digits, _)"
-              maxLength={30}
-              className="w-full bg-secondary border border-border rounded px-3 sm:px-4 py-2.5 sm:py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="3-30 chars (letters, digits, _)"
+                maxLength={30}
+                className="w-full bg-secondary border border-border rounded px-3 sm:px-4 py-2.5 sm:py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50 pr-24"
+              />
+              {usernameStatus === "checking" && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">checking...</span>
+              )}
+              {usernameStatus === "available" && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-500 flex items-center gap-1">
+                  <Check className="w-3 h-3" /> available
+                </span>
+              )}
+              {usernameStatus === "taken" && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive flex items-center gap-1">
+                  <X className="w-3 h-3" /> taken
+                </span>
+              )}
+            </div>
           </div>
           <div>
             <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">
@@ -215,7 +241,7 @@ const Register = () => {
 
           <button
             onClick={handleRegister}
-            disabled={loading}
+            disabled={loading || usernameStatus === "taken"}
             className="w-full py-3 sm:py-3.5 rounded bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
           >
             {loading ? "CREATING..." : "CREATE ACCOUNT"}

@@ -1,9 +1,17 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
-import { Ghost, Zap, SkipForward, X, Menu as MenuIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Ghost, Zap, SkipForward, X, Menu as MenuIcon, User, LogOut } from "lucide-react";
 import specterMascot from "@/assets/specter-mascot.png";
 import { formatTime } from "@/components/chat/ChatSidebar";
 import type { ChatState } from "@/hooks/useChat";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   state: ChatState;
@@ -26,6 +34,8 @@ const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg:
 
 const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests }: Props) => {
   const status = statusConfig[state];
+  const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0 bg-card">
@@ -73,6 +83,30 @@ const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, 
             </>
           )}
         </div>
+
+        {/* User menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all" aria-label="User menu">
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            {profile && (
+              <div className="px-2 py-1.5 text-xs text-muted-foreground font-mono truncate">
+                {profile.username}
+              </div>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+              <User className="w-4 h-4 mr-2" /> Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={async () => { await signOut(); navigate("/"); }} className="cursor-pointer text-destructive focus:text-destructive">
+              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
