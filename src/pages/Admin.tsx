@@ -30,6 +30,9 @@ type UserProfile = {
   karma: number;
   total_chats: number;
   is_guest: boolean;
+  is_banned: boolean;
+  banned_at: string | null;
+  ban_reason: string | null;
   created_at: string;
 };
 
