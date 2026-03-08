@@ -1,0 +1,82 @@
+import { memo } from "react";
+import { Link } from "react-router-dom";
+import { Ghost, Zap, SkipForward, X, Menu as MenuIcon } from "lucide-react";
+import specterMascot from "@/assets/specter-mascot.png";
+import { formatTime } from "@/components/chat/ChatSidebar";
+import type { ChatState } from "@/hooks/useChat";
+
+type Props = {
+  state: ChatState;
+  timer: number;
+  mobileDrawerOpen: boolean;
+  setMobileDrawerOpen: (open: boolean) => void;
+  onFind: () => void;
+  onLeave: () => void;
+  setState: (s: ChatState) => void;
+  setSelectedInterests: (s: Set<string>) => void;
+};
+
+const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg: string }> = {
+  idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
+  picking: { label: "PICKING", dotClass: "bg-amber-500", pillBg: "bg-amber-500/10" },
+  searching: { label: "SEARCHING", dotClass: "bg-amber-500 animate-pulse", pillBg: "bg-amber-500/10" },
+  connected: { label: "CONNECTED", dotClass: "bg-emerald-500", pillBg: "bg-emerald-500/10" },
+  rating: { label: "DISCONNECTED", dotClass: "bg-destructive", pillBg: "bg-destructive/10" },
+};
+
+const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests }: Props) => {
+  const status = statusConfig[state];
+
+  return (
+    <header className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0 bg-card">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+          className="sm:hidden w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+          aria-label="Open menu"
+        >
+          <MenuIcon className="w-4.5 h-4.5" />
+        </button>
+        <Link to="/" className="flex items-center gap-2">
+          <img src={specterMascot} alt="" className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="font-heading font-black text-xs sm:text-sm tracking-widest hidden xs:inline">
+            <span className="text-gradient">SPECTER</span>
+            <span className="text-foreground">CHAT</span>
+          </span>
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3">
+        {state === "connected" && (
+          <span className="sm:hidden text-xs font-mono text-primary font-bold">{formatTime(timer)}</span>
+        )}
+
+        <div className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[0.6rem] sm:text-xs font-mono tracking-widest ${status.pillBg} border border-border`}>
+          <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${status.dotClass}`} />
+          <span className="text-muted-foreground">{status.label}</span>
+        </div>
+
+        <div className="flex gap-1.5 sm:gap-2">
+          {state === "idle" && (
+            <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-primary/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-foreground active:scale-95">
+              <Zap className="w-3 h-3" /> FIND
+            </button>
+          )}
+          {state === "connected" && (
+            <>
+              <button onClick={onLeave} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-amber-500/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-amber-500 active:scale-95">
+                <SkipForward className="w-3 h-3" /> <span className="hidden xs:inline">SKIP</span>
+              </button>
+              <button onClick={onLeave} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-destructive/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-destructive active:scale-95">
+                <X className="w-3 h-3" /> <span className="hidden xs:inline">LEAVE</span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+});
+
+ChatHeader.displayName = "ChatHeader";
+export default ChatHeader;
