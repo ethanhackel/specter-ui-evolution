@@ -491,10 +491,10 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         prev.map((m) => (m.id === msgId ? { ...m, reaction: emoji } : m))
       );
       if (dbId) {
-        await supabase
-          .from("messages")
-          .update({ reaction: emoji || null })
-          .eq("id", dbId);
+        await supabase.rpc("react_to_message", {
+          _message_id: dbId,
+          _reaction: emoji || "",
+        });
       }
     },
     []

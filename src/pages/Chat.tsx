@@ -632,7 +632,22 @@ const Chat = () => {
                     </div>
                     <div className="relative group">
                       {msg.replyTo && !msg.unsent && (
-                        <div className={`mb-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[0.6rem] sm:text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground ${msg.type === "me" ? "text-right" : ""}`}>
+                        <div
+                          className={`mb-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[0.6rem] sm:text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground cursor-pointer hover:bg-secondary/70 transition-colors ${msg.type === "me" ? "text-right" : ""}`}
+                          onClick={() => {
+                            // Find the original message by dbId matching reply_to
+                            const replyDbId = (msg as any).replyToDbId;
+                            const originalMsg = messages.find((m) => m.dbId === replyDbId || m.id === replyDbId);
+                            if (originalMsg) {
+                              const el = document.getElementById(`msg-${originalMsg.id}`);
+                              if (el) {
+                                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                el.classList.add("ring-2", "ring-primary/50");
+                                setTimeout(() => el.classList.remove("ring-2", "ring-primary/50"), 1500);
+                              }
+                            }
+                          }}
+                        >
                           <span className="font-semibold text-primary/70">{msg.replyTo.sender}</span>
                           <p className="truncate max-w-[180px] sm:max-w-[200px]">{msg.replyTo.text}</p>
                         </div>
