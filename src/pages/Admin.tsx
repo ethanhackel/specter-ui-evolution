@@ -30,6 +30,9 @@ type UserProfile = {
   karma: number;
   total_chats: number;
   is_guest: boolean;
+  is_banned: boolean;
+  banned_at: string | null;
+  ban_reason: string | null;
   created_at: string;
 };
 
@@ -148,6 +151,27 @@ const Admin = () => {
     } else {
       toast({ title: "Report updated", description: `Report ${action} successfully.` });
       fetchReports();
+    }
+  };
+
+  const handleBanUser = async (userProfile: UserProfile, ban: boolean, reason?: string) => {
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        is_banned: ban,
+        banned_at: ban ? new Date().toISOString() : null,
+        ban_reason: ban ? (reason || "Violated community guidelines") : null,
+      } as any)
+      .eq("user_id", userProfile.user_id);
+
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: ban ? "User Banned" : "User Unbanned",
+        description: `${userProfile.username} has been ${ban ? "banned" : "unbanned"}.`,
+      });
+      fetchUsers();
     }
   };
 
@@ -295,7 +319,7 @@ const Admin = () => {
                         </div>
 
                         {r.status === "pending" && (
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap">
                             <Button
                               size="sm"
                               variant="outline"
@@ -303,6 +327,18 @@ const Admin = () => {
                               onClick={() => handleReportAction(r.id, "resolved")}
                             >
                               <CheckCircle className="w-3.5 h-3.5 mr-1" /> Resolve
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                              onClick={async () => {
+                                const reported = users.find(u => u.user_id === r.reported_user_id);
+                                if (reported) await handleBanUser(reported, true, r.reason);
+                                await handleReportAction(r.id, "resolved");
+                              }}
+                            >
+                              <Ban className="w-3.5 h-3.5 mr-1" /> Ban & Resolve
                             </Button>
                             <Button
                               size="sm"
@@ -337,23 +373,57 @@ const Admin = () => {
                       <tr className="border-b border-border text-muted-foreground text-left">
                         <th className="pb-3 pr-4">Username</th>
                         <th className="pb-3 pr-4">Type</th>
+                        <th className="pb-3 pr-4">Status</th>
                         <th className="pb-3 pr-4">Karma</th>
                         <th className="pb-3 pr-4">Chats</th>
-                        <th className="pb-3">Joined</th>
+                        <th className="pb-3 pr-4">Joined</th>
+                        <th className="pb-3">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {users.map(u => (
-                        <tr key={u.id} className="border-b border-border/50 last:border-0">
+                        <tr key={u.id} className={`border-b border-border/50 last:border-0 ${u.is_banned ? "opacity-60" : ""}`}>
                           <td className="py-3 pr-4 text-foreground font-medium">{u.username}</td>
                           <td className="py-3 pr-4">
                             <Badge variant={u.is_guest ? "secondary" : "default"} className="text-xs">
                               {u.is_guest ? "Guest" : "Registered"}
                             </Badge>
                           </td>
+                          <td className="py-3 pr-4">
+                            {u.is_banned ? (
+                              <Badge variant="outline" className="text-xs bg-destructive/15 text-destructive border-destructive/30">
+                                Banned
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-xs bg-green-500/15 text-green-400 border-green-500/30">
+                                Active
+                              </Badge>
+                            )}
+                          </td>
                           <td className="py-3 pr-4 text-muted-foreground font-mono">{u.karma}</td>
                           <td className="py-3 pr-4 text-muted-foreground font-mono">{u.total_chats}</td>
-                          <td className="py-3 text-muted-foreground">{timeAgo(u.created_at)}</td>
+                          <td className="py-3 pr-4 text-muted-foreground">{timeAgo(u.created_at)}</td>
+                          <td className="py-3">
+                            {u.is_banned ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs border-green-500/30 text-green-400 hover:bg-green-500/10"
+                                onClick={() => handleBanUser(u, false)}
+                              >
+                                Unban
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                                onClick={() => handleBanUser(u, true)}
+                              >
+                                <Ban className="w-3.5 h-3.5 mr-1" /> Ban
+                              </Button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

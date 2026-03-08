@@ -181,7 +181,22 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   // Find a match
   const findMatch = useCallback(async () => {
     if (!userId) return;
+
+    // Check if user is banned
+    const { data: banCheck } = await supabase.rpc("is_user_banned", { _user_id: userId });
+    if (banCheck === true) {
+      setMessages([{
+        id: `sys-banned`,
+        type: "system",
+        text: "⛔ Your account has been suspended. You cannot start new chats.",
+        time: now(),
+      }]);
+      return;
+    }
+
     setState("searching");
+    setMessages([]);
+    setTimer(0);
     setMessages([]);
     setTimer(0);
 
