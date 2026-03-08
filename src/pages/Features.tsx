@@ -130,7 +130,7 @@ const Features = () => {
             Everything <span className="text-gradient">SPECTERCHAT</span> Offers
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Built for real connection, engineered for absolute privacy. Explore every feature that makes SPECTER the most private chat platform on the internet.
+            Built for real connection, engineered for absolute privacy. Explore every feature that makes SPECTERCHAT the most private chat platform on the internet.
           </p>
         </motion.div>
 
