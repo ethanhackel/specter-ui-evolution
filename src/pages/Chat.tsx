@@ -590,11 +590,11 @@ const Chat = () => {
                   onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }}
                   className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-all ${
                     pickerOpen && pickerTab === "sticker"
-                      ? "bg-primary/20 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      ? "bg-primary/20"
+                      : "hover:bg-secondary/50"
                   }`}
                 >
-                  <img src={specterMascot} alt="Stickers" className="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity" />
+                  <img src={specterMascot} alt="Stickers" className={`w-6 h-6 transition-all ${pickerOpen && pickerTab === "sticker" ? "opacity-100 scale-110" : "opacity-70 hover:opacity-100"}`} />
                 </button>
 
                 <textarea
