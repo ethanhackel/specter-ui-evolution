@@ -84,7 +84,7 @@ const ChatInputArea = memo(({ state, input, setInput, pickerOpen, setPickerOpen,
               <Smile className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> EMOJI
             </button>
             <button onClick={() => setPickerTab("sticker")} className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 text-[0.65rem] sm:text-xs font-heading font-bold tracking-wider transition-all ${pickerTab === "sticker" ? "text-primary border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}>
-              <img src={specterMascot} alt="" className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
+              <Sticker className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
             </button>
           </div>
 
