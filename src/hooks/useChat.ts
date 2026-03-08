@@ -121,6 +121,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
               unsent: msg.is_unsent,
               reaction: msg.reaction,
               replyTo,
+              replyToDbId: msg.reply_to_id || undefined,
             };
             setMessages((prev) => [...prev, chatMsg]);
             playReceiveSound();
