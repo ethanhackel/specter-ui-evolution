@@ -38,7 +38,7 @@ const sections = [
     icon: Trash2,
     title: "Your Rights & Data Deletion",
     content: [
-      "You have the right to use SPECTER without providing any personal information whatsoever.",
+      "You have the right to use SPECTERCHAT without providing any personal information whatsoever.",
       "If you've created a registered persona, you can permanently delete it at any time. This action is irreversible and removes all associated data from our systems.",
       "Since we don't collect personal data for anonymous users, there is nothing to delete — your anonymity is maintained by design.",
       "You may contact us at any time to inquire about data practices or request information about data we may hold.",
