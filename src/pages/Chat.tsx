@@ -596,13 +596,9 @@ const Chat = () => {
                     }}
                   />
                 ))}
-                <div
-                  className="absolute bg-primary rounded-full"
-                  style={{
-                    inset: "40px",
-                    boxShadow: "0 0 20px hsl(0 72% 51% / 0.5)",
-                  }}
-                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img src={specterMascot} alt="Specter" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]" />
+                </div>
               </div>
               <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Searching the void...</h2>
               <p className="text-muted-foreground text-xs sm:text-sm">Looking for a stranger to connect with.</p>
