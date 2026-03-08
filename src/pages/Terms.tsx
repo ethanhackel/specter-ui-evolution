@@ -38,8 +38,8 @@ const sections = [
     icon: AlertTriangle,
     title: "Content & Communication",
     content: [
-      "All conversations on SPECTER are ephemeral and are not stored. However, this does not exempt you from legal responsibility for the content of your messages.",
-      "You retain responsibility for everything you communicate through the platform. SPECTER is not liable for user-generated content.",
+      "All conversations on SPECTERCHAT are ephemeral and are not stored. However, this does not exempt you from legal responsibility for the content of your messages.",
+      "You retain responsibility for everything you communicate through the platform. SPECTERCHAT is not liable for user-generated content.",
       "Other users may report conversations that violate these terms. Reported content may be temporarily retained for review by our moderation team.",
       "We reserve the right to implement automated content filtering to detect and prevent prohibited content.",
     ],
