@@ -537,7 +537,7 @@ const Chat = () => {
                   ⚡ Find Next
                 </button>
                 <button
-                  onClick={submitRating}
+                  onClick={skipRating}
                   className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all"
                 >
                   Skip
