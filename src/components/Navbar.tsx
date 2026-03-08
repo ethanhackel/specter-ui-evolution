@@ -32,9 +32,9 @@ const Navbar = () => {
             <>
               <Link
                 to="/chat"
-                className="px-4 py-2 text-sm font-medium text-secondary-foreground hover:text-foreground transition-colors"
+                className="px-4 py-2 text-sm font-medium text-secondary-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
-                ⚡ Start Chatting
+                <MessageCircle className="w-4 h-4" /> Start Chatting
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
