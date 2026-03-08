@@ -530,6 +530,28 @@ const Chat = () => {
               <p className="text-muted-foreground max-w-sm leading-relaxed relative z-10 text-sm sm:text-base">
                 Click below to be matched with a random stranger. Completely anonymous. No account needed.
               </p>
+
+              {/* Interests selection */}
+              <div className="relative z-10 max-w-sm w-full">
+                <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase text-center">Pick Interests (optional)</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {interests.map((i) => (
+                    <button
+                      key={i.key}
+                      onClick={() => toggleInterest(i.key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                        selectedInterests.has(i.key)
+                          ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
+                          : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                      }`}
+                    >
+                      <span className="mr-1.5">{i.emoji}</span>
+                      {i.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <button
                 onClick={findMatch}
                 className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95"
