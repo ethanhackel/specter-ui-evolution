@@ -25,6 +25,7 @@ type Props = {
   setState: (s: ChatState) => void;
   setSelectedInterests: (s: Set<string>) => void;
   onReportSession?: (reason: string) => void;
+  partnerName?: string;
 };
 
 const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg: string }> = {
