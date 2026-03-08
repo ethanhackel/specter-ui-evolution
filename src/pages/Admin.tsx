@@ -319,7 +319,7 @@ const Admin = () => {
                         </div>
 
                         {r.status === "pending" && (
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap">
                             <Button
                               size="sm"
                               variant="outline"
@@ -327,6 +327,18 @@ const Admin = () => {
                               onClick={() => handleReportAction(r.id, "resolved")}
                             >
                               <CheckCircle className="w-3.5 h-3.5 mr-1" /> Resolve
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                              onClick={async () => {
+                                const reported = users.find(u => u.user_id === r.reported_user_id);
+                                if (reported) await handleBanUser(reported, true, r.reason);
+                                await handleReportAction(r.id, "resolved");
+                              }}
+                            >
+                              <Ban className="w-3.5 h-3.5 mr-1" /> Ban & Resolve
                             </Button>
                             <Button
                               size="sm"
