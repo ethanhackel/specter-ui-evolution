@@ -613,7 +613,8 @@ const Chat = () => {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex max-w-[85%] sm:max-w-[75%] gap-1.5 sm:gap-2 items-end animate-[slideIn_0.25s_ease-out] ${
+                id={`msg-${msg.id}`}
+                className={`flex max-w-[85%] sm:max-w-[75%] gap-1.5 sm:gap-2 items-end animate-[slideIn_0.25s_ease-out] transition-all duration-300 ${
                   msg.type === "me" ? "self-end flex-row-reverse" :
                   msg.type === "system" ? "self-center max-w-[95%] sm:max-w-[90%]" :
                   "self-start"
