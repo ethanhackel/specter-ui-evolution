@@ -122,7 +122,7 @@ const Register = () => {
           </div>
           <div>
             <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">
-              EMAIL
+              EMAIL <span className="text-muted-foreground/50">(optional)</span>
             </label>
             <input
               type="email"
