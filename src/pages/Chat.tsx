@@ -332,6 +332,7 @@ const Chat = () => {
 
   const statusConfig = {
     idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
+    picking: { label: "PICKING", dotClass: "bg-amber-500", pillBg: "bg-amber-500/10" },
     searching: { label: "SEARCHING", dotClass: "bg-amber-500 animate-pulse", pillBg: "bg-amber-500/10" },
     connected: { label: "CONNECTED", dotClass: "bg-emerald-500", pillBg: "bg-emerald-500/10" },
     rating: { label: "DISCONNECTED", dotClass: "bg-destructive", pillBg: "bg-destructive/10" },
