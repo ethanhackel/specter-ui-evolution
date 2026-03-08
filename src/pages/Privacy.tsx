@@ -8,7 +8,7 @@ const sections = [
     icon: Eye,
     title: "Information We Collect",
     content: [
-      "SPECTER is designed to collect as little information as possible. We do not require any personal information to use our platform.",
+      "SPECTERCHAT is designed to collect as little information as possible. We do not require any personal information to use our platform.",
       "**Anonymous Users:** No data is collected. No IP addresses are stored. No cookies are used for tracking. Your session exists only in memory and is erased upon disconnection.",
       "**Registered Personas:** If you choose to create a persona, we store only your chosen handle, avatar preferences, and karma score. No real identity information is ever required or stored.",
       "**Technical Data:** We may temporarily process minimal technical data (such as connection timestamps) for service stability. This data is automatically purged within 24 hours and is never linked to any user identity.",
