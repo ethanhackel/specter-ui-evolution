@@ -25,10 +25,12 @@
     <meta name="twitter:description" content="Connect with random strangers anonymously. No account needed. Instant matching, emoji, stickers, and complete privacy. Vanish without any trace.">
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/c0b8589b-b060-4ac1-aead-18ff1bca0e18?Expires=1772999002&amp;GoogleAccessId=go-api-on-aws%40gpt-engineer-390607.iam.gserviceaccount.com&amp;Signature=0nPVxmqQlAJeOhm6QMLvwwa%2B86Sdm0C1TaKWEU0UTuqmOf6w8wQtvh3EqO65KdZhZDmcnRLlTnD7dd6L306PsNh9YxMzZFc%2FXlvE%2ByqfVDTmnSplS5xYpXEn0IH%2BX8Lf6HKcIMaBJbD6yGcEss4jDMMuWv%2FA4qcwHdR0oLEIld9seCUvA1T7Lj527xiPA3IlxN5oIfAFZpOcP749GvgoTWVuE%2BK0zbPMTCnE4r5aRgpi8DP85sMrdK%2FAXon3pt0KNKnS9895U4F4EbTx5I8XO8gVMdtedmzJYyonz%2Fcf15uWP4NAuEJ0qKVrhZy%2F1Lk%2F9r31O0tSkrADBtuGb6O%2FNA%3D%3D">
 
-    <!-- Fonts: preconnect + load with display=swap for no FOIT -->
+    <!-- Fonts: preconnect + non-render-blocking load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" /></noscript>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">

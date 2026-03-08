@@ -139,9 +139,12 @@ const HeroSection = () => {
           <motion.img
             src={specterMascot}
             alt="SPECTERCHAT Ghost Mascot"
+            width={96}
+            height={96}
             className="w-24 h-24 sm:w-24 sm:h-24 relative z-10"
             loading="eager"
             decoding="async"
+            fetchPriority="high"
             style={{
               filter: "drop-shadow(0 8px 24px hsl(var(--primary) / 0.3)) drop-shadow(0 2px 8px rgba(0,0,0,0.5))",
             }}
