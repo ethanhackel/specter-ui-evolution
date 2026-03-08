@@ -13,7 +13,7 @@ import stickerThink from "@/assets/stickers/think.png";
 import stickerThumbsup from "@/assets/stickers/thumbsup.png";
 import stickerShocked from "@/assets/stickers/shocked.png";
 import stickerDance from "@/assets/stickers/dance.png";
-import { Ghost, Zap, SkipForward, X, Send, Star, Smile } from "lucide-react";
+import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Copy, Reply, Flag, Undo2, MoreVertical } from "lucide-react";
 
 type ChatState = "idle" | "searching" | "connected" | "rating";
 
@@ -24,6 +24,9 @@ type Message = {
   time: string;
   isSticker?: boolean;
   stickerSrc?: string;
+  unsent?: boolean;
+  reaction?: string;
+  replyTo?: { text: string; sender: string };
 };
 
 type PickerTab = "emoji" | "sticker";
@@ -97,9 +100,13 @@ const Chat = () => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerTab, setPickerTab] = useState<PickerTab>("emoji");
   const [emojiCategory, setEmojiCategory] = useState(0);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [reactPickerMsgId, setReactPickerMsgId] = useState<number | null>(null);
+  const [replyingTo, setReplyingTo] = useState<{ id: number; text: string; sender: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
   const pickerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,10 +127,14 @@ const Chat = () => {
       if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
         setPickerOpen(false);
       }
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpenId(null);
+        setReactPickerMsgId(null);
+      }
     };
-    if (pickerOpen) document.addEventListener("mousedown", handler);
+    if (pickerOpen || menuOpenId !== null) document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [pickerOpen]);
+  }, [pickerOpen, menuOpenId]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -163,10 +174,12 @@ const Chat = () => {
     if (!input.trim() || state !== "connected") return;
     const msg = input.trim();
     setInput("");
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "me", text: msg, time: now() },
-    ]);
+    const newMsg: Message = {
+      id: Date.now(), type: "me", text: msg, time: now(),
+      ...(replyingTo ? { replyTo: { text: replyingTo.text, sender: replyingTo.sender } } : {}),
+    };
+    setMessages((prev) => [...prev, newMsg]);
+    setReplyingTo(null);
     simulateReply();
   };
 
@@ -217,6 +230,35 @@ const Chat = () => {
     setRating(0);
     setHoverRating(0);
   };
+
+  const copyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setMenuOpenId(null);
+  };
+
+  const replyToMsg = (msg: Message) => {
+    setReplyingTo({ id: msg.id, text: msg.isSticker ? "🖼️ Sticker" : msg.text, sender: msg.type === "me" ? "You" : partnerName });
+    setMenuOpenId(null);
+  };
+
+  const reactToMsg = (msgId: number, emoji: string) => {
+    setMessages((prev) => prev.map((m) => m.id === msgId ? { ...m, reaction: emoji } : m));
+    setReactPickerMsgId(null);
+    setMenuOpenId(null);
+  };
+
+  const unsendMsg = (msgId: number) => {
+    setMessages((prev) => prev.map((m) => m.id === msgId ? { ...m, unsent: true, text: "", isSticker: false, stickerSrc: undefined } : m));
+    setMenuOpenId(null);
+  };
+
+  const reportMsg = (msgId: number) => {
+    setMenuOpenId(null);
+    // In a real app this would send a report
+    alert("Message reported. Our team will review it.");
+  };
+
+  const quickReacts = ["❤️", "😂", "😮", "😢", "😡", "👍"];
 
   const statusConfig = {
     idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
@@ -439,8 +481,23 @@ const Chat = () => {
                     }`}>
                       {msg.type === "me" ? "Y" : "G"}
                     </div>
-                    <div>
-                      {msg.isSticker ? (
+                    <div className="relative group">
+                      {/* Reply reference */}
+                      {msg.replyTo && !msg.unsent && (
+                        <div className={`mb-1 px-3 py-1.5 rounded-lg text-[0.65rem] border-l-2 border-primary/40 bg-secondary/50 text-muted-foreground ${msg.type === "me" ? "text-right" : ""}`}>
+                          <span className="font-semibold text-primary/70">{msg.replyTo.sender}</span>
+                          <p className="truncate max-w-[200px]">{msg.replyTo.text}</p>
+                        </div>
+                      )}
+
+                      {/* Unsent message */}
+                      {msg.unsent ? (
+                        <div className={`px-4 py-3 rounded-xl text-sm leading-relaxed italic border border-dashed border-border/50 text-muted-foreground/50 ${
+                          msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"
+                        }`}>
+                          This message was unsent
+                        </div>
+                      ) : msg.isSticker ? (
                         <div className={`p-2 rounded-xl ${
                           msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"
                         }`}>
@@ -455,7 +512,65 @@ const Chat = () => {
                           {msg.text}
                         </div>
                       )}
-                      <span className={`text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.type === "me" ? "text-right" : ""}`}>
+
+                      {/* Reaction badge */}
+                      {msg.reaction && (
+                        <div className={`absolute -bottom-2 ${msg.type === "me" ? "right-2" : "left-2"} bg-secondary border border-border rounded-full px-1.5 py-0.5 text-sm shadow-sm cursor-pointer hover:scale-110 transition-transform`}
+                          onClick={() => reactToMsg(msg.id, "")}>
+                          {msg.reaction}
+                        </div>
+                      )}
+
+                      {/* Three-dot menu button */}
+                      {!msg.unsent && (
+                        <button
+                          onClick={() => setMenuOpenId(menuOpenId === msg.id ? null : msg.id)}
+                          className={`absolute top-1/2 -translate-y-1/2 ${msg.type === "me" ? "-left-8" : "-right-8"} w-7 h-7 rounded-full bg-secondary/80 border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-secondary text-muted-foreground hover:text-foreground`}
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
+                      {/* Context menu dropdown */}
+                      {menuOpenId === msg.id && !msg.unsent && (
+                        <div
+                          ref={menuRef}
+                          className={`absolute z-50 ${msg.type === "me" ? "right-0" : "left-0"} top-full mt-1 min-w-[160px] rounded-xl border border-border shadow-xl animate-[slideIn_0.15s_ease-out] overflow-hidden`}
+                          style={{ background: "hsl(var(--card))" }}
+                        >
+                          {/* Quick react row */}
+                          <div className="flex items-center justify-center gap-1 px-3 py-2 border-b border-border">
+                            {quickReacts.map((emoji) => (
+                              <button
+                                key={emoji}
+                                onClick={() => reactToMsg(msg.id, emoji)}
+                                className="w-8 h-8 flex items-center justify-center text-lg rounded-full hover:bg-primary/10 transition-all hover:scale-125 active:scale-95"
+                              >
+                                {emoji}
+                              </button>
+                            ))}
+                          </div>
+
+                          {!msg.isSticker && (
+                            <button onClick={() => copyText(msg.text)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                              <Copy className="w-4 h-4 text-muted-foreground" /> Copy text
+                            </button>
+                          )}
+                          <button onClick={() => replyToMsg(msg)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                            <Reply className="w-4 h-4 text-blue-400" /> Reply
+                          </button>
+                          {msg.type === "me" && (
+                            <button onClick={() => unsendMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/80 transition-colors">
+                              <Undo2 className="w-4 h-4 text-amber-400" /> Unsend
+                            </button>
+                          )}
+                          <button onClick={() => reportMsg(msg.id)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-secondary/80 transition-colors">
+                            <Flag className="w-4 h-4" /> Report
+                          </button>
+                        </div>
+                      )}
+
+                      <span className={`text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.reaction ? "mt-3" : "mt-1"} ${msg.type === "me" ? "text-right" : ""}`}>
                         {msg.time}
                       </span>
                     </div>
@@ -568,6 +683,19 @@ const Chat = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Reply bar */}
+            {replyingTo && (
+              <div className="px-4 pt-3 pb-0 flex items-center gap-3">
+                <div className="flex-1 bg-secondary/50 border-l-2 border-primary/50 rounded-r-lg px-3 py-2">
+                  <p className="text-[0.65rem] font-semibold text-primary/70">{replyingTo.sender}</p>
+                  <p className="text-xs text-muted-foreground truncate">{replyingTo.text}</p>
+                </div>
+                <button onClick={() => setReplyingTo(null)} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all">
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             )}
 
