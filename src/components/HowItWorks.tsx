@@ -25,18 +25,18 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-24 px-6">
+    <section className="py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-xs tracking-[0.3em] text-primary mb-3 font-mono uppercase">
+          <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-2 sm:mb-3 font-mono uppercase">
             // The Protocol
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
             How <span className="text-gradient">SPECTER</span> Works
           </h2>
         </motion.div>
@@ -44,7 +44,7 @@ const HowItWorks = () => {
         <div className="relative">
           {/* Vertical line */}
           <div
-            className="absolute left-7 top-0 bottom-0 w-px"
+            className="absolute left-5 sm:left-7 top-0 bottom-0 w-px"
             style={{
               background: "linear-gradient(to bottom, hsl(0 72% 51%), hsl(0 72% 51% / 0.2), transparent)",
             }}
@@ -54,20 +54,20 @@ const HowItWorks = () => {
             {steps.map((step, i) => (
               <motion.div
                 key={step.num}
-                className="flex gap-8 py-8 items-start"
+                className="flex gap-5 sm:gap-8 py-6 sm:py-8 items-start"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center font-heading font-bold text-primary bg-background relative z-10 shrink-0 text-sm"
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border border-primary flex items-center justify-center font-heading font-bold text-primary bg-background relative z-10 shrink-0 text-xs sm:text-sm"
                   style={{ boxShadow: "0 0 15px hsl(0 72% 51% / 0.3)" }}
                 >
                   {step.num}
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-md">{step.desc}</p>
+                  <h3 className="font-heading font-bold text-foreground mb-1.5 sm:mb-2 text-sm sm:text-base">{step.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">{step.desc}</p>
                 </div>
               </motion.div>
             ))}

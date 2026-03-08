@@ -10,7 +10,7 @@ const features = [
   { icon: Star, label: "Rate & Rank" },
 ];
 
-const floatingDots = Array.from({ length: 14 }, (_, i) => ({
+const floatingDots = Array.from({ length: 8 }, (_, i) => ({
   id: i,
   size: Math.random() * 4 + 2,
   x: Math.random() * 100,
@@ -19,11 +19,11 @@ const floatingDots = Array.from({ length: 14 }, (_, i) => ({
   duration: Math.random() * 4 + 4,
 }));
 
-const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
+const floatingGhosts = Array.from({ length: 4 }, (_, i) => ({
   id: i,
   x: Math.random() * 90 + 5,
   y: Math.random() * 80 + 10,
-  size: Math.random() * 20 + 30,
+  size: Math.random() * 20 + 20,
   delay: Math.random() * 3,
   duration: Math.random() * 8 + 10,
   opacity: Math.random() * 0.08 + 0.03,
@@ -31,12 +31,12 @@ const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Floating ghosts */}
+    <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-14 sm:pt-16">
+      {/* Floating ghosts - fewer for performance */}
       {floatingGhosts.map((ghost) => (
         <motion.div
           key={ghost.id}
-          className="absolute pointer-events-none"
+          className="absolute pointer-events-none gpu-accelerate"
           style={{
             left: `${ghost.x}%`,
             top: `${ghost.y}%`,
@@ -70,7 +70,7 @@ const HeroSection = () => {
       {floatingDots.map((dot) => (
         <motion.div
           key={dot.id}
-          className="absolute rounded-full bg-primary"
+          className="absolute rounded-full bg-primary gpu-accelerate"
           style={{
             width: dot.size,
             height: dot.size,
@@ -93,14 +93,14 @@ const HeroSection = () => {
 
       {/* Radial glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, hsl(0 72% 51% / 0.06) 0%, transparent 70%)" }}
       />
 
-      <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
+      <div className="relative z-10 text-center px-5 sm:px-6 max-w-2xl mx-auto">
         {/* Live badge */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono tracking-widest mb-6"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full text-[0.65rem] sm:text-xs font-mono tracking-widest mb-5 sm:mb-6"
           style={{
             background: "hsl(145 63% 42% / 0.08)",
             border: "1px solid hsl(145 63% 42% / 0.2)",
@@ -120,7 +120,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <p className="text-xs tracking-[0.25em] text-muted-foreground font-mono mb-6">
+          <p className="text-[0.6rem] sm:text-xs tracking-[0.25em] text-muted-foreground font-mono mb-4 sm:mb-6">
             // ANONYMOUS STRANGER CHAT — v2.0
           </p>
         </motion.div>
@@ -133,14 +133,14 @@ const HeroSection = () => {
           <motion.img
             src={specterMascot}
             alt="SPECTER Ghost"
-            className="w-24 h-24 mx-auto mb-6"
+            className="w-18 h-18 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
         </motion.div>
 
         <motion.h1
-          className="font-heading text-6xl sm:text-8xl font-black mb-3 tracking-tight leading-none"
+          className="font-heading text-5xl sm:text-6xl md:text-8xl font-black mb-2 sm:mb-3 tracking-tight leading-none"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
@@ -149,7 +149,7 @@ const HeroSection = () => {
         </motion.h1>
 
         <motion.p
-          className="font-heading text-lg sm:text-xl text-muted-foreground tracking-[0.3em] mb-6"
+          className="font-heading text-base sm:text-lg md:text-xl text-muted-foreground tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
@@ -158,7 +158,7 @@ const HeroSection = () => {
         </motion.p>
 
         <motion.p
-          className="text-sm text-muted-foreground mb-10 max-w-lg mx-auto leading-relaxed"
+          className="text-xs sm:text-sm text-muted-foreground mb-8 sm:mb-10 max-w-lg mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
@@ -169,49 +169,49 @@ const HeroSection = () => {
 
         {/* Stats */}
         <motion.div
-          className="flex items-center justify-center gap-10 mb-10"
+          className="flex items-center justify-center gap-6 sm:gap-10 mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.55 }}
         >
           <div className="text-center">
-            <span className="font-heading text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
+            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
               48
             </span>
-            <span className="text-xs font-mono tracking-widest text-muted-foreground">// ONLINE</span>
+            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// ONLINE</span>
           </div>
-          <div className="w-px h-8 bg-border" />
+          <div className="w-px h-6 sm:h-8 bg-border" />
           <div className="text-center">
-            <span className="font-heading text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
+            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
               1,247
             </span>
-            <span className="text-xs font-mono tracking-widest text-muted-foreground">// TODAY</span>
+            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// TODAY</span>
           </div>
-          <div className="w-px h-8 bg-border" />
+          <div className="w-px h-6 sm:h-8 bg-border" />
           <div className="text-center">
-            <span className="font-heading text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
+            <span className="font-heading text-xl sm:text-2xl font-bold text-primary block" style={{ textShadow: "0 0 15px hsl(0 72% 51% / 0.4)" }}>
               5,237
             </span>
-            <span className="text-xs font-mono tracking-widest text-muted-foreground">// TOTAL</span>
+            <span className="text-[0.6rem] sm:text-xs font-mono tracking-widest text-muted-foreground">// TOTAL</span>
           </div>
         </motion.div>
 
         {/* CTAs */}
         <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.65 }}
         >
           <Link
             to="/chat"
-            className="px-10 py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-sm tracking-widest uppercase btn-primary-glow transition-all duration-300 hover:scale-105 flex items-center gap-2"
+            className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
           >
             ⚡ Start Now — Anonymous
           </Link>
           <Link
             to="/register"
-            className="px-10 py-4 rounded-sm glass-card font-heading font-medium text-sm tracking-widest uppercase text-muted-foreground transition-all duration-300 hover:text-foreground hover:scale-105"
+            className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm glass-card font-heading font-medium text-xs sm:text-sm tracking-widest uppercase text-muted-foreground transition-all duration-300 hover:text-foreground hover:scale-105 active:scale-95 text-center"
           >
             Create Account
           </Link>
@@ -219,7 +219,7 @@ const HeroSection = () => {
 
         {/* Feature pills */}
         <motion.div
-          className="flex flex-wrap items-center justify-center gap-3"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
@@ -227,9 +227,9 @@ const HeroSection = () => {
           {features.map((feature) => (
             <div
               key={feature.label}
-              className="glass-card px-4 py-2 flex items-center gap-2 text-xs text-secondary-foreground"
+              className="glass-card px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 text-[0.65rem] sm:text-xs text-secondary-foreground"
             >
-              <feature.icon className="w-3.5 h-3.5 text-primary" />
+              <feature.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary" />
               {feature.label}
             </div>
           ))}
