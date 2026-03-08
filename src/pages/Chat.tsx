@@ -437,7 +437,7 @@ const Chat = () => {
 
                 {state === "connected" && (
                   <div className="px-5 mb-6">
-                    <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Stranger</p>
+                    <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Stranger</p>
                     <div className="bg-secondary/50 border border-primary/20 rounded-lg p-4">
                       <p className="font-heading text-base font-bold text-primary mb-1">{partnerName}</p>
                       <p className="text-xs font-mono text-muted-foreground">Connected</p>
