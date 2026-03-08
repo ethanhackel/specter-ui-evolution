@@ -91,17 +91,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (username: string, email: string, password: string) => {
+    // Sanitize username - strip any HTML tags
+    const sanitizedUsername = username.replace(/<[^>]*>/g, '').trim();
+    if (!sanitizedUsername || sanitizedUsername.length < 3 || !/^[a-zA-Z0-9_.\- ]+$/.test(sanitizedUsername)) {
+      return { error: "Username contains invalid characters. Use only letters, numbers, underscores, dots, hyphens and spaces." };
+    }
+
     // Check username availability first
-    const available = await checkUsernameAvailable(username);
+    const available = await checkUsernameAvailable(sanitizedUsername);
     if (!available) return { error: "Username is already taken. Please choose another." };
 
-    const authEmail = email || `${username.toLowerCase().replace(/[^a-z0-9_]/g, '')}@specterchat.ghost`;
+    const authEmail = email || `${sanitizedUsername.toLowerCase().replace(/[^a-z0-9_]/g, '')}@specterchat.ghost`;
     
     const { data, error } = await supabase.auth.signUp({
       email: authEmail,
       password,
       options: {
-        data: { username },
+        data: { username: sanitizedUsername },
         emailRedirectTo: window.location.origin,
       },
     });
