@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star } from "lucide-react";
+import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import specterMascot from "@/assets/specter-mascot.png";
@@ -201,26 +202,20 @@ const Profile = () => {
                 <span className="text-xs font-mono tracking-[0.2em] text-muted-foreground">CHANGE PASSWORD</span>
               </div>
               <div className="space-y-3">
-                <input
-                  type="password"
+                <PasswordInput
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Current password"
-                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
                 />
-                <input
-                  type="password"
+                <PasswordInput
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="New password (min 6 chars)"
-                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
                 />
-                <input
-                  type="password"
+                <PasswordInput
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
-                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
                 />
                 <button
                   onClick={handleChangePassword}
