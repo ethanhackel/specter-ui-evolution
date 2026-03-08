@@ -1,7 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { Ghost, Zap, SkipForward, X, TriangleAlert as AlertTriangle, Send, Star } from "lucide-react";
+import stickerSpooky from "@/assets/stickers/spooky.png";
+import stickerHello from "@/assets/stickers/hello.png";
+import stickerLaugh from "@/assets/stickers/laugh.png";
+import stickerLove from "@/assets/stickers/love.png";
+import stickerCry from "@/assets/stickers/cry.png";
+import stickerCool from "@/assets/stickers/cool.png";
+import stickerAngry from "@/assets/stickers/angry.png";
+import stickerSleep from "@/assets/stickers/sleep.png";
+import stickerThink from "@/assets/stickers/think.png";
+import stickerThumbsup from "@/assets/stickers/thumbsup.png";
+import stickerShocked from "@/assets/stickers/shocked.png";
+import stickerDance from "@/assets/stickers/dance.png";
+import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Sticker } from "lucide-react";
 
 type ChatState = "idle" | "searching" | "connected" | "rating";
 
@@ -10,7 +22,11 @@ type Message = {
   type: "me" | "them" | "system";
   text: string;
   time: string;
+  isSticker?: boolean;
+  stickerSrc?: string;
 };
+
+type PickerTab = "emoji" | "sticker";
 
 const interests = [
   { emoji: "🎮", label: "Gaming", key: "gaming" },
@@ -25,7 +41,48 @@ const interests = [
   { emoji: "🍜", label: "Food", key: "food" },
 ];
 
-const quickEmojis = ["😂", "😭", "🔥", "❤️", "👀", "💀", "🤔", "😎", "🥺", "✨"];
+const stickers = [
+  { src: stickerHello, label: "Hello" },
+  { src: stickerLaugh, label: "Laugh" },
+  { src: stickerLove, label: "Love" },
+  { src: stickerCool, label: "Cool" },
+  { src: stickerSpooky, label: "Spooky" },
+  { src: stickerAngry, label: "Angry" },
+  { src: stickerCry, label: "Cry" },
+  { src: stickerShocked, label: "Shocked" },
+  { src: stickerThink, label: "Think" },
+  { src: stickerThumbsup, label: "Thumbs Up" },
+  { src: stickerSleep, label: "Sleep" },
+  { src: stickerDance, label: "Dance" },
+];
+
+// Comprehensive emoji list organized by category
+const emojiCategories = [
+  {
+    name: "Smileys",
+    emojis: ["😀","😃","😄","😁","😆","😅","🤣","😂","🙂","🙃","😉","😊","😇","🥰","😍","🤩","😘","😗","😚","😙","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🫡","🤐","🤨","😐","😑","😶","🫥","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🥵","🥶","🥴","😵","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","🫤","😟","🙁","😮","😯","😲","😳","🥺","🥹","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖"]
+  },
+  {
+    name: "Hearts",
+    emojis: ["❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","❣️","💕","💞","💓","💗","💖","💘","💝","💟"]
+  },
+  {
+    name: "Hands",
+    emojis: ["👋","🤚","🖐️","✋","🖖","🫱","🫲","🫳","🫴","👌","🤌","🤏","✌️","🤞","🫰","🤟","🤘","🤙","👈","👉","👆","🖕","👇","☝️","🫵","👍","👎","✊","👊","🤛","🤜","👏","🙌","🫶","👐","🤲","🤝","🙏"]
+  },
+  {
+    name: "Animals",
+    emojis: ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐻‍❄️","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐒","🐔","🐧","🐦","🐤","🦆","🦅","🦉","🦇","🐺","🐗","🐴","🦄","🐝","🪱","🐛","🦋","🐌","🐞","🐜","🪰","🪲","🐢","🐍","🦎","🦂","🕷️","🦀","🐙","🦑"]
+  },
+  {
+    name: "Objects",
+    emojis: ["⚡","🔥","✨","🌟","💫","🌈","☁️","🌙","🎵","🎶","🎸","🎹","🥁","🎮","🕹️","🎯","🎲","🧩","🎭","🎨","🏆","🥇","⚽","🏀","🏈","⚾","🎾","🏐","🎱","💎","👑","🎩","💍","🔮","🧿","🎪","🎠","🎡","🎢","🚀","🛸","🌍","💣","💊","🔔","📱","💻","⌨️","🖥️","📷","📺","🎬"]
+  },
+  {
+    name: "Food",
+    emojis: ["🍎","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🥑","🍆","🌶️","🫑","🥒","🥬","🥦","🧄","🧅","🍄","🌽","🥕","🥔","🍞","🥐","🥖","🧀","🍕","🍔","🍟","🌭","🍿","🧂","🥚","🍳","🥞","🧇","🥓","🥩","🍗","🍖","🌮","🌯","🫔","🥙","🧆","🥗","🍝","🍜","🍲","🍛","🍣","🍱","🥟","🍤","🍙","🍚","🍘","🍥","🥠","🥮","🍢","🍡","🍧","🍨","🍦","🥧","🧁","🍰","🎂","🍮","🍭","🍬","🍫","🍩","🍪","☕","🍵","🧋","🥤","🍶","🍺","🍻","🥂","🍷","🍸","🍹","🧃"]
+  },
+];
 
 const Chat = () => {
   const [state, setState] = useState<ChatState>("idle");
@@ -37,8 +94,12 @@ const Chat = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [partnerName, setPartnerName] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerTab, setPickerTab] = useState<PickerTab>("emoji");
+  const [emojiCategory, setEmojiCategory] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,6 +114,17 @@ const Chat = () => {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [state]);
 
+  // Close picker on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    if (pickerOpen) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [pickerOpen]);
+
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
     const sec = s % 60;
@@ -65,7 +137,6 @@ const Chat = () => {
     setState("searching");
     setMessages([]);
     setTimer(0);
-    // Simulate match after 2-3 seconds
     setTimeout(() => {
       const ghostId = Math.random().toString(36).substring(2, 6);
       setPartnerName(`Ghost#${ghostId}`);
@@ -86,9 +157,7 @@ const Chat = () => {
     setState("rating");
   };
 
-  const skipPartner = () => {
-    leaveChat();
-  };
+  const skipPartner = () => leaveChat();
 
   const sendMessage = () => {
     if (!input.trim() || state !== "connected") return;
@@ -98,8 +167,20 @@ const Chat = () => {
       ...prev,
       { id: Date.now(), type: "me", text: msg, time: now() },
     ]);
+    simulateReply();
+  };
 
-    // Simulate reply
+  const sendSticker = (src: string) => {
+    if (state !== "connected") return;
+    setPickerOpen(false);
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), type: "me", text: "", time: now(), isSticker: true, stickerSrc: src },
+    ]);
+    simulateReply();
+  };
+
+  const simulateReply = () => {
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
@@ -116,6 +197,10 @@ const Chat = () => {
         { id: Date.now() + 1, type: "them", text: replies[Math.floor(Math.random() * replies.length)], time: now() },
       ]);
     }, 1000 + Math.random() * 2000);
+  };
+
+  const addEmoji = (emoji: string) => {
+    setInput((prev) => prev + emoji);
   };
 
   const toggleInterest = (key: string) => {
@@ -190,13 +275,11 @@ const Chat = () => {
       <div className="flex flex-1 overflow-hidden relative z-10">
         {/* Sidebar */}
         <div className="hidden sm:flex w-64 shrink-0 border-r border-border flex-col py-6 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
-          {/* Logo Header */}
           <div className="px-5 mb-6 flex items-center gap-2">
             <img src={specterMascot} alt="" className="w-6 h-6" />
             <span className="font-heading font-black text-sm tracking-widest text-gradient">SPECTER</span>
           </div>
 
-          {/* Session Timer */}
           <div className="px-5 mb-6">
             <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Session</p>
             <div className="bg-secondary/50 border border-border rounded-lg p-4 text-center">
@@ -206,7 +289,6 @@ const Chat = () => {
             </div>
           </div>
 
-          {/* Partner Info */}
           {state === "connected" && (
             <div className="px-5 mb-6">
               <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Stranger</p>
@@ -217,7 +299,6 @@ const Chat = () => {
             </div>
           )}
 
-          {/* Interests */}
           <div className="px-5 flex-1 overflow-y-auto">
             <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">// Interests</p>
             <div className="flex flex-wrap gap-2">
@@ -359,13 +440,21 @@ const Chat = () => {
                       {msg.type === "me" ? "Y" : "G"}
                     </div>
                     <div>
-                      <div className={`px-4 py-3 rounded-xl text-sm leading-relaxed ${
-                        msg.type === "me"
-                          ? "bg-primary/15 border border-primary/20 rounded-br-sm text-foreground"
-                          : "bg-secondary border border-border rounded-bl-sm text-foreground"
-                      }`}>
-                        {msg.text}
-                      </div>
+                      {msg.isSticker ? (
+                        <div className={`p-2 rounded-xl ${
+                          msg.type === "me" ? "rounded-br-sm" : "rounded-bl-sm"
+                        }`}>
+                          <img src={msg.stickerSrc} alt="sticker" className="w-28 h-28 object-contain" />
+                        </div>
+                      ) : (
+                        <div className={`px-4 py-3 rounded-xl text-sm leading-relaxed ${
+                          msg.type === "me"
+                            ? "bg-primary/15 border border-primary/20 rounded-br-sm text-foreground"
+                            : "bg-secondary border border-border rounded-bl-sm text-foreground"
+                        }`}>
+                          {msg.text}
+                        </div>
+                      )}
                       <span className={`text-[0.6rem] font-mono text-muted-foreground mt-1 block ${msg.type === "me" ? "text-right" : ""}`}>
                         {msg.time}
                       </span>
@@ -375,7 +464,6 @@ const Chat = () => {
               </div>
             ))}
 
-            {/* Typing indicator */}
             {isTyping && (
               <div className="flex items-center gap-2 self-start px-4 py-2 text-xs font-mono text-muted-foreground">
                 <div className="flex gap-1">
@@ -383,9 +471,7 @@ const Chat = () => {
                     <div
                       key={i}
                       className="w-1.5 h-1.5 rounded-full bg-primary"
-                      style={{
-                        animation: `tdot 1.4s ${i * 0.2}s infinite`,
-                      }}
+                      style={{ animation: `tdot 1.4s ${i * 0.2}s infinite` }}
                     />
                   ))}
                 </div>
@@ -396,43 +482,143 @@ const Chat = () => {
           </div>
 
           {/* Input Area */}
-          <div className="shrink-0 p-4 border-t border-border" style={{ background: "hsl(var(--card))" }}>
-            {/* Quick emojis */}
-            <div className="flex gap-1.5 mb-3 flex-wrap">
-              {quickEmojis.map((e) => (
-                <button
-                  key={e}
-                  onClick={() => setInput((prev) => prev + e)}
-                  disabled={state !== "connected"}
-                  className="w-8 h-8 rounded text-base hover:bg-primary/10 transition-colors disabled:opacity-30"
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-3 items-end">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                  }
-                }}
-                disabled={state !== "connected"}
-                placeholder={state === "connected" ? "Type a message..." : "Find a stranger to start chatting"}
-                className="flex-1 bg-secondary border border-border rounded-lg px-4 py-3 text-foreground text-sm outline-none resize-none min-h-[48px] max-h-[120px] transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/40 disabled:opacity-40 disabled:cursor-not-allowed"
-                rows={1}
-              />
-              <button
-                onClick={sendMessage}
-                disabled={state !== "connected" || !input.trim()}
-                className="w-12 h-12 shrink-0 rounded-lg bg-primary flex items-center justify-center transition-all hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed btn-primary-glow"
+          <div className="shrink-0 border-t border-border relative" style={{ background: "hsl(var(--card))" }}>
+            {/* Emoji / Sticker Picker */}
+            {pickerOpen && (
+              <div
+                ref={pickerRef}
+                className="absolute bottom-full left-0 right-0 border-t border-border animate-[slideIn_0.2s_ease-out]"
+                style={{ background: "hsl(var(--card))" }}
               >
-                <Send className="w-5 h-5 text-primary-foreground" />
-              </button>
+                {/* Tabs */}
+                <div className="flex border-b border-border">
+                  <button
+                    onClick={() => setPickerTab("emoji")}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-heading font-bold tracking-wider transition-all ${
+                      pickerTab === "emoji"
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Smile className="w-4 h-4" /> EMOJI
+                  </button>
+                  <button
+                    onClick={() => setPickerTab("sticker")}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-heading font-bold tracking-wider transition-all ${
+                      pickerTab === "sticker"
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Sticker className="w-4 h-4" /> STICKERS
+                  </button>
+                </div>
+
+                {pickerTab === "emoji" ? (
+                  <div>
+                    {/* Category tabs */}
+                    <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-none">
+                      {emojiCategories.map((cat, idx) => (
+                        <button
+                          key={cat.name}
+                          onClick={() => setEmojiCategory(idx)}
+                          className={`px-3 py-1.5 rounded-lg text-[0.65rem] font-medium whitespace-nowrap transition-all ${
+                            emojiCategory === idx
+                              ? "bg-primary/20 text-primary border border-primary/30"
+                              : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                          }`}
+                        >
+                          {cat.name}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Emoji grid */}
+                    <div className="h-52 overflow-y-auto p-3">
+                      <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-0.5">
+                        {emojiCategories[emojiCategory].emojis.map((emoji, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => addEmoji(emoji)}
+                            className="w-9 h-9 flex items-center justify-center text-xl rounded-lg hover:bg-primary/10 transition-colors active:scale-90"
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-52 overflow-y-auto p-4">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                      {stickers.map((sticker) => (
+                        <button
+                          key={sticker.label}
+                          onClick={() => sendSticker(sticker.src)}
+                          disabled={state !== "connected"}
+                          className="flex flex-col items-center gap-1.5 p-2 rounded-xl hover:bg-primary/10 transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed group"
+                        >
+                          <img
+                            src={sticker.src}
+                            alt={sticker.label}
+                            className="w-14 h-14 object-contain group-hover:scale-110 transition-transform"
+                          />
+                          <span className="text-[0.6rem] text-muted-foreground font-medium">{sticker.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="p-4">
+              <div className="flex gap-2 items-end">
+                {/* Emoji button */}
+                <button
+                  onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("emoji"); }}
+                  className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-all ${
+                    pickerOpen && pickerTab === "emoji"
+                      ? "bg-primary/20 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  }`}
+                >
+                  <Smile className="w-5 h-5" />
+                </button>
+
+                {/* Sticker button */}
+                <button
+                  onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }}
+                  className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-all ${
+                    pickerOpen && pickerTab === "sticker"
+                      ? "bg-primary/20 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  }`}
+                >
+                  <img src={specterMascot} alt="Stickers" className="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity" />
+                </button>
+
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                  disabled={state !== "connected"}
+                  placeholder={state === "connected" ? "Message..." : "Find a stranger to start chatting"}
+                  className="flex-1 bg-secondary border border-border rounded-lg px-4 py-2.5 text-foreground text-sm outline-none resize-none min-h-[42px] max-h-[120px] transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/40 disabled:opacity-40 disabled:cursor-not-allowed"
+                  rows={1}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={state !== "connected" || !input.trim()}
+                  className="w-10 h-10 shrink-0 rounded-lg bg-primary flex items-center justify-center transition-all hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed btn-primary-glow"
+                >
+                  <Send className="w-4 h-4 text-primary-foreground" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -451,6 +637,8 @@ const Chat = () => {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: none; }
         }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );
