@@ -477,25 +477,6 @@ const Chat = () => {
             </div>
           )}
 
-          <div className="px-5 flex-1 overflow-y-auto">
-            <p className="text-[0.6rem] font-mono tracking-[0.25em] text-muted-foreground mb-3 uppercase">Interests</p>
-            <div className="flex flex-wrap gap-2">
-              {interests.map((i) => (
-                <button
-                  key={i.key}
-                  onClick={() => toggleInterest(i.key)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    selectedInterests.has(i.key)
-                      ? "bg-primary/20 border border-primary/40 text-primary shadow-sm"
-                      : "bg-secondary/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
-                  }`}
-                >
-                  <span className="mr-1.5">{i.emoji}</span>
-                  {i.label}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Chat Area */}
