@@ -59,7 +59,7 @@ const sections = [
     title: "Changes & Contact",
     content: [
       "We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated effective date.",
-      "We will never change our core commitment: SPECTER will always prioritize your privacy and anonymity above all else.",
+      "We will never change our core commitment: SPECTERCHAT will always prioritize your privacy and anonymity above all else.",
       "If you have any questions, concerns, or requests regarding this Privacy Policy, please reach out to us through our platform's feedback system.",
       `This policy is effective as of ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.`,
     ],
