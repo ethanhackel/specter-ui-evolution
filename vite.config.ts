@@ -13,14 +13,6 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     assetsInlineLimit: 4096,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          animations: ["framer-motion"],
-        },
-      },
-    },
     cssCodeSplit: true,
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
