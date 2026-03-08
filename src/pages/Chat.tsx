@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import specterMascot from "@/assets/specter-mascot.png";
+import { playSendSound, playReceiveSound, playVanishSound, playConnectSound } from "@/lib/sounds";
 import stickerSpooky from "@/assets/stickers/spooky.png";
 import stickerHello from "@/assets/stickers/hello.png";
 import stickerLaugh from "@/assets/stickers/laugh.png";
@@ -171,6 +172,7 @@ const Chat = () => {
       const ghostId = Math.random().toString(36).substring(2, 6);
       setPartnerName(`Ghost#${ghostId}`);
       setState("connected");
+      playConnectSound();
       setMessages([
         { id: 1, type: "system", text: `Connected with Ghost#${ghostId} — say hello! 👋`, time: now() },
       ]);
@@ -180,6 +182,7 @@ const Chat = () => {
   const cancelSearch = () => setState("idle");
 
   const leaveChat = () => {
+    playVanishSound();
     setMessages((prev) => [
       ...prev,
       { id: Date.now(), type: "system", text: "You disconnected from the chat.", time: now() },
@@ -198,6 +201,7 @@ const Chat = () => {
       ...(replyingTo ? { replyTo: { text: replyingTo.text, sender: replyingTo.sender } } : {}),
     };
     setMessages((prev) => [...prev, newMsg]);
+    playSendSound();
     setReplyingTo(null);
     simulateReply();
   };
@@ -209,6 +213,7 @@ const Chat = () => {
       ...prev,
       { id: Date.now(), type: "me", text: "", time: now(), isSticker: true, stickerSrc: src },
     ]);
+    playSendSound();
     simulateReply();
   };
 
@@ -228,6 +233,7 @@ const Chat = () => {
         ...prev,
         { id: Date.now() + 1, type: "them", text: replies[Math.floor(Math.random() * replies.length)], time: now() },
       ]);
+      playReceiveSound();
     }, 1000 + Math.random() * 2000);
   };
 
