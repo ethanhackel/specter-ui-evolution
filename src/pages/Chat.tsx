@@ -127,10 +127,14 @@ const Chat = () => {
       if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
         setPickerOpen(false);
       }
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpenId(null);
+        setReactPickerMsgId(null);
+      }
     };
-    if (pickerOpen) document.addEventListener("mousedown", handler);
+    if (pickerOpen || menuOpenId !== null) document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [pickerOpen]);
+  }, [pickerOpen, menuOpenId]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
