@@ -48,10 +48,10 @@ const sections = [
     icon: Ban,
     title: "Enforcement & Termination",
     content: [
-      "SPECTER reserves the right to ban, restrict, or terminate access for any user who violates these terms, at our sole discretion.",
+      "SPECTERCHAT reserves the right to ban, restrict, or terminate access for any user who violates these terms, at our sole discretion.",
       "Bans may be implemented based on session identifiers, persona accounts, or behavioral patterns. Repeat offenders face permanent removal.",
       "We employ a karma-based system where users rate conversations. Consistently low-rated users may face reduced matching priority or temporary restrictions.",
-      "You may discontinue using SPECTER at any time. If you have a registered persona, you can delete it permanently through the platform settings.",
+      "You may discontinue using SPECTERCHAT at any time. If you have a registered persona, you can delete it permanently through the platform settings.",
     ],
   },
   {
