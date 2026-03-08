@@ -1,6 +1,6 @@
 import { memo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Ghost, Star } from "lucide-react";
+import { Ghost, Star, Zap, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import stickerCry from "@/assets/stickers/cry.png";
@@ -49,7 +49,7 @@ export const IdleOverlay = memo(({ setState, setSelectedInterests }: {
     <motion.img src={specterMascot} alt="SPECTERCHAT mascot" className="w-16 h-16 sm:w-20 sm:h-20 relative z-10" style={{ filter: "drop-shadow(0 0 25px hsl(0 72% 51% / 0.4))" }} animate={{ y: [-6, 6, -6] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
     <h2 className="font-heading text-2xl sm:text-3xl font-bold text-gradient relative z-10">Enter the Void</h2>
     <p className="text-muted-foreground max-w-sm leading-relaxed relative z-10 text-sm sm:text-base">Click below to be matched with a random stranger. Completely anonymous. No account needed.</p>
-    <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">⚡ Find a Stranger</button>
+    <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95 flex items-center gap-2"><Zap className="w-4 h-4" /> Find a Stranger</button>
     <Link to="/register" className="relative z-10 px-6 sm:px-8 py-2.5 sm:py-3 rounded-sm glass-card font-heading font-medium text-[0.65rem] sm:text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all">Create Account for More Features</Link>
   </div>
 ));
@@ -73,7 +73,7 @@ export const PickingOverlay = memo(({ selectedInterests, toggleInterest, onSearc
       ))}
     </div>
     <div className="flex gap-3">
-      <button onClick={onSearch} className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">⚡ Search Now</button>
+      <button onClick={onSearch} className="px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95 flex items-center gap-2"><Search className="w-4 h-4" /> Search Now</button>
       <button onClick={onSearch} className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95">Skip →</button>
     </div>
   </div>
@@ -135,7 +135,7 @@ export const RatingOverlay = memo(({ partnerName, rating, hoverRating, setRating
     </div>
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
       <button onClick={onSubmit} className="px-6 sm:px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">Submit & Find New</button>
-      <button onClick={onFindNext} className="px-6 py-3 rounded-sm bg-emerald-600 text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 hover:bg-emerald-500" style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}>⚡ Find Next</button>
+      <button onClick={onFindNext} className="px-6 py-3 rounded-sm bg-emerald-600 text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 hover:bg-emerald-500 flex items-center gap-2" style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}><Zap className="w-4 h-4" /> Find Next</button>
       <button onClick={onSkip} className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95">Skip</button>
     </div>
   </div>

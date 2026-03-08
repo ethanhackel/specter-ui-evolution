@@ -271,7 +271,7 @@ const HeroSection = () => {
             to="/chat"
             className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
           >
-            ⚡ Start Now — Anonymous
+            <Zap className="w-4 h-4" /> Start Now — Anonymous
           </Link>
           <Link
             to="/register"

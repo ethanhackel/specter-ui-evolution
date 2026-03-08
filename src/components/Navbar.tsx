@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import { useState } from "react";
-import { Menu, X, User, LogOut, Settings } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, MessageCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -32,13 +32,13 @@ const Navbar = () => {
             <>
               <Link
                 to="/chat"
-                className="px-4 py-2 text-sm font-medium text-secondary-foreground hover:text-foreground transition-colors"
+                className="px-4 py-2 text-sm font-medium text-secondary-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
-                ⚡ Start Chatting
+                <MessageCircle className="w-4 h-4" /> Start Chatting
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="w-9 h-9 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all" aria-label="User menu">
+                  <button className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center text-primary hover:text-primary-foreground hover:from-primary hover:to-primary/80 transition-all" aria-label="User menu">
                     <User className="w-4 h-4" />
                   </button>
                 </DropdownMenuTrigger>
@@ -103,9 +103,9 @@ const Navbar = () => {
               <Link
                 to="/chat"
                 onClick={() => setMenuOpen(false)}
-                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground"
+                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5"
               >
-                ⚡ Start Chatting
+                <MessageCircle className="w-4 h-4" /> Start Chatting
               </Link>
               <button
                 onClick={async () => { setMenuOpen(false); await signOut(); navigate("/"); }}
@@ -133,9 +133,9 @@ const Navbar = () => {
               <Link
                 to="/chat"
                 onClick={() => setMenuOpen(false)}
-                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground"
+                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5"
               >
-                ⚡ Start Chatting
+                <MessageCircle className="w-4 h-4" /> Start Chatting
               </Link>
             </>
           )}
