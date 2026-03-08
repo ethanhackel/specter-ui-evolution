@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Shield, Wifi, WifiOff } from "lucide-react";
+import mascot from "@/assets/specter-mascot.png";
 
 type MessageType = "system" | "you" | "stranger" | "status";
 
