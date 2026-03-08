@@ -103,9 +103,9 @@ const Navbar = () => {
               <Link
                 to="/chat"
                 onClick={() => setMenuOpen(false)}
-                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground"
+                className="px-4 py-3 text-sm font-medium rounded-lg glass-card text-center text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5"
               >
-                ⚡ Start Chatting
+                <MessageCircle className="w-4 h-4" /> Start Chatting
               </Link>
               <button
                 onClick={async () => { setMenuOpen(false); await signOut(); navigate("/"); }}
