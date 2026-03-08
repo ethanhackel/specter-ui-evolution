@@ -38,7 +38,7 @@ const Navbar = () => {
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="w-9 h-9 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all" aria-label="User menu">
+                  <button className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center text-primary hover:text-primary-foreground hover:from-primary hover:to-primary/80 transition-all" aria-label="User menu">
                     <User className="w-4 h-4" />
                   </button>
                 </DropdownMenuTrigger>
