@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Ghost, Zap, Flag, X, Menu as MenuIcon, User, LogOut } from "lucide-react";
 import ReportSessionDialog from "@/components/chat/ReportSessionDialog";
+import LeaveConfirmDialog from "@/components/chat/LeaveConfirmDialog";
 import specterMascot from "@/assets/specter-mascot.png";
 import { formatTime } from "@/components/chat/ChatSidebar";
 import type { ChatState } from "@/hooks/useChat";
