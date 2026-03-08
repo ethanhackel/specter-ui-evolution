@@ -127,7 +127,7 @@ const Features = () => {
         >
           <p className="text-[0.65rem] sm:text-xs tracking-[0.3em] text-primary mb-3 font-mono uppercase">// Full Feature Set</p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Everything <span className="text-gradient">SPECTER</span> Offers
+            Everything <span className="text-gradient">SPECTERCHAT</span> Offers
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
             Built for real connection, engineered for absolute privacy. Explore every feature that makes SPECTER the most private chat platform on the internet.
