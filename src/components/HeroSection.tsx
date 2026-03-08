@@ -141,7 +141,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
         >
-          <span className="text-gradient">SPECTER</span>
+          <span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span>
         </motion.h1>
 
         <motion.p
