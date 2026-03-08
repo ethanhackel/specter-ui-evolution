@@ -23,6 +23,7 @@ type Props = {
   onLeave: () => void;
   setState: (s: ChatState) => void;
   setSelectedInterests: (s: Set<string>) => void;
+  onReportSession?: (reason: string) => void;
 };
 
 const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg: string }> = {
