@@ -296,6 +296,7 @@ const Chat = () => {
         onLeave={leaveChat}
         setState={setState}
         setSelectedInterests={setSelectedInterests}
+        onReportSession={handleReportSession}
       />
 
       {/* Main */}
