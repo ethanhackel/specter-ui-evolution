@@ -11,6 +11,7 @@ const Profile = () => {
 
   const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
@@ -61,8 +62,12 @@ const Profile = () => {
   };
 
   const handleChangePassword = async () => {
+    if (!currentPassword) {
+      toast({ title: "Enter your current password", variant: "destructive" });
+      return;
+    }
     if (newPassword.length < 6) {
-      toast({ title: "Password must be at least 6 characters", variant: "destructive" });
+      toast({ title: "New password must be at least 6 characters", variant: "destructive" });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -70,12 +75,13 @@ const Profile = () => {
       return;
     }
     setSaving(true);
-    const { error } = await updatePassword(newPassword);
+    const { error } = await updatePassword(currentPassword, newPassword);
     setSaving(false);
     if (error) {
       toast({ title: error, variant: "destructive" });
     } else {
       toast({ title: "Password changed successfully!" });
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     }
@@ -195,6 +201,13 @@ const Profile = () => {
                 <span className="text-xs font-mono tracking-[0.2em] text-muted-foreground">CHANGE PASSWORD</span>
               </div>
               <div className="space-y-3">
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Current password"
+                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+                />
                 <input
                   type="password"
                   value={newPassword}
