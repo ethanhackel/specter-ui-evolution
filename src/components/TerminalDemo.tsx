@@ -307,13 +307,13 @@ const TerminalDemo = () => {
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center justify-center h-full text-muted-foreground/40"
               >
-                <motion.span
-                  className="text-4xl mb-3"
+                <motion.img
+                  src={mascot}
+                  alt="Specter"
+                  className="w-10 h-10 mb-3"
                   animate={{ y: [0, -8, 0] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                >
-                  👻
-                </motion.span>
+                />
                 <span className="text-xs">Waiting to connect...</span>
               </motion.div>
             )}
