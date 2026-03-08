@@ -125,11 +125,20 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
+          className="relative mx-auto mb-4 sm:mb-6 w-28 h-28 sm:w-28 sm:h-28 flex items-center justify-center"
         >
+          {/* Ambient glow behind mascot */}
+          <div
+            className="absolute inset-0 rounded-full blur-2xl sm:blur-3xl opacity-40"
+            style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.35) 0%, hsl(var(--primary) / 0.08) 60%, transparent 80%)" }}
+          />
           <motion.img
             src={specterMascot}
             alt="SPECTERCHAT Ghost"
-            className="w-18 h-18 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6"
+            className="w-24 h-24 sm:w-24 sm:h-24 relative z-10"
+            style={{
+              filter: "drop-shadow(0 8px 24px hsl(var(--primary) / 0.3)) drop-shadow(0 2px 8px rgba(0,0,0,0.5))",
+            }}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
