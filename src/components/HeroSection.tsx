@@ -82,7 +82,7 @@ const HeroSection = () => {
             style={{
               width: ghost.size,
               height: ghost.size,
-              filter: `blur(${Math.random() * 2 + 1}px)`,
+              filter: `blur(${(ghost.id * 0.7 + 1.2).toFixed(1)}px)`,
             }}
           />
         </motion.div>

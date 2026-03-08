@@ -170,11 +170,14 @@ const Register = () => {
             <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">VERIFICATION</label>
             <div className="flex gap-2 sm:gap-3 mb-2 sm:mb-3">
               <div className="flex-1 bg-secondary border-2 border-primary/30 rounded px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-center gap-1.5 sm:gap-2 select-none" style={{ letterSpacing: "0.4em", fontFamily: "monospace" }}>
-                {captcha.split("").map((char, i) => (
-                  <span key={i} className="text-foreground text-lg sm:text-xl font-bold" style={{ transform: `rotate(${(Math.random() - 0.5) * 10}deg)` }}>
-                    {char}
-                  </span>
-                ))}
+                {captcha.split("").map((char, i) => {
+                  const rotation = ((i * 7 + 3) % 11) - 5;
+                  return (
+                    <span key={i} className="text-foreground text-lg sm:text-xl font-bold" style={{ transform: `rotate(${rotation}deg)` }}>
+                      {char}
+                    </span>
+                  );
+                })}
               </div>
               <button
                 onClick={generateCaptcha}

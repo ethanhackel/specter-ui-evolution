@@ -1,5 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Ghost } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
@@ -9,13 +10,14 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
       <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
+        <Ghost className="w-16 h-16 text-primary mx-auto mb-4 opacity-40" />
+        <h1 className="mb-3 text-5xl font-heading font-black text-gradient">404</h1>
+        <p className="mb-6 text-base text-muted-foreground">This page has vanished into the void.</p>
+        <Link to="/" className="inline-flex px-6 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">
+          Return Home
+        </Link>
       </div>
     </div>
   );
