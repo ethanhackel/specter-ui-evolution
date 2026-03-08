@@ -639,6 +639,11 @@ const Chat = () => {
         }
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        .picker-scroll { scrollbar-width: thin; scrollbar-color: hsl(0 72% 51% / 0.3) transparent; }
+        .picker-scroll::-webkit-scrollbar { width: 4px; }
+        .picker-scroll::-webkit-scrollbar-track { background: transparent; }
+        .picker-scroll::-webkit-scrollbar-thumb { background: hsl(0 72% 51% / 0.3); border-radius: 9999px; }
+        .picker-scroll::-webkit-scrollbar-thumb:hover { background: hsl(0 72% 51% / 0.5); }
       `}</style>
     </div>
   );
