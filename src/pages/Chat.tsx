@@ -251,15 +251,22 @@ const Chat = () => {
   };
 
   const submitRating = () => {
-    setState("idle");
+    // Submit rating only, go back to idle
     setRating(0);
     setHoverRating(0);
+    setState("idle");
   };
 
   const findNext = () => {
     setRating(0);
     setHoverRating(0);
     findMatch();
+  };
+
+  const skipRating = () => {
+    setRating(0);
+    setHoverRating(0);
+    setState("idle");
   };
 
   const copyText = (text: string) => {
@@ -530,7 +537,7 @@ const Chat = () => {
                   ⚡ Find Next
                 </button>
                 <button
-                  onClick={submitRating}
+                  onClick={skipRating}
                   className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all"
                 >
                   Skip
