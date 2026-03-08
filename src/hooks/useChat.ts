@@ -36,6 +36,12 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const queuePollingRef = useRef<ReturnType<typeof setInterval>>();
+  const partnerNameRef = useRef("");
+  const messagesRef = useRef<ChatMessage[]>([]);
+
+  // Keep refs in sync
+  useEffect(() => { partnerNameRef.current = partnerName; }, [partnerName]);
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
 
   const now = () =>
     new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
