@@ -100,9 +100,13 @@ const Chat = () => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerTab, setPickerTab] = useState<PickerTab>("emoji");
   const [emojiCategory, setEmojiCategory] = useState(0);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [reactPickerMsgId, setReactPickerMsgId] = useState<number | null>(null);
+  const [replyingTo, setReplyingTo] = useState<{ id: number; text: string; sender: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
   const pickerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
