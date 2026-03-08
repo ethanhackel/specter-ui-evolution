@@ -390,6 +390,10 @@ export type Database = {
         Returns: boolean
       }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      react_to_message: {
+        Args: { _message_id: string; _reaction: string }
+        Returns: undefined
+      }
       refresh_online_count: { Args: never; Returns: undefined }
       reset_daily_stats: { Args: never; Returns: undefined }
       user_in_room: {
