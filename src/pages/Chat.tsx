@@ -378,7 +378,7 @@ const Chat = () => {
 
           <div className="flex gap-1.5 sm:gap-2">
             {state === "idle" && (
-              <button onClick={findMatch} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-primary/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-foreground active:scale-95">
+              <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="px-2.5 sm:px-3 py-1.5 rounded text-[0.6rem] sm:text-xs font-heading font-bold tracking-wider glass-card hover:border-primary/40 transition-all flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover:text-foreground active:scale-95">
                 <Zap className="w-3 h-3" /> FIND
               </button>
             )}
