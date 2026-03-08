@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, User, Lock, ShieldCheck } from "lucide-react";
 import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -58,7 +58,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background flex items-center justify-center px-4 sm:px-6 py-8 relative">
+    <div className="min-h-[100dvh] bg-background flex items-center justify-center px-4 sm:px-6 md:px-8 py-8 relative">
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -67,7 +67,7 @@ const Login = () => {
         }}
       />
 
-      <div className="glass-card w-full max-w-md p-6 sm:p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
+      <div className="glass-card w-full max-w-md md:max-w-lg p-6 sm:p-8 md:p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
         <Link to="/" className="absolute top-4 sm:top-6 left-4 sm:left-6 flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors group">
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           <span className="font-mono tracking-wider">Back</span>
@@ -92,7 +92,10 @@ const Login = () => {
 
         <div className="space-y-4 sm:space-y-5">
           <div>
-            <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">USERNAME OR EMAIL</label>
+            <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">USERNAME OR EMAIL</span>
+            </div>
             <input
               type="text"
               value={usernameOrEmail}
@@ -102,7 +105,10 @@ const Login = () => {
             />
           </div>
           <div>
-            <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">PASSWORD</label>
+            <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+              <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">PASSWORD</span>
+            </div>
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -111,7 +117,10 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5 sm:mb-2">VERIFICATION</label>
+            <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">VERIFICATION</span>
+            </div>
             <div className="flex gap-2 sm:gap-3 mb-2 sm:mb-3">
               <div className="flex-1 bg-secondary border-2 border-primary/30 rounded px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-center gap-1.5 sm:gap-2 select-none" style={{ letterSpacing: "0.4em", fontFamily: "monospace" }}>
                 {captcha.split("").map((char, i) => {

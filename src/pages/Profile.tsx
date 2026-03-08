@@ -4,11 +4,10 @@ import { ArrowLeft, User, Lock, LogOut, Check, Ghost, MessageSquare, Star, Mail 
 import PasswordInput from "@/components/PasswordInput";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-import specterMascot from "@/assets/specter-mascot.png";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, profile, loading, signOut, updateProfile, updatePassword } = useAuth();
+  const { user, profile, loading, signOut, updateProfile, updatePassword, checkUsernameAvailable } = useAuth();
 
   const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
@@ -25,8 +24,6 @@ const Profile = () => {
     if (profile) setUsername(profile.username);
   }, [profile]);
 
-  const { checkUsernameAvailable } = useAuth();
-
   // Debounced username check
   useEffect(() => {
     if (!profile || username === profile.username || username.length < 3) {
@@ -39,7 +36,7 @@ const Profile = () => {
       setUsernameStatus(available ? "available" : "taken");
     }, 500);
     return () => clearTimeout(timer);
-  }, [username, profile]);
+  }, [username, profile, checkUsernameAvailable]);
 
   const handleSaveUsername = async () => {
     if (!profile || username === profile.username) return;
@@ -106,7 +103,7 @@ const Profile = () => {
   const isGhostEmail = email.endsWith("@specterchat.ghost");
 
   return (
-    <div className="min-h-[100dvh] bg-background flex items-center justify-center px-4 sm:px-6 py-8 relative">
+    <div className="min-h-[100dvh] bg-background flex items-center justify-center px-4 sm:px-6 md:px-8 py-8 relative">
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -115,7 +112,7 @@ const Profile = () => {
         }}
       />
 
-      <div className="glass-card w-full max-w-md p-6 sm:p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
+      <div className="glass-card w-full max-w-md md:max-w-lg p-6 sm:p-8 md:p-10 relative z-10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.5), 0 0 60px hsl(0 72% 51% / 0.05)" }}>
         <Link to="/chat" className="absolute top-4 sm:top-6 left-4 sm:left-6 flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors group">
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           <span className="font-mono tracking-wider">Back to Chat</span>
@@ -123,10 +120,10 @@ const Profile = () => {
 
         {/* Header */}
         <div className="text-center mb-6 mt-8">
-          <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-secondary border-2 border-primary/30 flex items-center justify-center">
-            {isGuest ? <Ghost className="w-8 h-8 text-primary" /> : <User className="w-8 h-8 text-primary" />}
+          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center">
+            {isGuest ? <Ghost className="w-7 h-7 sm:w-8 sm:h-8 text-primary" /> : <User className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />}
           </div>
-          <h1 className="font-heading font-black text-xl tracking-widest">
+          <h1 className="font-heading font-black text-lg sm:text-xl tracking-widest">
             <span className="text-gradient">MY</span> <span className="text-foreground">PROFILE</span>
           </h1>
           {isGuest && (
@@ -135,16 +132,16 @@ const Profile = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="glass-card p-3 text-center rounded-lg">
-            <MessageSquare className="w-4 h-4 text-primary mx-auto mb-1" />
-            <p className="text-lg font-bold text-foreground">{profile.total_chats}</p>
-            <p className="text-[0.65rem] text-muted-foreground font-mono tracking-wider">TOTAL CHATS</p>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-5 sm:mb-6">
+          <div className="glass-card p-2.5 sm:p-3 text-center rounded-lg">
+            <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mx-auto mb-1" />
+            <p className="text-base sm:text-lg font-bold text-foreground">{profile.total_chats}</p>
+            <p className="text-[0.6rem] sm:text-[0.65rem] text-muted-foreground font-mono tracking-wider">TOTAL CHATS</p>
           </div>
-          <div className="glass-card p-3 text-center rounded-lg">
-            <Star className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-lg font-bold text-foreground">{profile.karma}</p>
-            <p className="text-[0.65rem] text-muted-foreground font-mono tracking-wider">KARMA</p>
+          <div className="glass-card p-2.5 sm:p-3 text-center rounded-lg">
+            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 mx-auto mb-1" />
+            <p className="text-base sm:text-lg font-bold text-foreground">{profile.karma}</p>
+            <p className="text-[0.6rem] sm:text-[0.65rem] text-muted-foreground font-mono tracking-wider">KARMA</p>
           </div>
         </div>
 
@@ -152,7 +149,7 @@ const Profile = () => {
         <div className="space-y-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <User className="w-4 h-4 text-primary" />
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
               <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">USERNAME</span>
             </div>
             <div className="flex gap-2">
@@ -162,22 +159,22 @@ const Profile = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   maxLength={30}
-                  className="w-full bg-secondary border border-border rounded px-3 py-2.5 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
+                  className="w-full bg-secondary border border-border rounded px-3 sm:px-4 py-2.5 sm:py-3 text-foreground text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/10 placeholder:text-muted-foreground/50"
                 />
                 {usernameStatus === "checking" && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">checking...</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[0.65rem] sm:text-xs text-muted-foreground">checking...</span>
                 )}
                 {usernameStatus === "available" && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-500 flex items-center gap-1"><Check className="w-3 h-3" /> available</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[0.65rem] sm:text-xs text-emerald-500 flex items-center gap-1"><Check className="w-3 h-3" /> available</span>
                 )}
                 {usernameStatus === "taken" && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">taken</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[0.65rem] sm:text-xs text-destructive">taken</span>
                 )}
               </div>
               <button
                 onClick={handleSaveUsername}
                 disabled={saving || username === profile.username || usernameStatus === "taken" || username.length < 3}
-                className="px-4 py-2.5 rounded bg-primary text-primary-foreground text-xs font-bold tracking-wider disabled:opacity-50 hover:scale-105 active:scale-95 transition-all"
+                className="px-3 sm:px-4 py-2.5 sm:py-3 rounded bg-primary text-primary-foreground text-xs font-bold tracking-wider disabled:opacity-50 hover:scale-105 active:scale-95 transition-all"
               >
                 Save
               </button>
@@ -188,14 +185,14 @@ const Profile = () => {
           {!isGhostEmail && (
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <Mail className="w-4 h-4 text-primary" />
+                <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                 <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">EMAIL</span>
               </div>
               <input
                 type="text"
                 value={email}
                 disabled
-                className="w-full bg-secondary/50 border border-border rounded px-3 py-2.5 text-muted-foreground text-sm cursor-not-allowed"
+                className="w-full bg-secondary/50 border border-border rounded px-3 sm:px-4 py-2.5 sm:py-3 text-muted-foreground text-sm cursor-not-allowed"
               />
             </div>
           )}
@@ -204,8 +201,8 @@ const Profile = () => {
           {!isGuest && (
             <div className="border-t border-border pt-4 mt-4">
               <div className="flex items-center gap-2 mb-3">
-                <Lock className="w-4 h-4 text-primary" />
-                <span className="text-xs font-mono tracking-[0.2em] text-muted-foreground">CHANGE PASSWORD</span>
+                <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">CHANGE PASSWORD</span>
               </div>
               <div className="space-y-3">
                 <PasswordInput
@@ -226,7 +223,7 @@ const Profile = () => {
                 <button
                   onClick={handleChangePassword}
                   disabled={saving || !newPassword}
-                  className="w-full py-2.5 rounded bg-secondary border border-border text-foreground text-xs font-bold tracking-wider disabled:opacity-50 hover:border-primary/40 active:scale-[0.98] transition-all"
+                  className="w-full py-2.5 sm:py-3 rounded bg-secondary border border-border text-foreground text-xs font-bold tracking-wider disabled:opacity-50 hover:border-primary/40 active:scale-[0.98] transition-all"
                 >
                   {saving ? "UPDATING..." : "UPDATE PASSWORD"}
                 </button>
@@ -237,7 +234,7 @@ const Profile = () => {
           {/* Logout */}
           <button
             onClick={handleLogout}
-            className="w-full py-3 rounded glass-card border-destructive/30 text-destructive font-heading font-bold text-xs tracking-widest uppercase hover:bg-destructive/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+            className="w-full py-2.5 sm:py-3 rounded glass-card border-destructive/30 text-destructive font-heading font-bold text-xs tracking-widest uppercase hover:bg-destructive/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
           >
             <LogOut className="w-4 h-4" /> SIGN OUT
           </button>
