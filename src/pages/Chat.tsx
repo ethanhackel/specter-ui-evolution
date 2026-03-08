@@ -557,7 +557,7 @@ const Chat = () => {
 
               <motion.img
                 src={specterMascot}
-                alt="SPECTER mascot"
+                alt="SPECTERCHAT mascot"
                 className="w-16 h-16 sm:w-20 sm:h-20 relative z-10"
                 style={{ filter: "drop-shadow(0 0 25px hsl(0 72% 51% / 0.4))" }}
                 animate={{ y: [-6, 6, -6] }}
