@@ -48,7 +48,7 @@ const sections = [
     icon: Globe,
     title: "Third-Party Services",
     content: [
-      "SPECTER does not sell, trade, or share any user data with third parties. Period.",
+      "SPECTERCHAT does not sell, trade, or share any user data with third parties. Period.",
       "We do not use any third-party analytics, advertising, or tracking services.",
       "Our platform does not integrate with social media platforms or any external service that could compromise your anonymity.",
       "We do not use browser fingerprinting, tracking pixels, or any form of cross-site tracking technology.",
