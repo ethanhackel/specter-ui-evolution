@@ -291,7 +291,8 @@ const Chat = () => {
   const findNext = () => {
     setRating(0);
     setHoverRating(0);
-    findMatch();
+    setSelectedInterests(new Set());
+    setState("picking");
   };
 
   const skipRating = () => {
