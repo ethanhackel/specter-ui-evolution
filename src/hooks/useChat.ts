@@ -14,6 +14,7 @@ export type ChatMessage = {
   unsent?: boolean;
   reaction?: string;
   replyTo?: { text: string; sender: string };
+  replyToDbId?: string; // DB id of the message being replied to
   dbId?: string; // actual DB message id
 };
 
