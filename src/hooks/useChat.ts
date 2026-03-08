@@ -278,7 +278,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
 
           setRoomId(room.id);
           setPartnerId(pId);
-          setPartnerName(partnerProfile?.username || `Ghost#${pId.substring(0, 4)}`);
+          setPartnerName(partnerUsername || `Ghost#${pId.substring(0, 4)}`);
           setState("connected");
           playConnectSound();
 
@@ -286,7 +286,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
             {
               id: `sys-connect`,
               type: "system",
-              text: `Connected with ${partnerProfile?.username || "Ghost#" + pId.substring(0, 4)} — say hello! 👋`,
+              text: `Connected with ${partnerUsername || "Ghost#" + pId.substring(0, 4)} — say hello! 👋`,
               time: now(),
             },
           ]);
