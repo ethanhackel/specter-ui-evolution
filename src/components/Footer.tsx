@@ -10,11 +10,11 @@ const Footer = () => {
           </span>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-muted-foreground">
-          <Link to="#features" className="hover:text-foreground transition-colors py-1">Features</Link>
-          <Link to="#how" className="hover:text-foreground transition-colors py-1">How it works</Link>
+          <Link to="/features" className="hover:text-foreground transition-colors py-1">Features</Link>
+          <Link to="/how-it-works" className="hover:text-foreground transition-colors py-1">How it works</Link>
           <Link to="/login" className="hover:text-foreground transition-colors py-1">Sign In</Link>
-          <a href="#" className="hover:text-foreground transition-colors py-1">Privacy</a>
-          <a href="#" className="hover:text-foreground transition-colors py-1">Terms</a>
+          <Link to="/privacy" className="hover:text-foreground transition-colors py-1">Privacy</Link>
+          <Link to="/terms" className="hover:text-foreground transition-colors py-1">Terms</Link>
         </div>
       </div>
       <div className="max-w-6xl mx-auto mt-4 sm:mt-6">
