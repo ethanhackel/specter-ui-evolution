@@ -43,6 +43,12 @@
     --glow-primary: 0 72% 51% / 0.25;
     --glow-soft: 0 72% 51% / 0.1;
     --surface-elevated: 0 0% 10%;
+
+    /* Safe area insets */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
   }
 }
 
@@ -51,13 +57,44 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    padding-top: var(--sat);
+    padding-bottom: var(--sab);
+    padding-left: var(--sal);
+    padding-right: var(--sar);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Better touch targets */
+  button, a, [role="button"] {
+    min-height: 36px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent iOS zoom on inputs */
+  input, select, textarea {
+    font-size: 16px !important;
+    touch-action: manipulation;
+  }
+
+  @media (min-width: 640px) {
+    input, select, textarea {
+      font-size: inherit !important;
+    }
   }
 }
 
@@ -76,6 +113,14 @@
     background: hsl(var(--glass-hover));
     border-color: hsl(var(--ring) / 0.3);
     box-shadow: 0 0 30px hsl(var(--glow-soft));
+  }
+
+  /* Touch-friendly hover states */
+  @media (hover: none) {
+    .glass-card-hover:active {
+      background: hsl(var(--glass-hover));
+      border-color: hsl(var(--ring) / 0.3);
+    }
   }
 
   .glow-border {
@@ -98,6 +143,12 @@
                 0 0 80px hsl(0 72% 51% / 0.15);
   }
 
+  @media (hover: none) {
+    .btn-primary-glow:active {
+      box-shadow: 0 0 40px hsl(var(--glow-primary));
+    }
+  }
+
   .floating-dot {
     @apply absolute rounded-full;
     background: hsl(var(--primary) / 0.4);
@@ -115,6 +166,13 @@
     filter: blur(20px);
     z-index: -1;
   }
+
+  /* GPU-accelerated animations */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
 }
 
 @keyframes float {
@@ -130,4 +188,16 @@
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 639px) {
+  /* Reduce motion for performance on low-end devices */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
