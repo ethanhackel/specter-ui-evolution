@@ -151,6 +151,7 @@ const TerminalDemo = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const msgId = useRef(0);
   const hasStarted = useRef(false);
+  const cancelledRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
     if (scrollRef.current) {
