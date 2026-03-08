@@ -533,7 +533,7 @@ const Chat = () => {
                       ))}
                     </div>
                     {/* Emoji grid */}
-                    <div className="h-52 overflow-y-auto p-3">
+                    <div className="h-52 overflow-y-auto p-3 picker-scroll">
                       <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-0.5">
                         {emojiCategories[emojiCategory].emojis.map((emoji, idx) => (
                           <button
