@@ -231,7 +231,34 @@ const Chat = () => {
     setHoverRating(0);
   };
 
-  const statusConfig = {
+  const copyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setMenuOpenId(null);
+  };
+
+  const replyToMsg = (msg: Message) => {
+    setReplyingTo({ id: msg.id, text: msg.isSticker ? "🖼️ Sticker" : msg.text, sender: msg.type === "me" ? "You" : partnerName });
+    setMenuOpenId(null);
+  };
+
+  const reactToMsg = (msgId: number, emoji: string) => {
+    setMessages((prev) => prev.map((m) => m.id === msgId ? { ...m, reaction: emoji } : m));
+    setReactPickerMsgId(null);
+    setMenuOpenId(null);
+  };
+
+  const unsendMsg = (msgId: number) => {
+    setMessages((prev) => prev.map((m) => m.id === msgId ? { ...m, unsent: true, text: "", isSticker: false, stickerSrc: undefined } : m));
+    setMenuOpenId(null);
+  };
+
+  const reportMsg = (msgId: number) => {
+    setMenuOpenId(null);
+    // In a real app this would send a report
+    alert("Message reported. Our team will review it.");
+  };
+
+  const quickReacts = ["❤️", "😂", "😮", "😢", "😡", "👍"];
     idle: { label: "IDLE", dotClass: "bg-muted-foreground", pillBg: "bg-muted/50" },
     searching: { label: "SEARCHING", dotClass: "bg-amber-500 animate-pulse", pillBg: "bg-amber-500/10" },
     connected: { label: "CONNECTED", dotClass: "bg-emerald-500", pillBg: "bg-emerald-500/10" },
