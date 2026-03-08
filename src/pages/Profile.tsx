@@ -151,7 +151,10 @@ const Profile = () => {
         {/* Username section */}
         <div className="space-y-4">
           <div>
-            <label className="block text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground mb-1.5">USERNAME</label>
+            <div className="flex items-center gap-2 mb-1.5">
+              <User className="w-4 h-4 text-primary" />
+              <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">USERNAME</span>
+            </div>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <input
