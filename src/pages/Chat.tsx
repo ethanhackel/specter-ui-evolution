@@ -98,9 +98,6 @@ const floatingGhosts = Array.from({ length: 6 }, (_, i) => ({
   opacity: Math.random() * 0.08 + 0.03,
 }));
 
-// Preload mascot at module level so it's instantly available
-const _preloadMascot = new Image();
-_preloadMascot.src = specterMascot;
 
 const Chat = () => {
   const [state, setState] = useState<ChatState>("idle");
@@ -343,6 +340,8 @@ const Chat = () => {
 
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+      {/* Hidden preload of mascot so it's instantly available */}
+      <img src={specterMascot} alt="" className="absolute w-0 h-0 opacity-0 pointer-events-none" aria-hidden="true" />
       {/* Grid overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
