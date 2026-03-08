@@ -1,6 +1,6 @@
 import { memo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Ghost, Star } from "lucide-react";
+import { Ghost, Star, Zap, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import stickerCry from "@/assets/stickers/cry.png";
