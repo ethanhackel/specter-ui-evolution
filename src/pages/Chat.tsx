@@ -473,7 +473,7 @@ const Chat = () => {
         <div className="hidden sm:flex w-64 shrink-0 border-r border-border flex-col py-6 overflow-y-auto" style={{ background: "hsl(var(--card))" }}>
           <div className="px-5 mb-6 flex items-center gap-2">
             <img src={specterMascot} alt="" className="w-6 h-6" />
-            <span className="font-heading font-black text-sm tracking-widest text-gradient">SPECTER</span>
+            <span className="font-heading font-black text-sm tracking-widest"><span className="text-gradient">SPECTER</span><span className="text-foreground">CHAT</span></span>
           </div>
 
           <div className="px-5 mb-6">
