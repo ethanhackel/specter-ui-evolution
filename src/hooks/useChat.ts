@@ -390,6 +390,7 @@ export const useChat = ({ userId, username }: UseChatOptions) => {
         text,
         time: now(),
         replyTo,
+        replyToDbId: replyToDbId || undefined,
       };
       setMessages((prev) => [...prev, chatMsg]);
       playSendSound();
