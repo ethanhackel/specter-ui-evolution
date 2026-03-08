@@ -256,8 +256,8 @@ const TerminalDemo = () => {
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-secondary/40">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-sm border border-border">
-                  👻
+                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center border border-border overflow-hidden">
+                  <img src={mascot} alt="Specter" className="w-6 h-6 object-contain" />
                 </div>
                 <motion.div
                   className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${
