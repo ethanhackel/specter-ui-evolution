@@ -34,10 +34,11 @@ const statusConfig: Record<ChatState, { label: string; dotClass: string; pillBg:
   rating: { label: "DISCONNECTED", dotClass: "bg-destructive", pillBg: "bg-destructive/10" },
 };
 
-const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests }: Props) => {
+const ChatHeader = memo(({ state, timer, mobileDrawerOpen, setMobileDrawerOpen, onFind, onLeave, setState, setSelectedInterests, onReportSession }: Props) => {
   const status = statusConfig[state];
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const [reportOpen, setReportOpen] = useState(false);
 
   return (
     <header className="relative z-10 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-border flex items-center justify-between shrink-0 bg-card">
