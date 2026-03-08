@@ -49,7 +49,7 @@ export const IdleOverlay = memo(({ setState, setSelectedInterests }: {
     <motion.img src={specterMascot} alt="SPECTERCHAT mascot" className="w-16 h-16 sm:w-20 sm:h-20 relative z-10" style={{ filter: "drop-shadow(0 0 25px hsl(0 72% 51% / 0.4))" }} animate={{ y: [-6, 6, -6] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
     <h2 className="font-heading text-2xl sm:text-3xl font-bold text-gradient relative z-10">Enter the Void</h2>
     <p className="text-muted-foreground max-w-sm leading-relaxed relative z-10 text-sm sm:text-base">Click below to be matched with a random stranger. Completely anonymous. No account needed.</p>
-    <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">⚡ Find a Stranger</button>
+    <button onClick={() => { setSelectedInterests(new Set()); setState("picking"); }} className="relative z-10 px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95 flex items-center gap-2"><Zap className="w-4 h-4" /> Find a Stranger</button>
     <Link to="/register" className="relative z-10 px-6 sm:px-8 py-2.5 sm:py-3 rounded-sm glass-card font-heading font-medium text-[0.65rem] sm:text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all">Create Account for More Features</Link>
   </div>
 ));
