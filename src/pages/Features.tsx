@@ -49,7 +49,7 @@ const additionalFeatures = [
   {
     icon: Lock,
     title: "End-to-End Encryption",
-    description: "Every message is encrypted in transit. No one — not even SPECTER — can read your conversations.",
+    description: "Every message is encrypted in transit. No one — not even SPECTERCHAT — can read your conversations.",
   },
   {
     icon: Eye,
