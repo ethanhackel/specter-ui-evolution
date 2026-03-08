@@ -135,7 +135,7 @@ export const RatingOverlay = memo(({ partnerName, rating, hoverRating, setRating
     </div>
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
       <button onClick={onSubmit} className="px-6 sm:px-8 py-3 rounded-sm bg-primary text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase btn-primary-glow transition-all hover:scale-105 active:scale-95">Submit & Find New</button>
-      <button onClick={onFindNext} className="px-6 py-3 rounded-sm bg-emerald-600 text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 hover:bg-emerald-500" style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}>⚡ Find Next</button>
+      <button onClick={onFindNext} className="px-6 py-3 rounded-sm bg-emerald-600 text-primary-foreground font-heading font-bold text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 hover:bg-emerald-500 flex items-center gap-2" style={{ boxShadow: "0 0 15px hsl(150 60% 40% / 0.3)" }}><Zap className="w-4 h-4" /> Find Next</button>
       <button onClick={onSkip} className="px-6 py-3 rounded-sm glass-card font-heading font-medium text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-all active:scale-95">Skip</button>
     </div>
   </div>
