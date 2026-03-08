@@ -182,6 +182,7 @@ const Chat = () => {
   const cancelSearch = () => setState("idle");
 
   const leaveChat = () => {
+    playVanishSound();
     setMessages((prev) => [
       ...prev,
       { id: Date.now(), type: "system", text: "You disconnected from the chat.", time: now() },
