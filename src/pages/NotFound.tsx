@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { Ghost } from "lucide-react";
+import mascot from "@/assets/specter-mascot.png";
 
 const NotFound = () => {
   const location = useLocation();
