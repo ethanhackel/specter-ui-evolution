@@ -686,6 +686,19 @@ const Chat = () => {
               </div>
             )}
 
+            {/* Reply bar */}
+            {replyingTo && (
+              <div className="px-4 pt-3 pb-0 flex items-center gap-3">
+                <div className="flex-1 bg-secondary/50 border-l-2 border-primary/50 rounded-r-lg px-3 py-2">
+                  <p className="text-[0.65rem] font-semibold text-primary/70">{replyingTo.sender}</p>
+                  <p className="text-xs text-muted-foreground truncate">{replyingTo.text}</p>
+                </div>
+                <button onClick={() => setReplyingTo(null)} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             <div className="p-4">
               <div className="flex gap-2 items-end">
                 {/* Emoji button */}
