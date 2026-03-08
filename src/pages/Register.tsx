@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import { Check, ArrowLeft, RefreshCw } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const perks = [
   "Persistent persona across sessions",
@@ -12,6 +13,7 @@ const perks = [
 
 const Register = () => {
   const navigate = useNavigate();
+  const { signUp, user, loading: authLoading } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,6 +23,7 @@ const Register = () => {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const generateCaptcha = () => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -36,7 +39,14 @@ const Register = () => {
     generateCaptcha();
   }, []);
 
-  const handleRegister = () => {
+  // Redirect if already logged in (non-anonymous)
+  useEffect(() => {
+    if (!authLoading && user && !user.is_anonymous) {
+      navigate("/chat");
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleRegister = async () => {
     setError("");
     setSuccess("");
 
@@ -44,29 +54,34 @@ const Register = () => {
       setError("Username and password required");
       return;
     }
-
     if (username.length < 3 || username.length > 30) {
       setError("Username must be 3-30 characters");
       return;
     }
-
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
-
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       return;
     }
-
     if (!agreed) {
       setError("Please agree to be a decent human being");
       return;
     }
-
     if (captchaInput.toUpperCase() !== captcha) {
       setError("Incorrect verification code");
+      generateCaptcha();
+      return;
+    }
+
+    setLoading(true);
+    const { error: authError } = await signUp(username, email, password);
+    setLoading(false);
+
+    if (authError) {
+      setError(authError);
       generateCaptcha();
       return;
     }
@@ -200,9 +215,10 @@ const Register = () => {
 
           <button
             onClick={handleRegister}
-            className="w-full py-3 sm:py-3.5 rounded bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-[1.02] active:scale-[0.98]"
+            disabled={loading}
+            className="w-full py-3 sm:py-3.5 rounded bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
           >
-            CREATE ACCOUNT
+            {loading ? "CREATING..." : "CREATE ACCOUNT"}
           </button>
         </div>
 

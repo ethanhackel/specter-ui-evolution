@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import specterMascot from "@/assets/specter-mascot.png";
 import { ArrowLeft, RefreshCw } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn, user, loading: authLoading } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const generateCaptcha = () => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -25,7 +28,14 @@ const Login = () => {
     generateCaptcha();
   }, []);
 
-  const handleLogin = () => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user && !user.is_anonymous) {
+      navigate("/chat");
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleLogin = async () => {
     if (!username || !password) {
       setError("Please enter username and password");
       return;
@@ -36,6 +46,14 @@ const Login = () => {
       return;
     }
     setError("");
+    setLoading(true);
+    const { error: authError } = await signIn(username, password);
+    setLoading(false);
+    if (authError) {
+      setError(authError);
+      generateCaptcha();
+      return;
+    }
     navigate("/chat");
   };
 
@@ -99,7 +117,7 @@ const Login = () => {
             <div className="flex gap-2 sm:gap-3 mb-2 sm:mb-3">
               <div className="flex-1 bg-secondary border-2 border-primary/30 rounded px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-center gap-1.5 sm:gap-2 select-none" style={{ letterSpacing: "0.4em", fontFamily: "monospace" }}>
                 {captcha.split("").map((char, i) => {
-                  const rotation = ((i * 7 + 3) % 11) - 5; // deterministic pseudo-random rotation
+                  const rotation = ((i * 7 + 3) % 11) - 5;
                   return (
                     <span key={i} className="text-foreground text-lg sm:text-xl font-bold" style={{ transform: `rotate(${rotation}deg)` }}>
                       {char}
@@ -128,9 +146,10 @@ const Login = () => {
 
           <button
             onClick={handleLogin}
-            className="w-full py-3 sm:py-3.5 rounded bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-[1.02] active:scale-[0.98]"
+            disabled={loading}
+            className="w-full py-3 sm:py-3.5 rounded bg-primary text-primary-foreground font-heading font-bold text-xs sm:text-sm tracking-widest uppercase btn-primary-glow transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
           >
-            SIGN IN
+            {loading ? "SIGNING IN..." : "SIGN IN"}
           </button>
         </div>
 
