@@ -13,7 +13,7 @@ import stickerThink from "@/assets/stickers/think.png";
 import stickerThumbsup from "@/assets/stickers/thumbsup.png";
 import stickerShocked from "@/assets/stickers/shocked.png";
 import stickerDance from "@/assets/stickers/dance.png";
-import { Ghost, Zap, SkipForward, X, Send, Star, Smile, Sticker } from "lucide-react";
+import { Ghost, Zap, SkipForward, X, Send, Star, Smile } from "lucide-react";
 
 type ChatState = "idle" | "searching" | "connected" | "rating";
 
@@ -510,7 +510,7 @@ const Chat = () => {
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <Sticker className="w-4 h-4" /> STICKERS
+                    <img src={specterMascot} alt="" className={`w-4 h-4 ${pickerTab === "sticker" ? "opacity-100" : "opacity-60"}`} /> STICKERS
                   </button>
                 </div>
 
@@ -533,7 +533,7 @@ const Chat = () => {
                       ))}
                     </div>
                     {/* Emoji grid */}
-                    <div className="h-52 overflow-y-auto p-3">
+                    <div className="h-52 overflow-y-auto p-3 picker-scroll">
                       <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 gap-0.5">
                         {emojiCategories[emojiCategory].emojis.map((emoji, idx) => (
                           <button
@@ -548,7 +548,7 @@ const Chat = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-52 overflow-y-auto p-4">
+                  <div className="h-52 overflow-y-auto p-4 picker-scroll">
                     <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                       {stickers.map((sticker) => (
                         <button
@@ -590,11 +590,11 @@ const Chat = () => {
                   onClick={() => { setPickerOpen(!pickerOpen); setPickerTab("sticker"); }}
                   className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center transition-all ${
                     pickerOpen && pickerTab === "sticker"
-                      ? "bg-primary/20 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      ? "bg-primary/20"
+                      : "hover:bg-secondary/50"
                   }`}
                 >
-                  <img src={specterMascot} alt="Stickers" className="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity" />
+                  <img src={specterMascot} alt="Stickers" className={`w-6 h-6 transition-all ${pickerOpen && pickerTab === "sticker" ? "opacity-100 scale-110" : "opacity-70 hover:opacity-100"}`} />
                 </button>
 
                 <textarea
@@ -639,6 +639,11 @@ const Chat = () => {
         }
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        .picker-scroll { scrollbar-width: thin; scrollbar-color: hsl(0 72% 51% / 0.3) transparent; }
+        .picker-scroll::-webkit-scrollbar { width: 4px; }
+        .picker-scroll::-webkit-scrollbar-track { background: transparent; }
+        .picker-scroll::-webkit-scrollbar-thumb { background: hsl(0 72% 51% / 0.3); border-radius: 9999px; }
+        .picker-scroll::-webkit-scrollbar-thumb:hover { background: hsl(0 72% 51% / 0.5); }
       `}</style>
     </div>
   );
