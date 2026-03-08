@@ -151,6 +151,7 @@ const TerminalDemo = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const msgId = useRef(0);
   const hasStarted = useRef(false);
+  const cancelledRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
     if (scrollRef.current) {
@@ -165,10 +166,11 @@ const TerminalDemo = () => {
   const runSequence = useCallback(async () => {
     let timeOffset = 0;
     for (const step of chatFlow) {
+      if (cancelledRef.current) return;
       await new Promise((r) => setTimeout(r, step.delay));
+      if (cancelledRef.current) return;
       timeOffset++;
 
-      // Update online status
       const lastMsg = step.messages[step.messages.length - 1];
       if (lastMsg.text.includes("Connected to") || lastMsg.text.includes("joined")) {
         setIsOnline(true);
@@ -180,6 +182,7 @@ const TerminalDemo = () => {
       if (step.typingBefore) {
         setTyping({ who: step.typingBefore.who });
         await new Promise((r) => setTimeout(r, step.typingBefore!.duration));
+        if (cancelledRef.current) return;
         setTyping(null);
       }
 
@@ -191,19 +194,22 @@ const TerminalDemo = () => {
       setMessages((prev) => [...prev, ...newMsgs]);
     }
 
-    // Loop: reset after pause
+    if (cancelledRef.current) return;
     await new Promise((r) => setTimeout(r, 4000));
+    if (cancelledRef.current) return;
     setMessages([]);
     setIsOnline(false);
     setTyping(null);
     msgId.current = 0;
     await new Promise((r) => setTimeout(r, 1000));
+    if (cancelledRef.current) return;
     runSequence();
   }, []);
 
   useEffect(() => {
     if (hasStarted.current) return;
     hasStarted.current = true;
+    cancelledRef.current = false;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -218,7 +224,10 @@ const TerminalDemo = () => {
     const el = document.getElementById("terminal-demo");
     if (el) observer.observe(el);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelledRef.current = true;
+    };
   }, [runSequence]);
 
   return (
