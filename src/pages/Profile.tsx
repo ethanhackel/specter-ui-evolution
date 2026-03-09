@@ -177,6 +177,19 @@ const Profile = () => {
           {isGuest && (
             <p className="text-xs text-muted-foreground mt-1">Guest Account</p>
           )}
+          {/* Karma Stars */}
+          <div className="flex items-center justify-center gap-1 mt-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                  star <= Math.round(profile.karma / 20)
+                    ? "text-amber-500 fill-amber-500"
+                    : "text-muted-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Avatar Picker */}
@@ -214,20 +227,6 @@ const Profile = () => {
                 )}
               </button>
             ))}
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-5 sm:mb-6">
-          <div className="glass-card p-2.5 sm:p-3 text-center rounded-lg">
-            <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mx-auto mb-1" />
-            <p className="text-base sm:text-lg font-bold text-foreground">{profile.total_chats}</p>
-            <p className="text-[0.6rem] sm:text-[0.65rem] text-muted-foreground font-mono tracking-wider">TOTAL CHATS</p>
-          </div>
-          <div className="glass-card p-2.5 sm:p-3 text-center rounded-lg">
-            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-base sm:text-lg font-bold text-foreground">{profile.karma}</p>
-            <p className="text-[0.6rem] sm:text-[0.65rem] text-muted-foreground font-mono tracking-wider">KARMA</p>
           </div>
         </div>
 
