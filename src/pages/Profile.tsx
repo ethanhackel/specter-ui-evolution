@@ -269,8 +269,51 @@ const Profile = () => {
           >
             <LogOut className="w-4 h-4" /> SIGN OUT
           </button>
+
+          {/* Delete Account */}
+          <div className="border-t border-border pt-4 mt-2">
+            <button
+              onClick={() => setShowDeleteDialog(true)}
+              className="w-full py-2.5 sm:py-3 rounded border border-destructive/40 bg-destructive/5 text-destructive font-heading font-bold text-xs tracking-widest uppercase hover:bg-destructive/15 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" /> DELETE ACCOUNT
+            </button>
+            <p className="text-[0.6rem] text-muted-foreground text-center mt-2">This action is permanent and cannot be undone.</p>
+          </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="glass-card border-destructive/30">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="w-5 h-5" /> Delete Account Permanently
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground text-sm space-y-3">
+              <span className="block">This will permanently delete your account, all your messages, chat history, and profile data. This action <strong className="text-destructive">cannot be undone</strong>.</span>
+              <span className="block text-xs">Type <strong className="text-foreground">DELETE</strong> below to confirm:</span>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="Type DELETE to confirm"
+                className="w-full bg-secondary border border-border rounded px-3 py-2 text-foreground text-sm outline-none focus:border-destructive focus:ring-2 focus:ring-destructive/10 placeholder:text-muted-foreground/50"
+              />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirmText("")} className="text-xs">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={deleteConfirmText !== "DELETE" || deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs disabled:opacity-50"
+            >
+              {deleting ? "DELETING..." : "DELETE MY ACCOUNT"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
