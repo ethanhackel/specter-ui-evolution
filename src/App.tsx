@@ -72,22 +72,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <ScrollToTop />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/features" element={<Features />} />
-              <Route path="/how-it-works" element={<HowItWorksPage />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
