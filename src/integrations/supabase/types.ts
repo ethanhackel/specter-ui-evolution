@@ -373,6 +373,7 @@ export type Database = {
       }
     }
     Functions: {
+      delete_own_account: { Args: never; Returns: undefined }
       find_and_create_match: {
         Args: { _interests: string[]; _user_id: string }
         Returns: {
