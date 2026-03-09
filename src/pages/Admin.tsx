@@ -6,13 +6,14 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 import {
   Shield, Users, MessageSquare, Flag, Activity, Ban, CheckCircle, XCircle,
   BarChart3, TrendingUp, Clock, Trash2, UserCheck, Ghost, Globe, Search,
-  Monitor, Smartphone, ExternalLink, ArrowUpRight, ArrowDownRight, Eye
+  Monitor, Smartphone, ExternalLink, Eye, ChevronDown, ChevronUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -137,7 +138,6 @@ const Admin = () => {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    // Fetch recent page views
     const { data: views, count: totalCount } = await supabase
       .from("page_views")
       .select("*", { count: "exact" })
@@ -150,7 +150,6 @@ const Admin = () => {
     const todayViews = views.filter(v => v.created_at >= todayStart).length;
     const uniqueSessions = new Set(views.map(v => v.session_id).filter(Boolean)).size;
 
-    // Top pages
     const pageCounts = new Map<string, number>();
     views.forEach(v => pageCounts.set(v.path, (pageCounts.get(v.path) || 0) + 1));
     const topPages = Array.from(pageCounts.entries())
@@ -158,7 +157,6 @@ const Admin = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    // Top sources
     const sourceCounts = new Map<string, number>();
     views.forEach(v => {
       const source = v.source || parseReferrerSource(v.referrer);
@@ -169,28 +167,19 @@ const Admin = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    // Hourly data (last 24h)
     const hourlyMap = new Map<string, number>();
     const last24h = views.filter(v => new Date(v.created_at).getTime() > now.getTime() - 24 * 60 * 60 * 1000);
     last24h.forEach(v => {
       const hour = new Date(v.created_at).getHours().toString().padStart(2, "0") + ":00";
       hourlyMap.set(hour, (hourlyMap.get(hour) || 0) + 1);
     });
-    // Fill all 24 hours
     const hourlyData: { hour: string; count: number }[] = [];
     for (let i = 0; i < 24; i++) {
       const hour = i.toString().padStart(2, "0") + ":00";
       hourlyData.push({ hour, count: hourlyMap.get(hour) || 0 });
     }
 
-    setTrafficStats({
-      totalViews: totalCount || views.length,
-      todayViews,
-      uniqueSessions,
-      topPages,
-      topSources,
-      hourlyData,
-    });
+    setTrafficStats({ totalViews: totalCount || views.length, todayViews, uniqueSessions, topPages, topSources, hourlyData });
   }, []);
 
   useEffect(() => {
@@ -226,21 +215,17 @@ const Admin = () => {
 
   if (!user || !isAdmin) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-        <Shield className="w-16 h-16 text-destructive" />
-        <h1 className="text-2xl font-heading font-bold text-foreground">Access Denied</h1>
-        <p className="text-muted-foreground">You don't have admin privileges.</p>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4">
+        <Shield className="w-12 h-12 sm:w-16 sm:h-16 text-destructive" />
+        <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground text-center">Access Denied</h1>
+        <p className="text-muted-foreground text-sm text-center">You don't have admin privileges.</p>
         <Button onClick={() => navigate("/")} variant="outline">Go Home</Button>
       </div>
     );
   }
 
   const handleReportAction = async (reportId: string, action: "resolved" | "dismissed") => {
-    const { error } = await supabase
-      .from("reports")
-      .update({ status: action })
-      .eq("id", reportId);
-
+    const { error } = await supabase.from("reports").update({ status: action }).eq("id", reportId);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
@@ -262,10 +247,7 @@ const Admin = () => {
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      toast({
-        title: ban ? "User Banned" : "User Unbanned",
-        description: `${userProfile.username} has been ${ban ? "banned" : "unbanned"}.`,
-      });
+      toast({ title: ban ? "User Banned" : "User Unbanned", description: `${userProfile.username} has been ${ban ? "banned" : "unbanned"}.` });
       fetchUsers();
     }
   };
@@ -274,9 +256,7 @@ const Admin = () => {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const { error } = await supabase.rpc("admin_delete_account", {
-        _target_user_id: deleteTarget.user_id,
-      });
+      const { error } = await supabase.rpc("admin_delete_account", { _target_user_id: deleteTarget.user_id });
       if (error) throw error;
       toast({ title: "Account Deleted", description: `${deleteTarget.username}'s account has been permanently deleted.` });
       fetchUsers();
@@ -299,109 +279,102 @@ const Admin = () => {
 
   const registeredUsers = users.filter(u => !u.is_guest);
   const guestUsers = users.filter(u => u.is_guest);
+  const pendingReportsCount = reports.filter(r => r.status === "pending").length;
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border sticky top-0 z-40 backdrop-blur-lg" style={{ background: "hsl(var(--background) / 0.9)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Shield className="w-5 h-5 text-primary" />
-            <h1 className="font-heading text-lg font-bold text-foreground">Admin Dashboard</h1>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <h1 className="font-heading text-sm sm:text-lg font-bold text-foreground">Admin Dashboard</h1>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-            ← Back to Site
+          <Button variant="ghost" size="sm" className="text-xs sm:text-sm" onClick={() => navigate("/")}>
+            ← Back
           </Button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard icon={<Users className="w-5 h-5" />} label="Online Now" value={stats.online_count} accent />
-          <StatCard icon={<Activity className="w-5 h-5" />} label="Chats Today" value={stats.chats_today} />
-          <StatCard icon={<BarChart3 className="w-5 h-5" />} label="Total Chats" value={stats.total_chats} />
-          <StatCard icon={<MessageSquare className="w-5 h-5" />} label="Total Messages" value={stats.total_messages} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+          <StatCard icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />} label="Online Now" value={stats.online_count} accent />
+          <StatCard icon={<Activity className="w-4 h-4 sm:w-5 sm:h-5" />} label="Chats Today" value={stats.chats_today} />
+          <StatCard icon={<BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />} label="Total Chats" value={stats.total_chats} />
+          <StatCard icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />} label="Total Messages" value={stats.total_messages} />
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-card border border-border flex-wrap h-auto gap-1 p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs">
-              <TrendingUp className="w-3.5 h-3.5 mr-1" /> Overview
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs">
-              <Flag className="w-3.5 h-3.5 mr-1" /> Reports
-              {reports.filter(r => r.status === "pending").length > 0 && (
-                <Badge variant="destructive" className="ml-1 text-xs px-1.5 py-0">
-                  {reports.filter(r => r.status === "pending").length}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs">
-              <Ghost className="w-3.5 h-3.5 mr-1" /> Users
-            </TabsTrigger>
-            <TabsTrigger value="registered" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs">
-              <UserCheck className="w-3.5 h-3.5 mr-1" /> Registered
-            </TabsTrigger>
-            <TabsTrigger value="traffic" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs">
-              <Globe className="w-3.5 h-3.5 mr-1" /> Traffic
-            </TabsTrigger>
-          </TabsList>
+          <ScrollArea className="w-full">
+            <TabsList className="bg-card border border-border inline-flex w-auto min-w-full sm:min-w-0 h-auto gap-0.5 sm:gap-1 p-1">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-[0.65rem] sm:text-xs px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Overview
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-[0.65rem] sm:text-xs px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                <Flag className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Reports
+                {pendingReportsCount > 0 && (
+                  <Badge variant="destructive" className="ml-1 text-[0.6rem] sm:text-xs px-1 sm:px-1.5 py-0">
+                    {pendingReportsCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-[0.65rem] sm:text-xs px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                <Ghost className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Users
+              </TabsTrigger>
+              <TabsTrigger value="registered" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-[0.65rem] sm:text-xs px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                <UserCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Registered
+              </TabsTrigger>
+              <TabsTrigger value="traffic" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-[0.65rem] sm:text-xs px-2 sm:px-3 py-1.5 whitespace-nowrap">
+                <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Traffic
+              </TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid lg:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
               <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-foreground text-base flex items-center gap-2">
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                  <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                     <Activity className="w-4 h-4 text-primary" /> Live Activity
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground text-sm">Online users</span>
-                    <span className="text-foreground font-mono font-bold">{stats.online_count}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground text-sm">Chats today</span>
-                    <span className="text-foreground font-mono font-bold">{stats.chats_today}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground text-sm">Total messages sent</span>
-                    <span className="text-foreground font-mono font-bold">{stats.total_messages.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground text-sm">Total chats completed</span>
-                    <span className="text-foreground font-mono font-bold">{stats.total_chats.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-muted-foreground text-sm">Registered users</span>
-                    <span className="text-foreground font-mono font-bold">{registeredUsers.length}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-muted-foreground text-sm">Guest users</span>
-                    <span className="text-foreground font-mono font-bold">{guestUsers.length}</span>
-                  </div>
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0 space-y-1">
+                  {[
+                    { label: "Online users", val: stats.online_count },
+                    { label: "Chats today", val: stats.chats_today },
+                    { label: "Total messages", val: stats.total_messages.toLocaleString() },
+                    { label: "Total chats", val: stats.total_chats.toLocaleString() },
+                    { label: "Registered users", val: registeredUsers.length },
+                    { label: "Guest users", val: guestUsers.length },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <span className="text-muted-foreground text-xs sm:text-sm">{item.label}</span>
+                      <span className="text-foreground font-mono font-bold text-sm sm:text-base">{item.val}</span>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
               <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-foreground text-base flex items-center gap-2">
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                  <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                     <Flag className="w-4 h-4 text-destructive" /> Recent Reports
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                   {reports.length === 0 ? (
                     <p className="text-muted-foreground text-sm py-4 text-center">No reports yet 🎉</p>
                   ) : (
                     <div className="space-y-2">
                       {reports.slice(0, 5).map(r => (
-                        <div key={r.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                          <div>
-                            <span className="text-sm text-foreground">{r.reported_username}</span>
-                            <span className="text-xs text-muted-foreground ml-2">{r.reason}</span>
+                        <div key={r.id} className="flex items-start sm:items-center justify-between py-2 border-b border-border last:border-0 gap-2">
+                          <div className="min-w-0">
+                            <span className="text-xs sm:text-sm text-foreground block truncate">{r.reported_username}</span>
+                            <span className="text-[0.65rem] sm:text-xs text-muted-foreground block truncate">{r.reason}</span>
                           </div>
                           <StatusBadge status={r.status} />
                         </div>
@@ -416,49 +389,49 @@ const Admin = () => {
           {/* Reports Tab */}
           <TabsContent value="reports" className="space-y-4">
             <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground text-base">All Reports</CardTitle>
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-foreground text-sm sm:text-base">All Reports</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                 {reports.length === 0 ? (
                   <p className="text-muted-foreground text-sm py-8 text-center">No reports found.</p>
                 ) : (
                   <div className="space-y-3">
                     {reports.map(r => (
-                      <div key={r.id} className="rounded-lg border border-border p-4 space-y-3">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-foreground font-medium text-sm">{r.reporter_username}</span>
-                              <span className="text-muted-foreground text-xs">reported</span>
-                              <span className="text-foreground font-medium text-sm">{r.reported_username}</span>
+                      <div key={r.id} className="rounded-lg border border-border p-3 sm:p-4 space-y-2 sm:space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                              <span className="text-foreground font-medium text-xs sm:text-sm">{r.reporter_username}</span>
+                              <span className="text-muted-foreground text-[0.65rem] sm:text-xs">reported</span>
+                              <span className="text-foreground font-medium text-xs sm:text-sm">{r.reported_username}</span>
                             </div>
-                            <p className="text-muted-foreground text-xs flex items-center gap-1">
-                              <Clock className="w-3 h-3" /> {timeAgo(r.created_at)}
+                            <p className="text-muted-foreground text-[0.65rem] sm:text-xs flex items-center gap-1">
+                              <Clock className="w-3 h-3 flex-shrink-0" /> {timeAgo(r.created_at)}
                             </p>
                           </div>
                           <StatusBadge status={r.status} />
                         </div>
-                        <div className="rounded-md bg-secondary/50 px-3 py-2">
-                          <p className="text-sm text-secondary-foreground">Reason: {r.reason}</p>
+                        <div className="rounded-md bg-secondary/50 px-2 sm:px-3 py-1.5 sm:py-2">
+                          <p className="text-xs sm:text-sm text-secondary-foreground break-words">Reason: {r.reason}</p>
                         </div>
                         {r.status === "pending" && (
-                          <div className="flex gap-2 flex-wrap">
-                            <Button size="sm" variant="outline" className="text-xs border-green-500/30 text-green-400 hover:bg-green-500/10"
+                          <div className="flex gap-1.5 sm:gap-2 flex-wrap">
+                            <Button size="sm" variant="outline" className="text-[0.65rem] sm:text-xs h-7 sm:h-8 px-2 sm:px-3 border-green-500/30 text-green-400 hover:bg-green-500/10"
                               onClick={() => handleReportAction(r.id, "resolved")}>
-                              <CheckCircle className="w-3.5 h-3.5 mr-1" /> Resolve
+                              <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Resolve
                             </Button>
-                            <Button size="sm" variant="outline" className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                            <Button size="sm" variant="outline" className="text-[0.65rem] sm:text-xs h-7 sm:h-8 px-2 sm:px-3 border-destructive/30 text-destructive hover:bg-destructive/10"
                               onClick={async () => {
                                 const reported = users.find(u => u.user_id === r.reported_user_id);
                                 if (reported) await handleBanUser(reported, true, r.reason);
                                 await handleReportAction(r.id, "resolved");
                               }}>
-                              <Ban className="w-3.5 h-3.5 mr-1" /> Ban & Resolve
+                              <Ban className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Ban & Resolve
                             </Button>
-                            <Button size="sm" variant="outline" className="text-xs border-muted-foreground/30 text-muted-foreground hover:bg-muted"
+                            <Button size="sm" variant="outline" className="text-[0.65rem] sm:text-xs h-7 sm:h-8 px-2 sm:px-3 border-muted-foreground/30 text-muted-foreground hover:bg-muted"
                               onClick={() => handleReportAction(r.id, "dismissed")}>
-                              <XCircle className="w-3.5 h-3.5 mr-1" /> Dismiss
+                              <XCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" /> Dismiss
                             </Button>
                           </div>
                         )}
@@ -473,14 +446,14 @@ const Admin = () => {
           {/* Users Tab (Anonymous/Guest Users) */}
           <TabsContent value="users" className="space-y-4">
             <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground text-base flex items-center gap-2">
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                   <Ghost className="w-4 h-4 text-muted-foreground" />
                   Anonymous Users ({guestUsers.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <UserTable users={guestUsers} timeAgo={timeAgo} onBan={handleBanUser} onDelete={setDeleteTarget} />
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <UserList users={guestUsers} timeAgo={timeAgo} onBan={handleBanUser} onDelete={setDeleteTarget} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -488,36 +461,36 @@ const Admin = () => {
           {/* Registered Users Tab */}
           <TabsContent value="registered" className="space-y-4">
             <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground text-base flex items-center gap-2">
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-primary" />
                   Registered Users ({registeredUsers.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <UserTable users={registeredUsers} timeAgo={timeAgo} onBan={handleBanUser} onDelete={setDeleteTarget} />
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <UserList users={registeredUsers} timeAgo={timeAgo} onBan={handleBanUser} onDelete={setDeleteTarget} />
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Traffic Analytics Tab */}
-          <TabsContent value="traffic" className="space-y-4">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard icon={<Eye className="w-5 h-5" />} label="Total Views (7d)" value={trafficStats.totalViews} accent />
-              <StatCard icon={<TrendingUp className="w-5 h-5" />} label="Views Today" value={trafficStats.todayViews} />
-              <StatCard icon={<Users className="w-5 h-5" />} label="Unique Sessions (7d)" value={trafficStats.uniqueSessions} />
+          <TabsContent value="traffic" className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              <StatCard icon={<Eye className="w-4 h-4 sm:w-5 sm:h-5" />} label="Views (7d)" value={trafficStats.totalViews} accent />
+              <StatCard icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />} label="Today" value={trafficStats.todayViews} />
+              <StatCard icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />} label="Sessions (7d)" value={trafficStats.uniqueSessions} />
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
               {/* Hourly Traffic Chart */}
               <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-foreground text-base flex items-center gap-2">
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                  <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-primary" /> Hourly Traffic (24h)
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-end gap-1 h-32">
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                  <div className="flex items-end gap-[1px] sm:gap-1 h-24 sm:h-32">
                     {trafficStats.hourlyData.map((d) => {
                       const maxCount = Math.max(...trafficStats.hourlyData.map(h => h.count), 1);
                       const height = (d.count / maxCount) * 100;
@@ -527,7 +500,7 @@ const Admin = () => {
                             className="w-full bg-primary/80 rounded-t-sm min-h-[2px] transition-all hover:bg-primary"
                             style={{ height: `${Math.max(height, 2)}%` }}
                           />
-                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs px-1.5 py-0.5 rounded border border-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-[0.6rem] px-1.5 py-0.5 rounded border border-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                             {d.hour}: {d.count}
                           </div>
                         </div>
@@ -535,43 +508,43 @@ const Admin = () => {
                     })}
                   </div>
                   <div className="flex justify-between mt-2">
-                    <span className="text-[0.6rem] text-muted-foreground">00:00</span>
-                    <span className="text-[0.6rem] text-muted-foreground">06:00</span>
-                    <span className="text-[0.6rem] text-muted-foreground">12:00</span>
-                    <span className="text-[0.6rem] text-muted-foreground">18:00</span>
-                    <span className="text-[0.6rem] text-muted-foreground">23:00</span>
+                    <span className="text-[0.5rem] sm:text-[0.6rem] text-muted-foreground">00:00</span>
+                    <span className="text-[0.5rem] sm:text-[0.6rem] text-muted-foreground">06:00</span>
+                    <span className="text-[0.5rem] sm:text-[0.6rem] text-muted-foreground">12:00</span>
+                    <span className="text-[0.5rem] sm:text-[0.6rem] text-muted-foreground">18:00</span>
+                    <span className="text-[0.5rem] sm:text-[0.6rem] text-muted-foreground">23:00</span>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Traffic Sources */}
               <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-foreground text-base flex items-center gap-2">
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                  <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                     <Globe className="w-4 h-4 text-primary" /> Traffic Sources
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                   {trafficStats.topSources.length === 0 ? (
-                    <p className="text-muted-foreground text-sm py-4 text-center">No traffic data yet. Start tracking!</p>
+                    <p className="text-muted-foreground text-xs sm:text-sm py-4 text-center">No traffic data yet.</p>
                   ) : (
-                    <div className="space-y-2">
-                      {trafficStats.topSources.map((s, i) => {
+                    <div className="space-y-2 sm:space-y-3">
+                      {trafficStats.topSources.map((s) => {
                         const maxCount = trafficStats.topSources[0]?.count || 1;
                         const percentage = (s.count / trafficStats.totalViews) * 100;
                         return (
                           <div key={s.source} className="space-y-1">
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                                 <SourceIcon source={s.source} />
-                                <span className="text-sm text-foreground">{s.source}</span>
+                                <span className="text-xs sm:text-sm text-foreground truncate">{s.source}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-muted-foreground">{percentage.toFixed(1)}%</span>
-                                <span className="text-sm font-mono text-foreground font-bold">{s.count}</span>
+                              <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                                <span className="text-[0.6rem] sm:text-xs text-muted-foreground">{percentage.toFixed(1)}%</span>
+                                <span className="text-xs sm:text-sm font-mono text-foreground font-bold">{s.count}</span>
                               </div>
                             </div>
-                            <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                            <div className="h-1 sm:h-1.5 bg-secondary rounded-full overflow-hidden">
                               <div
                                 className="h-full bg-primary rounded-full transition-all"
                                 style={{ width: `${(s.count / maxCount) * 100}%` }}
@@ -588,36 +561,27 @@ const Admin = () => {
 
             {/* Top Pages */}
             <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground text-base flex items-center gap-2">
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-foreground text-sm sm:text-base flex items-center gap-2">
                   <Search className="w-4 h-4 text-primary" /> Top Pages
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                 {trafficStats.topPages.length === 0 ? (
                   <p className="text-muted-foreground text-sm py-4 text-center">No page view data yet.</p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-border text-muted-foreground text-left">
-                          <th className="pb-3 pr-4">Page</th>
-                          <th className="pb-3 pr-4 text-right">Views</th>
-                          <th className="pb-3 text-right">% of Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {trafficStats.topPages.map(p => (
-                          <tr key={p.path} className="border-b border-border/50 last:border-0">
-                            <td className="py-2.5 pr-4 text-foreground font-mono text-xs">{p.path}</td>
-                            <td className="py-2.5 pr-4 text-right text-foreground font-mono font-bold">{p.count}</td>
-                            <td className="py-2.5 text-right text-muted-foreground">
-                              {((p.count / trafficStats.totalViews) * 100).toFixed(1)}%
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="space-y-1">
+                    {trafficStats.topPages.map(p => (
+                      <div key={p.path} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                        <span className="text-foreground font-mono text-[0.65rem] sm:text-xs truncate mr-3">{p.path}</span>
+                        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                          <span className="text-foreground font-mono font-bold text-xs sm:text-sm">{p.count}</span>
+                          <span className="text-muted-foreground text-[0.6rem] sm:text-xs w-10 text-right">
+                            {((p.count / trafficStats.totalViews) * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
@@ -628,22 +592,22 @@ const Admin = () => {
 
       {/* Delete Account Confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-        <AlertDialogContent className="bg-card border-destructive/30">
+        <AlertDialogContent className="bg-card border-destructive/30 mx-4 max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
-              <Trash2 className="w-5 h-5" /> Delete Account Permanently
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive text-sm sm:text-base">
+              <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" /> Delete Account Permanently
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground">
+            <AlertDialogDescription className="text-muted-foreground text-xs sm:text-sm">
               This will permanently delete <strong className="text-foreground">{deleteTarget?.username}</strong>'s
-              account, all their messages, chat history, and profile data. This action <strong className="text-destructive">cannot be undone</strong>.
+              account and all data. This <strong className="text-destructive">cannot be undone</strong>.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="text-xs">Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="text-xs sm:text-sm">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
               disabled={deleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs disabled:opacity-50"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs sm:text-sm disabled:opacity-50"
             >
               {deleting ? "DELETING..." : "DELETE ACCOUNT"}
             </AlertDialogAction>
@@ -656,80 +620,126 @@ const Admin = () => {
 
 // ---- Sub-components ----
 
-const UserTable = ({
+/** Responsive user list: cards on mobile, table on desktop */
+const UserList = ({
   users, timeAgo, onBan, onDelete,
 }: {
   users: UserProfile[];
   timeAgo: (d: string) => string;
   onBan: (u: UserProfile, ban: boolean, reason?: string) => void;
   onDelete: (u: UserProfile) => void;
-}) => (
-  <div className="overflow-x-auto">
-    {users.length === 0 ? (
-      <p className="text-muted-foreground text-sm py-8 text-center">No users found.</p>
-    ) : (
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border text-muted-foreground text-left">
-            <th className="pb-3 pr-4">Username</th>
-            <th className="pb-3 pr-4">Status</th>
-            <th className="pb-3 pr-4">Karma</th>
-            <th className="pb-3 pr-4">Chats</th>
-            <th className="pb-3 pr-4">Joined</th>
-            <th className="pb-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(u => (
-            <tr key={u.id} className={`border-b border-border/50 last:border-0 ${u.is_banned ? "opacity-60" : ""}`}>
-              <td className="py-3 pr-4 text-foreground font-medium">{u.username}</td>
-              <td className="py-3 pr-4">
+}) => {
+  if (users.length === 0) {
+    return <p className="text-muted-foreground text-sm py-8 text-center">No users found.</p>;
+  }
+
+  return (
+    <>
+      {/* Mobile: Card layout */}
+      <div className="md:hidden space-y-2">
+        {users.map(u => (
+          <div key={u.id} className={`rounded-lg border border-border p-3 space-y-2 ${u.is_banned ? "opacity-60" : ""}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-foreground font-medium text-sm truncate">{u.username}</span>
                 {u.is_banned ? (
-                  <Badge variant="outline" className="text-xs bg-destructive/15 text-destructive border-destructive/30">Banned</Badge>
+                  <Badge variant="outline" className="text-[0.6rem] bg-destructive/15 text-destructive border-destructive/30 flex-shrink-0">Banned</Badge>
                 ) : (
-                  <Badge variant="outline" className="text-xs bg-green-500/15 text-green-400 border-green-500/30">Active</Badge>
+                  <Badge variant="outline" className="text-[0.6rem] bg-green-500/15 text-green-400 border-green-500/30 flex-shrink-0">Active</Badge>
                 )}
-              </td>
-              <td className="py-3 pr-4 text-muted-foreground font-mono">{u.karma}</td>
-              <td className="py-3 pr-4 text-muted-foreground font-mono">{u.total_chats}</td>
-              <td className="py-3 pr-4 text-muted-foreground">{timeAgo(u.created_at)}</td>
-              <td className="py-3">
-                <div className="flex gap-1.5">
-                  {u.is_banned ? (
-                    <Button size="sm" variant="outline" className="text-xs border-green-500/30 text-green-400 hover:bg-green-500/10"
-                      onClick={() => onBan(u, false)}>
-                      Unban
-                    </Button>
-                  ) : (
-                    <Button size="sm" variant="outline" className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
-                      onClick={() => onBan(u, true)}>
-                      <Ban className="w-3.5 h-3.5 mr-1" /> Ban
-                    </Button>
-                  )}
-                  <Button size="sm" variant="outline" className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
-                    onClick={() => onDelete(u)}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-              </td>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 text-[0.65rem] text-muted-foreground">
+              <span>Karma: <span className="font-mono text-foreground">{u.karma}</span></span>
+              <span>Chats: <span className="font-mono text-foreground">{u.total_chats}</span></span>
+              <span>{timeAgo(u.created_at)}</span>
+            </div>
+            <div className="flex gap-1.5">
+              {u.is_banned ? (
+                <Button size="sm" variant="outline" className="text-[0.65rem] h-7 px-2 border-green-500/30 text-green-400 hover:bg-green-500/10"
+                  onClick={() => onBan(u, false)}>
+                  Unban
+                </Button>
+              ) : (
+                <Button size="sm" variant="outline" className="text-[0.65rem] h-7 px-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+                  onClick={() => onBan(u, true)}>
+                  <Ban className="w-3 h-3 mr-1" /> Ban
+                </Button>
+              )}
+              <Button size="sm" variant="outline" className="text-[0.65rem] h-7 px-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+                onClick={() => onDelete(u)}>
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: Table layout */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-muted-foreground text-left">
+              <th className="pb-3 pr-4">Username</th>
+              <th className="pb-3 pr-4">Status</th>
+              <th className="pb-3 pr-4">Karma</th>
+              <th className="pb-3 pr-4">Chats</th>
+              <th className="pb-3 pr-4">Joined</th>
+              <th className="pb-3">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-);
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u.id} className={`border-b border-border/50 last:border-0 ${u.is_banned ? "opacity-60" : ""}`}>
+                <td className="py-3 pr-4 text-foreground font-medium">{u.username}</td>
+                <td className="py-3 pr-4">
+                  {u.is_banned ? (
+                    <Badge variant="outline" className="text-xs bg-destructive/15 text-destructive border-destructive/30">Banned</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs bg-green-500/15 text-green-400 border-green-500/30">Active</Badge>
+                  )}
+                </td>
+                <td className="py-3 pr-4 text-muted-foreground font-mono">{u.karma}</td>
+                <td className="py-3 pr-4 text-muted-foreground font-mono">{u.total_chats}</td>
+                <td className="py-3 pr-4 text-muted-foreground">{timeAgo(u.created_at)}</td>
+                <td className="py-3">
+                  <div className="flex gap-1.5">
+                    {u.is_banned ? (
+                      <Button size="sm" variant="outline" className="text-xs border-green-500/30 text-green-400 hover:bg-green-500/10"
+                        onClick={() => onBan(u, false)}>
+                        Unban
+                      </Button>
+                    ) : (
+                      <Button size="sm" variant="outline" className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                        onClick={() => onBan(u, true)}>
+                        <Ban className="w-3.5 h-3.5 mr-1" /> Ban
+                      </Button>
+                    )}
+                    <Button size="sm" variant="outline" className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                      onClick={() => onDelete(u)}>
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
 
 const StatCard = ({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: number; accent?: boolean }) => (
   <Card className="bg-card border-border">
-    <CardContent className="pt-5 pb-4 px-4">
-      <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${accent ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}>
+    <CardContent className="pt-3 sm:pt-5 pb-3 sm:pb-4 px-3 sm:px-4">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className={`p-1.5 sm:p-2 rounded-lg ${accent ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}>
           {icon}
         </div>
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className={`text-xl font-bold font-mono ${accent ? "text-primary" : "text-foreground"}`}>
+        <div className="min-w-0">
+          <p className="text-[0.6rem] sm:text-xs text-muted-foreground truncate">{label}</p>
+          <p className={`text-base sm:text-xl font-bold font-mono ${accent ? "text-primary" : "text-foreground"}`}>
             {value.toLocaleString()}
           </p>
         </div>
@@ -745,18 +755,18 @@ const StatusBadge = ({ status }: { status: string }) => {
     dismissed: { className: "bg-muted text-muted-foreground border-border", label: "Dismissed" },
   };
   const c = config[status] ?? config.pending;
-  return <Badge variant="outline" className={`text-xs ${c.className}`}>{c.label}</Badge>;
+  return <Badge variant="outline" className={`text-[0.6rem] sm:text-xs flex-shrink-0 ${c.className}`}>{c.label}</Badge>;
 };
 
 const SourceIcon = ({ source }: { source: string }) => {
   const s = source.toLowerCase();
-  if (s.includes("google")) return <Search className="w-3.5 h-3.5 text-blue-400" />;
-  if (s.includes("direct")) return <Monitor className="w-3.5 h-3.5 text-green-400" />;
-  if (s.includes("twitter") || s.includes("x.com")) return <ExternalLink className="w-3.5 h-3.5 text-sky-400" />;
-  if (s.includes("facebook") || s.includes("instagram")) return <ExternalLink className="w-3.5 h-3.5 text-blue-500" />;
-  if (s.includes("reddit")) return <ExternalLink className="w-3.5 h-3.5 text-orange-400" />;
-  if (s.includes("mobile")) return <Smartphone className="w-3.5 h-3.5 text-muted-foreground" />;
-  return <Globe className="w-3.5 h-3.5 text-muted-foreground" />;
+  if (s.includes("google")) return <Search className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400 flex-shrink-0" />;
+  if (s.includes("direct")) return <Monitor className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-400 flex-shrink-0" />;
+  if (s.includes("twitter") || s.includes("x.com")) return <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-400 flex-shrink-0" />;
+  if (s.includes("facebook") || s.includes("instagram")) return <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-500 flex-shrink-0" />;
+  if (s.includes("reddit")) return <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-400 flex-shrink-0" />;
+  if (s.includes("mobile")) return <Smartphone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground flex-shrink-0" />;
+  return <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-muted-foreground flex-shrink-0" />;
 };
 
 function parseReferrerSource(referrer: string | null): string {
