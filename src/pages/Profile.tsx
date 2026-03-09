@@ -161,17 +161,11 @@ const Profile = () => {
         {/* Header */}
         <div className="text-center mb-6 mt-8">
           <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
-            {profile.avatar_url ? (
-              <img
-                src={AVATAR_OPTIONS.find(a => a.key === profile.avatar_url)?.src || maleGhost}
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
-            ) : isGuest ? (
-              <Ghost className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
-            ) : (
-              <User className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
-            )}
+            <img
+              src={AVATAR_OPTIONS.find(a => a.key === profile.avatar_url)?.src || defaultGhost}
+              alt="Avatar"
+              className="w-full h-full object-cover"
+            />
           </div>
           <h1 className="font-heading font-black text-lg sm:text-xl tracking-widest">
             <span className="text-gradient">MY</span> <span className="text-foreground">PROFILE</span>
