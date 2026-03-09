@@ -158,8 +158,18 @@ const Profile = () => {
 
         {/* Header */}
         <div className="text-center mb-6 mt-8">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center">
-            {isGuest ? <Ghost className="w-7 h-7 sm:w-8 sm:h-8 text-primary" /> : <User className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />}
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+            {profile.avatar_url ? (
+              <img
+                src={AVATAR_OPTIONS.find(a => a.key === profile.avatar_url)?.src || maleGhost}
+                alt="Avatar"
+                className="w-full h-full object-cover"
+              />
+            ) : isGuest ? (
+              <Ghost className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            ) : (
+              <User className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            )}
           </div>
           <h1 className="font-heading font-black text-lg sm:text-xl tracking-widest">
             <span className="text-gradient">MY</span> <span className="text-foreground">PROFILE</span>
@@ -167,6 +177,44 @@ const Profile = () => {
           {isGuest && (
             <p className="text-xs text-muted-foreground mt-1">Guest Account</p>
           )}
+        </div>
+
+        {/* Avatar Picker */}
+        <div className="mb-5 sm:mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <Ghost className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <span className="text-[0.65rem] sm:text-xs font-mono tracking-[0.2em] text-muted-foreground">CHOOSE AVATAR</span>
+          </div>
+          <div className="flex gap-3 justify-center">
+            {AVATAR_OPTIONS.map((avatar) => (
+              <button
+                key={avatar.key}
+                onClick={async () => {
+                  const { error } = await updateProfile({ avatar_url: avatar.key });
+                  if (error) {
+                    toast({ title: error, variant: "destructive" });
+                  } else {
+                    toast({ title: `Avatar set to ${avatar.label}!` });
+                  }
+                }}
+                className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl border-2 overflow-hidden transition-all hover:scale-105 active:scale-95 ${
+                  profile.avatar_url === avatar.key
+                    ? "border-primary ring-2 ring-primary/30 shadow-lg shadow-primary/20"
+                    : "border-border hover:border-primary/40"
+                }`}
+              >
+                <img src={avatar.src} alt={avatar.label} className="w-full h-full object-cover bg-secondary" />
+                <span className="absolute bottom-0 inset-x-0 bg-background/80 backdrop-blur-sm text-[0.55rem] sm:text-[0.6rem] font-mono tracking-wider text-foreground py-0.5 text-center">
+                  {avatar.label.toUpperCase()}
+                </span>
+                {profile.avatar_url === avatar.key && (
+                  <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-3 h-3 text-primary-foreground" />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Stats */}
