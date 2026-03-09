@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Index from "./pages/Index";
 
 // Lazy load non-critical routes
@@ -74,6 +75,7 @@ const App = () => (
         <BrowserRouter>
           <AppContent />
         </BrowserRouter>
+        <SpeedInsights />
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
