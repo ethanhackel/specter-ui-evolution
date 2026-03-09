@@ -169,7 +169,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setProfile(null);
   };
 
-  const updateProfile = async (updates: { username?: string }) => {
+  const updateProfile = async (updates: { username?: string; avatar_url?: string | null }) => {
     if (!user) return { error: "Not logged in" };
     
     if (updates.username) {
