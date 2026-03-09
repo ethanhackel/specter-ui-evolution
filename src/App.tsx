@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { usePageTracking } from "@/hooks/usePageTracking";
 import Index from "./pages/Index";
 
 // Lazy load non-critical routes
@@ -28,12 +29,34 @@ const queryClient = new QueryClient({
   },
 });
 
-const ScrollToTop = () => {
+const AppContent = () => {
   const { pathname } = useLocation();
+  
+  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  return null;
+
+  // Track page views
+  usePageTracking();
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
 };
 
 const PageLoader = () => (
