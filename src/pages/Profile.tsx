@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import maleGhost from "@/assets/avatars/male-ghost.png";
 import femaleGhost from "@/assets/avatars/female-ghost.png";
-import defaultGhost from "@/assets/avatars/default-ghost.png";
+import defaultGhost from "@/assets/specter-mascot.png";
 
 const AVATAR_OPTIONS = [
   { key: "default-ghost", src: defaultGhost, label: "Specter" },
