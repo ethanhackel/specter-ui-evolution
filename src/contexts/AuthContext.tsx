@@ -23,7 +23,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   checkUsernameAvailable: (username: string) => Promise<boolean>;
-  updateProfile: (updates: { username?: string }) => Promise<{ error: string | null }>;
+  updateProfile: (updates: { username?: string; avatar_url?: string | null }) => Promise<{ error: string | null }>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<{ error: string | null }>;
 };
 

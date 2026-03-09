@@ -15,6 +15,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import maleGhost from "@/assets/avatars/male-ghost.png";
+import femaleGhost from "@/assets/avatars/female-ghost.png";
+
+const AVATAR_OPTIONS = [
+  { key: "male-ghost", src: maleGhost, label: "Male Ghost" },
+  { key: "female-ghost", src: femaleGhost, label: "Female Ghost" },
+];
 
 const Profile = () => {
   const navigate = useNavigate();
