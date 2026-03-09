@@ -103,6 +103,24 @@ const Profile = () => {
     navigate("/");
   };
 
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "DELETE") return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase.rpc("delete_own_account");
+      if (error) throw error;
+      toast({ title: "Account deleted permanently." });
+      await signOut();
+      navigate("/");
+    } catch (err: any) {
+      toast({ title: err.message || "Failed to delete account", variant: "destructive" });
+    } finally {
+      setDeleting(false);
+      setShowDeleteDialog(false);
+      setDeleteConfirmText("");
+    }
+  };
+
   if (loading || !profile) {
     return (
       <div className="min-h-[100dvh] bg-background flex items-center justify-center">
