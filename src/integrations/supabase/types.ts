@@ -131,6 +131,42 @@ export type Database = {
           },
         ]
       }
+      page_views: {
+        Row: {
+          country: string | null
+          created_at: string
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string | null
+          source: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          path: string
+          referrer?: string | null
+          session_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       presence: {
         Row: {
           current_room_id: string | null
@@ -373,6 +409,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_delete_account: {
+        Args: { _target_user_id: string }
+        Returns: undefined
+      }
       delete_own_account: { Args: never; Returns: undefined }
       find_and_create_match: {
         Args: { _interests: string[]; _user_id: string }
