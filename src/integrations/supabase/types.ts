@@ -87,7 +87,7 @@ export type Database = {
           reaction: string | null
           reply_to_id: string | null
           room_id: string
-          sender_id: string
+          sender_id: string | null
           sticker_key: string | null
         }
         Insert: {
@@ -99,7 +99,7 @@ export type Database = {
           reaction?: string | null
           reply_to_id?: string | null
           room_id: string
-          sender_id: string
+          sender_id?: string | null
           sticker_key?: string | null
         }
         Update: {
@@ -111,7 +111,7 @@ export type Database = {
           reaction?: string | null
           reply_to_id?: string | null
           room_id?: string
-          sender_id?: string
+          sender_id?: string | null
           sticker_key?: string | null
         }
         Relationships: [
