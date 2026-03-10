@@ -135,15 +135,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // User entered an email directly
       email = usernameOrEmail;
     } else {
-      // Look up email by username using our DB function
-      const { data, error } = await supabase.rpc("get_email_by_username", {
-        _username: usernameOrEmail,
-      });
+      // Look up email by username via edge function (rate-limited, secure)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
       
-      if (error || !data) {
-        return { error: "No account found with that username. Please check and try again." };
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/email-lookup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ username: usernameOrEmail }),
+        }
+      );
+      
+      const result = await response.json();
+      if (!response.ok || !result.email) {
+        return { error: result.error || "No account found with that username. Please check and try again." };
       }
-      email = data as string;
+      email = result.email;
     }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });

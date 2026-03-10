@@ -413,6 +413,7 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: undefined
       }
+      cleanup_stale_presence: { Args: never; Returns: undefined }
       delete_own_account: { Args: never; Returns: undefined }
       find_and_create_match: {
         Args: { _interests: string[]; _user_id: string }
@@ -422,7 +423,6 @@ export type Database = {
           room_id: string
         }[]
       }
-      get_email_by_username: { Args: { _username: string }; Returns: string }
       get_username: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
